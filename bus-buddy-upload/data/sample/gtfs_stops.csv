@@ -1,0 +1,33 @@
+stop_id,stop_name,stop_lat,stop_lon,wheelchair_boarding
+FD,"Five Dock, Great North Rd",-33.867,151.129,1
+HAB,"Haberfield, Parramatta Rd",-33.88,151.139,1
+LEI,"Leichhardt, Norton St",-33.8835,151.157,1
+ANN,"Annandale, Parramatta Rd",-33.881,151.17,1
+RSQ,Railway Square (Central),-33.884,151.201,1
+DRM,"Drummoyne, Victoria Rd",-33.854,151.154,1
+ROZ,"Rozelle, Victoria Rd",-33.862,151.171,1
+GLB,Glebe Point Rd,-33.88,151.185,1
+ULT,"Ultimo, Harris St",-33.879,151.198,1
+TWH,Town Hall,-33.8731,151.2069,1
+MKV,Marrickville Metro,-33.911,151.155,1
+PET,Petersham,-33.894,151.155,1
+STM,"Stanmore, Parramatta Rd",-33.894,151.164,1
+NTN,"Newtown, King St",-33.898,151.179,1
+CEN,"Central Station, Eddy Ave",-33.8833,151.2075,1
+ERS,Erskineville,-33.902,151.186,1
+ALX,Alexandria,-33.905,151.194,1
+RDF,Redfern,-33.892,151.1985,1
+SRH,"Surry Hills, Crown St",-33.886,151.211,1
+MP,Moore Park,-33.8916,151.2246,1
+KEN,"Kensington, Anzac Pde",-33.907,151.224,1
+UNS,UNSW Kensington,-33.917,151.231,1
+KFD,Kingsford,-33.924,151.228,1
+BJN,Bondi Junction,-33.8915,151.248,1
+EDG,Edgecliff,-33.879,151.237,1
+PAD,"Paddington, Oxford St",-33.884,151.229,1
+DLH,"Darlinghurst, Oxford St",-33.879,151.219,1
+WYN,Wynyard,-33.866,151.2056,1
+COG,Coogee,-33.92,151.256,1
+RWK,Randwick,-33.9145,151.241,1
+ZET,Zetland,-33.907,151.211,1
+WAT,Waterloo,-33.9,151.206,1

@@ -1,0 +1,7 @@
+service_date,bus_id,reported_at,issue,severity
+2025-04-28,F1,06:20,Rear door sensor intermittent,low
+2025-05-19,F1,06:20,Rear door sensor intermittent,low
+2025-04-29,F1,06:20,Rear door sensor intermittent,low
+2025-04-29,C1,06:50,Engine warning light reported by driver at depot check,medium
+2025-05-07,F1,06:20,Rear door sensor intermittent,low
+2025-05-08,F1,06:20,Rear door sensor intermittent,low

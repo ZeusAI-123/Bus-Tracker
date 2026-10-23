@@ -1,0 +1,110 @@
+{
+  "2025-04-28": {
+    "scenario": "mon1",
+    "expected": [
+      {
+        "route": "A",
+        "type": "late",
+        "cause": "weather_congestion",
+        "actions_ok": [
+          "extra_bus",
+          "alert_only"
+        ],
+        "must_not": []
+      }
+    ]
+  },
+  "2025-04-29": {
+    "scenario": "tue",
+    "expected": [
+      {
+        "bus": "C1",
+        "type": "stopped",
+        "cause": "breakdown",
+        "actions_ok": [
+          "replacement_bus"
+        ],
+        "must_use": {
+          "bus": "S1"
+        },
+        "must_not": [
+          {
+            "bus": "S2",
+            "why": "not wheelchair accessible"
+          }
+        ]
+      }
+    ]
+  },
+  "2025-05-07": {
+    "scenario": "wed",
+    "expected": [
+      {
+        "route": "E",
+        "type": "connection_risk",
+        "cause": "late_train",
+        "actions_ok": [
+          "extra_bus",
+          "alert_only"
+        ],
+        "must_not": [
+          {
+            "action": "hold",
+            "over_min": 5
+          }
+        ]
+      },
+      {
+        "bus": "G1",
+        "type": "missing",
+        "cause": "gps_glitch",
+        "actions_ok": [
+          "monitor"
+        ],
+        "must_not": [
+          {
+            "action": "replacement_bus"
+          }
+        ],
+        "trap": true
+      }
+    ]
+  },
+  "2025-05-08": {
+    "scenario": "thu",
+    "expected": [
+      {
+        "route": "E",
+        "type": "crowding",
+        "cause": "event_crowding",
+        "actions_ok": [
+          "extra_bus"
+        ],
+        "must_use": {
+          "driver": "D11"
+        },
+        "must_not": [
+          {
+            "driver": "D10",
+            "why": "shift ends 07:45"
+          }
+        ]
+      }
+    ]
+  },
+  "2025-05-19": {
+    "scenario": "mon2",
+    "expected": [
+      {
+        "route": "A",
+        "type": "proactive",
+        "cause": "weather_congestion",
+        "actions_ok": [
+          "extra_bus"
+        ],
+        "before": "07:05",
+        "needs_memory": true
+      }
+    ]
+  }
+}

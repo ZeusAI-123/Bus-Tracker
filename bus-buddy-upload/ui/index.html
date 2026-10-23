@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bus Buddy Control Room</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root { --bg:#0f1720; --panel:#16212d; --line:#253445; --fg:#e6edf3; --muted:#93a4b6; --accent:#f2b33d;
+          --ok:#4cc38a; --warn:#f2b33d; --bad:#ef6b6b; --info:#6aa8ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line); }
+  header h1 { font-size:18px; margin:0 12px 0 0; }
+  select, button { background:var(--panel); color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font:inherit; }
+  button.primary { background:var(--accent); color:#1a1300; border:0; font-weight:600; cursor:pointer; }
+  label { color:var(--muted); display:flex; gap:6px; align-items:center; }
+  main { display:grid; grid-template-columns: 1.3fr 1fr; gap:12px; padding:12px 16px; height:calc(100vh - 62px); }
+  #map { border-radius:12px; border:1px solid var(--line); min-height:420px; }
+  .side { overflow:auto; display:flex; flex-direction:column; gap:12px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; }
+  .card h3 { margin:0 0 6px; font-size:15px; }
+  .muted { color:var(--muted); }
+  .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; font-weight:600; margin-right:6px; }
+  .rej { color:var(--bad); } .ok { color:var(--ok); }
+  .slider { display:flex; align-items:center; gap:10px; padding:0 16px 8px; }
+  .slider input { flex:1; }
+  ul { margin:6px 0 0; padding-left:18px; } li { margin:3px 0; }
+  .metrics { display:flex; flex-wrap:wrap; gap:8px; }
+  .metric { background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:6px 10px; }
+  @media (max-width: 900px) { main { grid-template-columns:1fr; height:auto; } #map { height:360px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Bus Buddy · Sydney control room</h1>
+  <select id="date" aria-label="Morning"></select>
+  <label><input type="checkbox" id="mem" checked> Memory on</label>
+  <button class="primary" id="go">Run morning</button>
+  <span class="muted" id="status">Pick a morning and run it.</span>
+</header>
+<div class="slider"><span class="muted">Time</span><input type="range" id="t" min="0" max="0" value="0"><b id="tl">06:30</b></div>
+<main>
+  <div id="map"></div>
+  <div class="side">
+    <div class="card"><h3>Summary</h3><div class="metrics" id="metrics"><span class="muted">No run yet.</span></div></div>
+    <div class="card"><h3>Incidents and decisions</h3><div id="incidents" class="muted">None yet.</div></div>
+    <div class="card"><h3>Passenger service alerts</h3><div id="alerts" class="muted">None yet.</div></div>
+    <div class="card"><h3>Memory (H-MEM lessons)</h3><div id="memory" class="muted">None yet.</div></div>
+  </div>
+</main>
+<script>
+const COLORS = {ok:"#4cc38a", late:"#f2b33d", stopped:"#ef6b6b", missing:"#b57bff", bunching:"#6aa8ff", not_started:"#93a4b6"};
+const map = L.map("map").setView([-33.89, 151.19], 12);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 18, attribution: "© OpenStreetMap"}).addTo(map);
+let layers = L.layerGroup().addTo(map), busLayer = L.layerGroup().addTo(map), run = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+fetch("/scenarios").then(r => r.json()).then(s => {
+  const labels = {mon1:"Mon: rainy morning", tue:"Tue: breakdown", wed:"Wed: late train + GPS trap", thu:"Thu: UNSW exam crowds", mon2:"Mon again: memory test"};
+  for (const [k, d] of Object.entries(s.dates)) if (!k.startsWith("_"))
+    $("date").insertAdjacentHTML("beforeend", `<option value="${d}">${labels[k] || k} (${d})</option>`);
+});
+
+$("go").onclick = async () => {
+  $("status").textContent = "Running…";
+  const r = await fetch("/run", {method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({date: $("date").value, memory: $("mem").checked ? "on" : "off"})});
+  run = await r.json();
+  if (run.status !== "success") { $("status").textContent = "Error: " + (run.error?.message || r.status); return; }
+  $("status").textContent = `Done in ${run.execution_time_seconds}s · trace ${run.log_file}`;
+  drawNetwork(); drawSide();
+  $("t").max = run.timeline.length - 1; $("t").value = 0; drawTick(0);
+};
+$("t").oninput = e => drawTick(+e.target.value);
+
+function drawNetwork() {
+  layers.clearLayers();
+  for (const r of run.network.routes) L.polyline(r.shape, {color:"#6aa8ff", weight:3, opacity:.55}).bindTooltip(`Route ${r.id}: ${r.name}`).addTo(layers);
+  for (const s of run.network.stops) L.circleMarker([s.lat, s.lon], {radius:4, color:"#e6edf3", weight:1, fillOpacity:.8}).bindTooltip(s.name).addTo(layers);
+  const d = run.network.depot; L.marker([d.lat, d.lon]).bindTooltip(d.name).addTo(layers);
+}
+function drawTick(i) {
+  busLayer.clearLayers();
+  const tick = run.timeline[i]; if (!tick) return;
+  $("tl").textContent = tick.t;
+  for (const b of tick.buses) if (b.lat)
+    L.circleMarker([b.lat, b.lon], {radius:8, color:"#000", weight:1, fillColor: COLORS[b.status] || "#4cc38a", fillOpacity:1})
+     .bindTooltip(`${b.id} (Route ${b.route}) – ${b.status}`, {permanent:false}).addTo(busLayer);
+}
+function drawSide() {
+  $("metrics").innerHTML = Object.entries(run.metrics).map(([k, v]) => `<span class="metric"><span class="muted">${esc(k.replace(/_/g," "))}</span> <b>${esc(v)}</b></span>`).join("");
+  $("incidents").innerHTML = run.incidents.length ? run.incidents.map(i => `
+    <div class="card" style="margin-top:8px">
+      <div><span class="pill" style="background:${COLORS[i.type] || '#6aa8ff'};color:#111">${esc(i.type)}</span><b>${esc(i.detected_at)}</b> ${esc(i.detail)}</div>
+      <div style="margin-top:6px"><b>Why:</b> ${esc(i.explanation)} <span class="muted">(${esc(i.cause)}, confidence ${esc(i.confidence)}, ${esc(i.reasoning_method)})</span></div>
+      <ul>${i.plans_considered.map(p => `<li class="${p.critic.startsWith('approved') ? 'ok' : 'rej'}">${esc(p.plan)} → ${esc(p.critic)}</li>`).join("")}</ul>
+      ${i.resolution ? `<div class="muted">Resolved ${esc(i.resolved_at)}: ${esc(i.resolution)}</div>` : ""}
+    </div>`).join("") : "No incidents this morning.";
+  $("alerts").innerHTML = run.service_alerts.length ? "<ul>" + run.service_alerts.map(a => `<li><b>${esc(a.active_from)}</b> ${esc(a.header_text)} <span class="muted">${esc(a.effect)}</span></li>`).join("") + "</ul>" : "No alerts.";
+  $("memory").innerHTML = run.memory.lessons.length ? "<ul>" + run.memory.lessons.map(l => `<li>${esc(l.summary)} <span class="muted">strength ${esc(l.strength)}, from ${esc((l.mornings||[]).join(", "))}</span></li>`).join("") + "</ul>" : "Nothing learned yet.";
+}
+</script>
+</body>
+</html>

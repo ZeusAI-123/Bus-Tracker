@@ -1,0 +1,128 @@
+"""Zetaris adapter: the ONLY way agents read data.
+
+Agents write SQL against logical table names (gtfs_stops, vehicle_positions, ...).
+`physical()` maps them to the names our sources have in Zetaris:
+  - Postgres tables   -> ZETARIS_PG_PREFIX + name
+  - bus positions     -> ZETARIS_POSITIONS_TABLE (Parquet in S3)
+  - weather           -> ZETARIS_WEATHER_TABLE
+
+SAMPLE_MODE=true runs the same SQL with DuckDB over data/sample/, so a judge can
+run the project with no Zetaris instance.
+
+TODO (team): confirm the exact REST endpoint and payload from the Zetaris
+getting-started repo (docs/connections/client-setup.md) and adjust `_post_sql`.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+import time
+from typing import Any, Optional
+
+import requests
+
+from app.config import SETTINGS
+
+LOGICAL = ["gtfs_routes", "gtfs_stops", "gtfs_trips", "gtfs_stop_times", "gtfs_shapes", "buses",
+           "driver_shifts", "maintenance_reports", "road_closures", "events", "train_delays",
+           "passenger_counts", "weather_hourly", "vehicle_positions"]
+
+
+class ZetarisError(RuntimeError):
+    pass
+
+
+class Zetaris:
+    def __init__(self, sample_mode: Optional[bool] = None, trace=None):
+        self.sample_mode = SETTINGS.sample_mode if sample_mode is None else sample_mode
+        self.trace = trace
+        self._duck = None
+        if self.sample_mode:
+            self._open_duckdb()
+
+    # ---------------------------------------------------------------- public
+    def query(self, sql: str, params: Optional[dict] = None, *, agent: str = "system",
+              purpose: str = "", sim_time: Optional[str] = None) -> tuple[list[dict], str]:
+        """Run SQL; returns (rows, evidence_id). evidence_id identifies this exact result in the trace."""
+        sql_final = self._bind(sql, params or {})
+        started = time.time()
+        if self.sample_mode:
+            rows = self._duck_rows(sql_final)
+            backend = "duckdb-sample"
+        else:
+            rows = self._post_sql(self._to_physical(sql_final))
+            backend = "zetaris"
+        ev = "ev-" + hashlib.sha1((sql_final + json.dumps(rows, default=str)).encode()).hexdigest()[:10]
+        if self.trace:
+            self.trace.log(agent, "zetaris_query", sim_time=sim_time, input_summary=purpose,
+                           output_summary=f"{len(rows)} rows", sql=sql_final, backend=backend,
+                           evidence_id=ev, latency_ms=int((time.time() - started) * 1000))
+        return rows, ev
+
+    # ---------------------------------------------------------------- helpers
+    @staticmethod
+    def _bind(sql: str, params: dict) -> str:
+        """Tiny, safe parameter binding: :name -> quoted literal (values are our own, never user text)."""
+        def lit(v: Any) -> str:
+            if v is None:
+                return "NULL"
+            if isinstance(v, (int, float)):
+                return str(v)
+            if isinstance(v, (list, tuple)):
+                return "(" + ", ".join(lit(x) for x in v) + ")"
+            return "'" + str(v).replace("'", "''") + "'"
+        return re.sub(r":([a-zA-Z_][a-zA-Z0-9_]*)", lambda m: lit(params[m.group(1)]) if m.group(1) in params else m.group(0), sql)
+
+    @staticmethod
+    def physical(name: str) -> str:
+        if name == "vehicle_positions":
+            return SETTINGS.zetaris_positions
+        if name == "weather_hourly":
+            return SETTINGS.zetaris_weather
+        return SETTINGS.zetaris_pg_prefix + name
+
+    def _to_physical(self, sql: str) -> str:
+        for name in sorted(LOGICAL, key=len, reverse=True):
+            sql = re.sub(rf"\b{name}\b", self.physical(name), sql)
+        return sql
+
+    def _post_sql(self, sql: str) -> list[dict]:
+        url = SETTINGS.zetaris_url.rstrip("/") + "/query"
+        headers = {"Content-Type": "application/json", "X-Org-Id": SETTINGS.zetaris_org,
+                   "Authorization": f"Bearer {SETTINGS.zetaris_key}"}
+        last = None
+        for attempt in range(3):
+            try:
+                r = requests.post(url, json={"sql": sql}, headers=headers, timeout=SETTINGS.zetaris_timeout)
+                r.raise_for_status()
+                body = r.json()
+                if isinstance(body, dict) and "rows" in body and "columns" in body:
+                    cols = [c["name"] if isinstance(c, dict) else c for c in body["columns"]]
+                    return [dict(zip(cols, row)) for row in body["rows"]]
+                if isinstance(body, list):
+                    return body
+                return body.get("data", [])
+            except Exception as e:  # retry with backoff, then surface a clear error
+                last = e
+                time.sleep(1.5 * (attempt + 1))
+        raise ZetarisError(f"Zetaris did not answer after 3 attempts: {last}")
+
+    def _open_duckdb(self) -> None:
+        import duckdb
+        d = SETTINGS.sample_dir
+        con = duckdb.connect(":memory:")
+        for name in LOGICAL:
+            if name == "vehicle_positions":
+                con.execute(f"CREATE VIEW vehicle_positions AS SELECT * FROM read_parquet('{d / 'vehicle_positions'}/*.parquet')")
+            else:
+                con.execute(f"CREATE VIEW {name} AS SELECT * FROM read_csv_auto('{d / (name + '.csv')}', header=true, all_varchar=false)")
+        self._duck = con
+
+    def _duck_rows(self, sql: str) -> list[dict]:
+        cur = self._duck.execute(sql)
+        cols = [c[0] for c in cur.description]
+        out = []
+        for row in cur.fetchall():
+            out.append({c: (v.isoformat() if hasattr(v, "isoformat") else v) for c, v in zip(cols, row)})
+        return out

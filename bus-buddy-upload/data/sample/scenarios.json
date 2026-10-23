@@ -1,0 +1,81 @@
+{
+  "dates": {
+    "mon1": "2025-04-28",
+    "mon2": "2025-05-19",
+    "tue": "2025-04-29",
+    "wed": "2025-05-07",
+    "thu": "2025-05-08"
+  },
+  "scenarios": {
+    "2025-04-28": {
+      "key": "mon1",
+      "label": "Rainy Monday: Route A crawls on Parramatta Rd",
+      "rain_slowdown": true
+    },
+    "2025-04-29": {
+      "key": "tue",
+      "label": "Bus C1 breaks down; wheelchair user waiting at Newtown",
+      "breakdown": {
+        "bus": "C1",
+        "at": "07:20"
+      },
+      "maintenance": [
+        {
+          "bus": "C1",
+          "time": "06:50",
+          "issue": "Engine warning light reported by driver at depot check",
+          "severity": "medium"
+        }
+      ],
+      "wheelchair": {
+        "stop": "NTN",
+        "from": "07:15",
+        "to": "07:50"
+      }
+    },
+    "2025-05-07": {
+      "key": "wed",
+      "label": "Late train at Central threatens Route E connection; GPS glitch on G1 (trap)",
+      "train_delay": {
+        "station_stop": "CEN",
+        "train": "T1 Western Line",
+        "scheduled": "07:53",
+        "actual": "08:02",
+        "transfer_pax": 42,
+        "route": "E",
+        "connecting_departure": "07:59"
+      },
+      "gps_gap": {
+        "bus": "G1",
+        "from": "07:10",
+        "to": "07:16"
+      }
+    },
+    "2025-05-08": {
+      "key": "thu",
+      "label": "UNSW exam day crowds; Route E buses bunch",
+      "event": {
+        "stop": "UNS",
+        "name": "UNSW morning exam session",
+        "from": "07:30",
+        "to": "08:15",
+        "extra_pax": 170,
+        "also_stop": "KEN"
+      },
+      "crowd_dwell": {
+        "bus": "E1",
+        "extra_dwell_min": 7,
+        "stops": [
+          "KEN",
+          "UNS"
+        ],
+        "after": "07:20"
+      }
+    },
+    "2025-05-19": {
+      "key": "mon2",
+      "label": "Rainy Monday again: memory should act before the delay",
+      "rain_slowdown": true
+    }
+  }
+}

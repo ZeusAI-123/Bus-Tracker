@@ -1,0 +1,12 @@
+bus_id,route_id,capacity,wheelchair_accessible,home_lat,home_lon
+A1,A,60,True,-33.879,151.16
+B1,B,60,True,-33.879,151.16
+C1,C,60,True,-33.879,151.16
+D1,D,60,True,-33.879,151.16
+E1,E,60,True,-33.879,151.16
+E2,E,60,True,-33.879,151.16
+F1,F,60,True,-33.879,151.16
+G1,G,60,True,-33.879,151.16
+H1,H,60,True,-33.879,151.16
+S1,,60,True,-33.879,151.16
+S2,,60,False,-33.879,151.16

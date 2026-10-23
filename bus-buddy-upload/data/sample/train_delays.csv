@@ -1,0 +1,27 @@
+service_date,station_stop_id,train,scheduled_arr,actual_arr,transfer_pax,connecting_route
+2025-04-28,CEN,T1 Western Line,06:45,06:45,25,E
+2025-04-28,CEN,T1 Western Line,07:00,07:00,25,E
+2025-04-28,CEN,T1 Western Line,07:30,07:30,25,E
+2025-04-28,CEN,T1 Western Line,07:45,07:45,25,E
+2025-04-28,CEN,T1 Western Line,08:00,08:00,25,E
+2025-05-19,CEN,T1 Western Line,06:45,06:45,25,E
+2025-05-19,CEN,T1 Western Line,07:00,07:00,25,E
+2025-05-19,CEN,T1 Western Line,07:30,07:30,25,E
+2025-05-19,CEN,T1 Western Line,07:45,07:45,25,E
+2025-05-19,CEN,T1 Western Line,08:00,08:00,25,E
+2025-04-29,CEN,T1 Western Line,06:45,06:45,25,E
+2025-04-29,CEN,T1 Western Line,07:00,07:00,25,E
+2025-04-29,CEN,T1 Western Line,07:30,07:30,25,E
+2025-04-29,CEN,T1 Western Line,07:45,07:45,25,E
+2025-04-29,CEN,T1 Western Line,08:00,08:00,25,E
+2025-05-07,CEN,T1 Western Line,06:45,06:45,25,E
+2025-05-07,CEN,T1 Western Line,07:00,07:00,25,E
+2025-05-07,CEN,T1 Western Line,07:30,07:30,25,E
+2025-05-07,CEN,T1 Western Line,07:45,07:45,25,E
+2025-05-07,CEN,T1 Western Line,07:53,08:02,42,E
+2025-05-07,CEN,T1 Western Line,08:00,08:00,25,E
+2025-05-08,CEN,T1 Western Line,06:45,06:45,25,E
+2025-05-08,CEN,T1 Western Line,07:00,07:00,25,E
+2025-05-08,CEN,T1 Western Line,07:30,07:30,25,E
+2025-05-08,CEN,T1 Western Line,07:45,07:45,25,E
+2025-05-08,CEN,T1 Western Line,08:00,08:00,25,E
