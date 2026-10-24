@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "It deploys an accessible bus with the earliest dispatch time, minimizing delay for all passengers while ensuring wheelchair users are not excluded. It operates within driver shift limits and directly fills the 5.3-minute service gap."
+  }
+}

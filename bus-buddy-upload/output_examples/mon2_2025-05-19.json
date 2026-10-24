@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "replay/offline"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 5.1,
@@ -29,7 +29,8 @@
       "explanation": "It is raining and memory says: Route A runs about 14 min late on rainy mornings; an early extra bus keeps the gap down.",
       "evidence": [
         "ev-6cc47dc414",
-        "ev-b80e47c5ae"
+        "ev-b80e47c5ae",
+        "ev-2cc4c9bc92"
       ],
       "reasoning_method": "memory (H-MEM) + weather",
       "memory_used": [
@@ -44,17 +45,17 @@
       ],
       "plans_considered": [
         {
-          "plan": "Run an early extra Route A bus through the morning peak: spare S2 with driver D10 from the depot, at Five Dock, Great North Rd by 06:43",
-          "id": "extra_bus:S2:D10",
+          "plan": "Run an early extra Route A bus through the morning peak: spare S1 with driver D10 from the depot, at Five Dock, Great North Rd by 06:43",
+          "id": "extra_bus:S1:D10",
           "critic": "approved"
         }
       ],
       "decision": {
-        "id": "extra_bus:S2:D10",
+        "id": "extra_bus:S1:D10",
         "action": "extra_bus",
-        "summary": "Run an early extra Route A bus through the morning peak: spare S2 with driver D10 from the depot, at Five Dock, Great North Rd by 06:43",
-        "reason": "Adds capacity where passengers are waiting.",
-        "bus": "S2",
+        "summary": "Run an early extra Route A bus through the morning peak: spare S1 with driver D10 from the depot, at Five Dock, Great North Rd by 06:43",
+        "reason": "It dispatches earliest (06:32, arriving 06:43) to curb the 14\u2011minute delay, and its accessible bus ensures safe, fair service for all passengers including those with mobility needs.",
+        "bus": "S1",
         "driver": "D10",
         "eta": "06:43",
         "dispatch_at": "06:32",
@@ -64,15 +65,15 @@
         ],
         "passengers_affected": 17,
         "wheelchair_waiting": [],
-        "bus_accessible": false,
+        "bus_accessible": true,
         "driver_shift_end": "07:45",
-        "method": "offline-rules"
+        "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "Rain this morning; memory says Route A runs ~14 min late",
         "why": "It is raining and memory says: Route A runs about 14 min late on rainy mornings; an early extra bus keeps the gap down.",
         "confidence": 0.8,
-        "decision": "Run an early extra Route A bus through the morning peak: spare S2 with driver D10 from the depot, at Five Dock, Great North Rd by 06:43",
+        "decision": "Run an early extra Route A bus through the morning peak: spare S1 with driver D10 from the depot, at Five Dock, Great North Rd by 06:43",
         "rejected": []
       }
     },
@@ -93,11 +94,11 @@
       "resolution": null,
       "cause": "weather_congestion",
       "confidence": 0.8,
-      "explanation": "Route A is 6 min late; 5.0 mm of rain in the last two hours is slowing traffic. Memory agrees: Route A runs about 14 min late on rainy mornings; an early extra bus keeps the gap down.",
+      "explanation": "Bus A1 on route A was running 5.8 minutes late at 06:58, and measurable rain (1.7mm in hour 6, 3.3mm in hour 5) was recorded in the preceding two hours, which aligns with the known pattern of rain slowing Sydney peak-hour traffic.",
       "evidence": [
         "ev-f6010d80e5"
       ],
-      "reasoning_method": "offline-rules",
+      "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [
         {
           "key": "route:A|cause:weather_congestion|cond:rain",
@@ -107,16 +108,26 @@
       ],
       "plans_considered": [
         {
-          "plan": "Update arrival times for Route A passengers",
-          "id": "alert_only",
+          "plan": "Fill the gap on Route A: spare S1 with driver D10 from the depot, at Haberfield, Parramatta Rd by 07:07",
+          "id": "extra_bus:S1:D10",
+          "critic": "rejected - driver D10 finishes their shift at 07:45 but this work runs until 08:30; S1 is already committed to another incident this morning"
+        },
+        {
+          "plan": "Fill the gap on Route A: spare S2 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
+          "id": "extra_bus:S2:D11",
           "critic": "approved"
         }
       ],
       "decision": {
-        "id": "alert_only",
-        "action": "alert_only",
-        "summary": "Update arrival times for Route A passengers",
-        "reason": "Least disruptive option; passengers get updated times.",
+        "id": "extra_bus:S2:D11",
+        "action": "extra_bus",
+        "summary": "Fill the gap on Route A: spare S2 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
+        "reason": "The extra bus directly reduces the 5.8-minute gap for 61 passengers using an available spare and driver, with no shift-hour or resource conflicts. It follows the route's rainy-day lesson that early extra buses keep delays down.",
+        "bus": "S2",
+        "driver": "D11",
+        "eta": "07:22",
+        "dispatch_at": "07:15",
+        "finish_time": "08:30",
         "stops_affected": [
           "HAB",
           "LEI",
@@ -124,14 +135,22 @@
           "RSQ"
         ],
         "passengers_affected": 61,
-        "method": "offline-rules"
+        "wheelchair_waiting": [],
+        "bus_accessible": false,
+        "driver_shift_end": "14:15",
+        "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "A1 running 6 min late",
-        "why": "Route A is 6 min late; 5.0 mm of rain in the last two hours is slowing traffic. Memory agrees: Route A runs about 14 min late on rainy mornings; an early extra bus keeps the gap down.",
+        "why": "Bus A1 on route A was running 5.8 minutes late at 06:58, and measurable rain (1.7mm in hour 6, 3.3mm in hour 5) was recorded in the preceding two hours, which aligns with the known pattern of rain slowing Sydney peak-hour traffic.",
         "confidence": 0.8,
-        "decision": "Update arrival times for Route A passengers",
-        "rejected": []
+        "decision": "Fill the gap on Route A: spare S2 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
+        "rejected": [
+          {
+            "plan": "Fill the gap on Route A: spare S1 with driver D10 from the depot, at Haberfield, Parramatta Rd by 07:07",
+            "why": "driver D10 finishes their shift at 07:45 but this work runs until 08:30; S1 is already committed to another incident this morning"
+          }
+        ]
       }
     }
   ],
@@ -147,15 +166,15 @@
           "stop_id": "FD"
         }
       ],
-      "header_text": "Route A: an extra bus will run at Five Dock, Great North Rd from about 06:43 to help with delays and crowding.",
-      "description_text": "",
-      "method": "template"
+      "header_text": "Route A rain delay",
+      "description_text": "Rain is delaying Route A services. We're deploying an extra bus from Five Dock, Great North Rd at 06:43 to keep services on track. Expect improved reliability shortly.",
+      "method": "nemotron-via-nightshift"
     },
     {
       "id": "alert-inc-1",
       "active_from": "06:58",
       "cause": "WEATHER",
-      "effect": "SIGNIFICANT_DELAYS",
+      "effect": "ADDITIONAL_SERVICE",
       "informed_entity": [
         {
           "route_id": "A",
@@ -174,15 +193,15 @@
           "stop_id": "RSQ"
         }
       ],
-      "header_text": "Route A: buses are running late at Haberfield, Parramatta Rd, Leichhardt, Norton St, Annandale, Parramatta Rd. Route A is 6 min late; 5.0 mm of rain in the last two hours is slowing traffic. Memory agrees: Route A runs about 14 min late on ",
-      "description_text": "",
-      "method": "template"
+      "header_text": "Route A service update",
+      "description_text": "Bus A1 is running late due to rain. A spare bus S2 with driver D11 is being deployed to fill the gap. Service will resume by 07:22.",
+      "method": "nemotron-via-nightshift"
     }
   ],
   "memory": {
     "lesson_changes": [
       {
-        "id": 5,
+        "id": 13,
         "key": "route:A|cause:weather_congestion|cond:rain",
         "change": "reinforced"
       }
@@ -234,7 +253,7 @@
     "incidents": 2,
     "decisions_approved": 2,
     "escalated": 0,
-    "critic_rejections": 0,
+    "critic_rejections": 1,
     "proactive_actions": 1,
     "passengers_informed": 78
   },
@@ -10125,6 +10144,6 @@
     }
   ],
   "trace_id": "2025-05-19-mon2",
-  "log_file": "logs/trace-2025-05-19-mon2.jsonl",
-  "execution_time_seconds": 0.7
+  "log_file": "logs\\trace-2025-05-19-mon2.jsonl",
+  "execution_time_seconds": 25.7
 }

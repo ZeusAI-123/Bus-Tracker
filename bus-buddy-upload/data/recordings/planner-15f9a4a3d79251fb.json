@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "Provides accessible seating for all passengers including wheelchair users, and arrives earliest at 07:07 to quickly alleviate crowding for the 61 affected passengers."
+  }
+}

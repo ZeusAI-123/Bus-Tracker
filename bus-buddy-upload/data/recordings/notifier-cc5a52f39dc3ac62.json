@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route A \u2013 delay in progress",
+    "description": "Bus A1 is about 5.3 minutes late on Route A with no detected faults, closures, or severe weather. We\u2019re recalculating arrival times for Haberfield, Leichhardt, Annandale and Railway Square and will update passengers shortly."
+  }
+}

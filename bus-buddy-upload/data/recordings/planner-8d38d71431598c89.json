@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "It deploys an accessible bus with a driver whose shift comfortably covers the run, prioritizing safety and fairness for all passengers including those with mobility needs."
+  }
+}

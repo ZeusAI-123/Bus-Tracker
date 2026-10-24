@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "alert_only",
+    "reason": "With no available spare resources for extra shuttles, warning passengers to expect full buses is the only viable action that safely and fairly manages the situation."
+  }
+}

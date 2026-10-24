@@ -1,0 +1,11 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "block": true,
+    "concerns": [
+      "Passengers affected (63) exceed replacement bus capacity (60), leaving 3 passengers without accommodation.",
+      "Reason: The plan assigns a 60-capacity bus S1 to replace a breakdown affecting 63 passengers, creating an unavoidable shortfall."
+    ],
+    "reason": "One sentence: The replacement bus capacity of 60 is insufficient for the 63 passengers affected by the incident."
+  }
+}

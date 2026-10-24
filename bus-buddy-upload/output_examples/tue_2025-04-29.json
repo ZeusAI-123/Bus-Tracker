@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "replay/offline"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 0,
@@ -29,19 +29,14 @@
       "resolved_at": null,
       "resolution": null,
       "cause": "breakdown",
-      "confidence": 0.9,
-      "explanation": "C1 has been stationary between stops since 07:19, and the driver reported 'Engine warning light reported by driver at depot check' at 06:50.",
+      "confidence": 0.8,
+      "explanation": "Bus C1 had an engine warning light reported by the driver at depot check at 06:50 (ev-291020d03d, severity medium) and was observed stationary between stops from 07:19, consistent with a mechanical failure causing the stop.",
       "evidence": [
         "ev-291020d03d"
       ],
-      "reasoning_method": "offline-rules",
+      "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
-        {
-          "plan": "Replace broken-down bus: spare S2 with driver D10 from the depot, at Newtown, King St by 07:36",
-          "id": "replacement_bus:S2:D10",
-          "critic": "rejected - S2 is not wheelchair accessible, but a wheelchair user is waiting at NTN; driver D10 finishes their shift at 07:45 but this work runs until 08:08"
-        },
         {
           "plan": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
           "id": "replacement_bus:S1:D11",
@@ -52,7 +47,7 @@
         "id": "replacement_bus:S1:D11",
         "action": "replacement_bus",
         "summary": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
-        "reason": "Restores service to the stranded stops fastest.",
+        "reason": "The accessible bus with driver D11 ensures wheelchair access at NTN. It also operates within the driver's shift limit, avoiding safety violations and delivering timely service to all 63 affected passengers.",
         "bus": "S1",
         "driver": "D11",
         "eta": "07:36",
@@ -70,19 +65,14 @@
         ],
         "bus_accessible": true,
         "driver_shift_end": "14:15",
-        "method": "offline-rules"
+        "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "C1 stationary between stops since 07:19",
-        "why": "C1 has been stationary between stops since 07:19, and the driver reported 'Engine warning light reported by driver at depot check' at 06:50.",
-        "confidence": 0.9,
+        "why": "Bus C1 had an engine warning light reported by the driver at depot check at 06:50 (ev-291020d03d, severity medium) and was observed stationary between stops from 07:19, consistent with a mechanical failure causing the stop.",
+        "confidence": 0.8,
         "decision": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
-        "rejected": [
-          {
-            "plan": "Replace broken-down bus: spare S2 with driver D10 from the depot, at Newtown, King St by 07:36",
-            "why": "S2 is not wheelchair accessible, but a wheelchair user is waiting at NTN; driver D10 finishes their shift at 07:45 but this work runs until 08:08"
-          }
-        ]
+        "rejected": []
       }
     }
   ],
@@ -110,9 +100,9 @@
           "stop_id": "MKV"
         }
       ],
-      "header_text": "Route C: bus breakdown. A replacement bus will reach at Newtown, King St, Stanmore, Parramatta Rd, Petersham from about 07:36. Please keep waiting at your stop.",
-      "description_text": "",
-      "method": "template"
+      "header_text": "Service C: Mechanical delay",
+      "description_text": "Bus C1 had an engine warning and stopped between stops from 07:19. A spare bus (S1, driver D11) is replacing it at Newtown, King St. Expected arrival: 07:36.",
+      "method": "nemotron-via-nightshift"
     }
   ],
   "memory": {
@@ -163,7 +153,7 @@
     "incidents": 1,
     "decisions_approved": 1,
     "escalated": 0,
-    "critic_rejections": 1,
+    "critic_rejections": 0,
     "proactive_actions": 0,
     "passengers_informed": 63
   },
@@ -171,9 +161,9 @@
     "none (sample mode: recorded/offline reasoning)": 0
   },
   "world_model": {
-    "facts_ingested": 1989,
+    "facts_ingested": 1992,
     "duplicates_skipped": 0,
-    "provenance_rows": 2053
+    "provenance_rows": 2056
   },
   "network": {
     "stops": [
@@ -10054,6 +10044,6 @@
     }
   ],
   "trace_id": "2025-04-29-tue",
-  "log_file": "logs/trace-2025-04-29-tue.jsonl",
-  "execution_time_seconds": 0.7
+  "log_file": "logs\\trace-2025-04-29-tue.jsonl",
+  "execution_time_seconds": 19.7
 }

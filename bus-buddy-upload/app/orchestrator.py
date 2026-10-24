@@ -166,7 +166,7 @@ def run_morning(date: str, *, memory: str = "on", sample_mode: Optional[bool] = 
     world.commit()
     result = {
         "run_id": run_id, "date": date, "city": "Sydney", "status": "success",
-        "mode": {"sample_mode": sample, "memory": memory, "ai": "replay/offline" if sample else "nightshift"},
+        "mode": {"sample_mode": sample, "memory": memory, "ai": ai.mode},
         "conditions": conditions,
         "incidents": [_incident_view(h) for h in handled],
         "service_alerts": alerts,

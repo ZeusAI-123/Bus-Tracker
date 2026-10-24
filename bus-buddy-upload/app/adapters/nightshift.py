@@ -22,12 +22,13 @@ class Nightshift:
     def __init__(self, trace=None, sample_mode: Optional[bool] = None):
         self.trace = trace
         self.sample_mode = SETTINGS.sample_mode if sample_mode is None else sample_mode
-        self.mode = "replay" if self.sample_mode else SETTINGS.ai_recording
+        live = (not self.sample_mode) or SETTINGS.ai_live
+        self.mode = SETTINGS.ai_recording if live else "replay"
         self._client = None
         self.calls = 0
         self.models_used: dict[str, int] = {}
         SETTINGS.recordings_dir.mkdir(parents=True, exist_ok=True)
-        if not self.sample_mode and SETTINGS.nightshift_token:
+        if live and SETTINGS.nightshift_token:
             from openai import OpenAI
             self._client = OpenAI(api_key=SETTINGS.nightshift_token, base_url=SETTINGS.nightshift_url,
                                   timeout=SETTINGS.model_timeout, max_retries=0,
@@ -85,6 +86,7 @@ class Nightshift:
 
 def _parse_json(text: str) -> dict:
     text = text.strip()
+    text = text.split("</think>")[-1].strip()
     m = re.search(r"\{.*\}", text, re.S)
     if not m:
         raise ValueError("model did not return JSON")

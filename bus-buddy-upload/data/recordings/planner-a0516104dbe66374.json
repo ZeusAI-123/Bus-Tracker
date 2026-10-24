@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "It dispatches earliest (06:32, arriving 06:43) to curb the 14\u2011minute delay, and its accessible bus ensures safe, fair service for all passengers including those with mobility needs."
+  }
+}

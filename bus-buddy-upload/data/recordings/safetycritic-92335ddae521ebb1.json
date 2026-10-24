@@ -1,0 +1,8 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "block": false,
+    "concerns": [],
+    "reason": "The plan involves standard monitoring for a likely transient GPS glitch with the driver confirmed on shift and no mechanical faults, and no concrete safety/fairness issues or memory contradictions are present."
+  }
+}

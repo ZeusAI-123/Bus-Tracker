@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route A: service delay",
+    "description": "Bus A1 stopped at 06:47 at Haberfield, causing a ~5.8 min delay. Services between Haberfield and Parramatta Rd are running late. Expect full buses; allow extra time."
+  }
+}

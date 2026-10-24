@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "monitor",
+    "reason": "The cause is a likely transient GPS glitch with the driver confirmed on shift and no mechanical faults, so monitoring avoids unnecessary disruption while ensuring a replacement is dispatched if the gap persists."
+  }
+}

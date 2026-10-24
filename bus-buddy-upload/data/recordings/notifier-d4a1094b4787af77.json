@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route C: Mechanical fault",
+    "description": "Bus C1 mechanical failure found stationary between stops from 07:19. Replacement spare bus S1 with driver D11 arriving Newtown King St by 07:36. Services resume from 07:36."
+  }
+}

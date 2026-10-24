@@ -34,6 +34,7 @@ class Settings:
     model_fast: str = os.getenv("MODEL_FAST", "nvidia/nemotron-3-nano")
     model_timeout: int = int(os.getenv("MODEL_TIMEOUT_SECONDS", "60"))
     ai_recording: str = os.getenv("AI_RECORDING", "record")
+    ai_live: bool = _bool("AI_LIVE", False)
 
     timezone: str = os.getenv("TIMEZONE", "Australia/Sydney")
     port: int = int(os.getenv("PORT", "8000"))

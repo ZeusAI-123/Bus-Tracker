@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "Chooses an accessible bus with a driver whose shift covers the assignment, ensuring passengers with mobility needs are served without violating labor rules or causing downstream delays."
+  }
+}

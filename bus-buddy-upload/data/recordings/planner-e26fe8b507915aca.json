@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S1:D11",
+    "reason": "S1 is accessible, ensuring the wheelchair passenger at NTN is not excluded, and D11 is within shift limits. It minimizes delay with a ~12 minute service gap instead of stranding passengers for an hour."
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "It deploys an accessible bus with a driver fully available for the shift, accommodating all 42 affected passengers without violating driver hour limits. This ensures safe, fair service compared to shift-constrained or non-accessible alternatives."
+  }
+}

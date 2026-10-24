@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route E delay update",
+    "description": "Bus E1 is running late at 07:48. We're investigating the delay and updating arrival times for all Route E stops. Thank you for your patience."
+  }
+}

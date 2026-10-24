@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route E service update",
+    "description": "T1 Western Line train 19 min late (07:53\u219208:02) caused 42 passengers to miss the 07:59 Route E bus at CEN. Extra Route E departure: spare S1 with driver D11 from depot at Central Station, Eddy Ave, ETA 07:52."
+  }
+}

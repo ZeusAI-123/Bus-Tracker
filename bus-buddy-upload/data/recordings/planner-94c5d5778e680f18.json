@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S2:D11",
+    "reason": "Driver D11 is on shift until 14:15, so the 07:50 dispatch is feasible, and the extra 60-seat bus directly reduces crowding for the 324 affected passengers, whereas the alert-only option provides no additional capacity and the D10 option violates the driver's shift end time."
+  }
+}

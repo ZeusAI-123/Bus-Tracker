@@ -15,8 +15,10 @@ def test_breakdown_needs_accessible_bus(tmp_path):
     res = run("tue", mem_db=tmp_path / "m.db")
     inc = next(i for i in res["incidents"] if i["type"] == "stopped")
     assert inc["cause"] == "breakdown"
-    assert any("not wheelchair accessible" in p["critic"] for p in inc["plans_considered"])
-    assert inc["decision"]["bus"] == "S1"
+    assert inc["decision"]["bus"] == "S1"                 # the wheelchair-accessible spare
+    assert inc["decision"]["bus_accessible"] is True
+    # S2 (not accessible) must never be approved, whoever proposed it
+    assert all(p["critic"] != "approved" for p in inc["plans_considered"] if ":S2:" in p["id"])
 
 
 def test_gps_glitch_does_not_send_a_bus(tmp_path):

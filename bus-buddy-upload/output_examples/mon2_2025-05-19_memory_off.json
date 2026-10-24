@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "off",
-    "ai": "replay/offline"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 5.1,
@@ -30,24 +30,34 @@
       "resolution": null,
       "cause": "weather_congestion",
       "confidence": 0.8,
-      "explanation": "Route A is 6 min late; 5.0 mm of rain in the last two hours is slowing traffic.",
+      "explanation": "Bus A1 is running 5.8 minutes late at 06:58 during peak hour, and measurable rainfall (3.3mm in hour 5, 1.7mm in hour 6) in the preceding two hours would have slowed traffic on route A, consistent with weather-related congestion.",
       "evidence": [
         "ev-f6010d80e5"
       ],
-      "reasoning_method": "offline-rules",
+      "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
         {
-          "plan": "Update arrival times for Route A passengers",
-          "id": "alert_only",
+          "plan": "Fill the gap on Route A: spare S1 with driver D10 from the depot, at Haberfield, Parramatta Rd by 07:07",
+          "id": "extra_bus:S1:D10",
+          "critic": "rejected - driver D10 finishes their shift at 07:45 but this work runs until 08:30"
+        },
+        {
+          "plan": "Fill the gap on Route A: spare S1 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
+          "id": "extra_bus:S1:D11",
           "critic": "approved"
         }
       ],
       "decision": {
-        "id": "alert_only",
-        "action": "alert_only",
-        "summary": "Update arrival times for Route A passengers",
-        "reason": "Least disruptive option; passengers get updated times.",
+        "id": "extra_bus:S1:D11",
+        "action": "extra_bus",
+        "summary": "Fill the gap on Route A: spare S1 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
+        "reason": "The accessible spare bus S1 with driver D11 fills the 5.8\u2011minute gap for all 61 passengers, including wheelchair users, while fully complying with driver shift regulations. It is fairer and more effective than merely updating arrival times or using the non\u2011accessible S2.",
+        "bus": "S1",
+        "driver": "D11",
+        "eta": "07:22",
+        "dispatch_at": "07:15",
+        "finish_time": "08:30",
         "stops_affected": [
           "HAB",
           "LEI",
@@ -55,14 +65,22 @@
           "RSQ"
         ],
         "passengers_affected": 61,
-        "method": "offline-rules"
+        "wheelchair_waiting": [],
+        "bus_accessible": true,
+        "driver_shift_end": "14:15",
+        "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "A1 running 6 min late",
-        "why": "Route A is 6 min late; 5.0 mm of rain in the last two hours is slowing traffic.",
+        "why": "Bus A1 is running 5.8 minutes late at 06:58 during peak hour, and measurable rainfall (3.3mm in hour 5, 1.7mm in hour 6) in the preceding two hours would have slowed traffic on route A, consistent with weather-related congestion.",
         "confidence": 0.8,
-        "decision": "Update arrival times for Route A passengers",
-        "rejected": []
+        "decision": "Fill the gap on Route A: spare S1 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
+        "rejected": [
+          {
+            "plan": "Fill the gap on Route A: spare S1 with driver D10 from the depot, at Haberfield, Parramatta Rd by 07:07",
+            "why": "driver D10 finishes their shift at 07:45 but this work runs until 08:30"
+          }
+        ]
       }
     }
   ],
@@ -71,7 +89,7 @@
       "id": "alert-inc-1",
       "active_from": "06:58",
       "cause": "WEATHER",
-      "effect": "SIGNIFICANT_DELAYS",
+      "effect": "ADDITIONAL_SERVICE",
       "informed_entity": [
         {
           "route_id": "A",
@@ -90,9 +108,9 @@
           "stop_id": "RSQ"
         }
       ],
-      "header_text": "Route A: buses are running late at Haberfield, Parramatta Rd, Leichhardt, Norton St, Annandale, Parramatta Rd. Route A is 6 min late; 5.0 mm of rain in the last two hours is slowing traffic.",
-      "description_text": "",
-      "method": "template"
+      "header_text": "Route A: Service Delay",
+      "description_text": "Bus A1 is 5.8 min late at 06:58 due to morning rain and traffic congestion on Route A. Spare bus S1 with driver D11 departing Haberfield, Parramatta Rd to restore service. Expected recovery by 07:22.",
+      "method": "nemotron-via-nightshift"
     }
   ],
   "memory": {
@@ -150,7 +168,7 @@
     "incidents": 1,
     "decisions_approved": 1,
     "escalated": 0,
-    "critic_rejections": 0,
+    "critic_rejections": 1,
     "proactive_actions": 0,
     "passengers_informed": 61
   },
@@ -10041,6 +10059,6 @@
     }
   ],
   "trace_id": "2025-05-19-mon2-nomemory",
-  "log_file": "logs/trace-2025-05-19-mon2-nomemory.jsonl",
-  "execution_time_seconds": 0.7
+  "log_file": "logs\\trace-2025-05-19-mon2-nomemory.jsonl",
+  "execution_time_seconds": 14.5
 }

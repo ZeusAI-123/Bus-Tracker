@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "The accessible spare bus S1 with driver D11 fills the 5.8\u2011minute gap for all 61 passengers, including wheelchair users, while fully complying with driver shift regulations. It is fairer and more effective than merely updating arrival times or using the non\u2011accessible S2."
+  }
+}

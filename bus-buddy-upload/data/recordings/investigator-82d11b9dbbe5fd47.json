@@ -1,0 +1,35 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "tool_calls": [
+      {
+        "tool": "get_weather",
+        "args": {}
+      },
+      {
+        "tool": "get_road_closures",
+        "args": {
+          "route_id": "G"
+        }
+      },
+      {
+        "tool": "get_bus_track",
+        "args": {
+          "bus_id": "G1"
+        }
+      },
+      {
+        "tool": "get_driver_shift",
+        "args": {
+          "bus_id": "G1"
+        }
+      },
+      {
+        "tool": "get_maintenance",
+        "args": {
+          "bus_id": "G1"
+        }
+      }
+    ]
+  }
+}
