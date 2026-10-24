@@ -12,7 +12,8 @@ from app import rules
 SYSTEM = """You are the Safety Critic in a Sydney bus control room. You review ONE proposed plan.
 Code has ALREADY checked these hard rules and the plan PASSED them: bus capacity (projected_load is the
 peak number of people on board at one time, and it is within capacity), wheelchair accessibility, driver
-shift hours, holding limits, maximum service gap, and false-alarm dispatch. Do NOT re-check these and
+shift hours, holding limits, maximum service gap, false-alarm dispatch (including GPS dropouts), a driver
+assigned to every dispatched bus, and buses or drivers already committed today. Do NOT re-check these and
 never block because of them.
 Note: passengers_affected is everyone helped over the whole trip, not the number on board at once.
 Block ONLY for a concrete safety or fairness problem the code could not check, or a clear contradiction
@@ -52,8 +53,10 @@ def exclude_after_rejection(options: list[dict], plan: dict, problems: list[dict
             out = [o for o in out if o.get("driver") != plan.get("driver")]
         elif r == "hold":
             out = [o for o in out if o["action"] != "hold"]
-        elif r == "confidence":
+        elif r in ("confidence", "gps_dropout"):
             out = [o for o in out if o["action"] not in rules.DISPATCH_ACTIONS]
+        elif r == "crew":
+            out = [o for o in out if o["action"] not in rules.DISPATCH_ACTIONS or o.get("driver")]
         elif r == "capacity":
             out = [o for o in out if o.get("bus") != plan.get("bus")]
         elif r == "resource_free":   # drop every option that uses a bus or driver already committed today

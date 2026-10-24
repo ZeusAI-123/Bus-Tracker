@@ -35,6 +35,16 @@ def test_false_alarm_guard():
     assert [x["rule"] for x in rules.check_all(p)] == ["confidence"]
 
 
+def test_no_spare_for_a_gps_dropout():
+    p = plan(cause="gps_glitch", cause_confidence=0.8)
+    assert [x["rule"] for x in rules.check_all(p)] == ["gps_dropout"]
+
+
+def test_dispatch_needs_a_driver():
+    p = plan(driver=None)
+    assert [x["rule"] for x in rules.check_all(p)] == ["crew"]
+
+
 def test_busy_driver_does_not_rule_out_the_bus():
     used = ["S1", "D12"]
     opts = [plan(id="a", bus="S2", driver="D12", used_today=used), plan(id="b", bus="S2", driver="D11", used_today=used),
