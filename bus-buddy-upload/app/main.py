@@ -4,6 +4,7 @@ POST /run     {"date": "2025-04-29", "memory": "on"|"off", "sample_mode": true|f
 GET  /health  -> status, mode, which backends are configured
 GET  /scenarios -> the five demo mornings and their dates
 GET  /         -> the control-room screen (ui/index.html)
+GET  /control-room -> replay of the five demo mornings (ui/control-room.html, built by scripts/build_control_room.py)
 """
 from __future__ import annotations
 
@@ -57,3 +58,8 @@ def scenarios():
 @app.get("/")
 def ui():
     return FileResponse(ROOT / "ui" / "index.html")
+
+
+@app.get("/control-room")
+def control_room():
+    return FileResponse(ROOT / "ui" / "control-room.html")
