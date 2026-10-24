@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S1:D11",
+    "reason": "The accessible bus with driver D11 ensures wheelchair access at NTN. It also operates within the driver's shift limit, avoiding safety violations and delivering timely service to all 63 affected passengers."
+  }
+}

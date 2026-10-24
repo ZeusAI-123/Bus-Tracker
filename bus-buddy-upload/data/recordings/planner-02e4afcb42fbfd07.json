@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "hold:7",
+    "reason": "Holds the 07:59 Route E bus for 7 minutes, ensuring all 42 connecting passengers make their connection fairly and without straining resources."
+  }
+}

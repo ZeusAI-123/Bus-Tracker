@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "alert_only",
+    "reason": "It informs affected passengers of expected crowding without allocating extra service based on low-confidence data, avoiding driver hour conflicts and unnecessary resource deployment."
+  }
+}

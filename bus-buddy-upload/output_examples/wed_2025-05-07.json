@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "replay/offline"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 0,
@@ -25,20 +25,16 @@
       "resolved_at": "07:18",
       "resolution": "G1 reporting again",
       "cause": "gps_glitch",
-      "confidence": 0.5,
-      "explanation": "G1 stopped reporting while moving normally and on schedule; no fault reported. Most likely a GPS/communications dropout.",
+      "confidence": 0.65,
+      "explanation": "Bus G1 stopped transmitting position at 07:09:30 while en route; the bus_track shows normal movement until 07:07:30, and the last context position had speed 0.0. No rain (precip_mm=0), no road closures, and driver D08 was on shift, indicating a GPS signal loss rather than environmental or operational fault.",
       "evidence": [
         "ev-9a8cf44381",
-        "ev-722430f5a9"
+        "ev-9f4ac879f5",
+        "ev-e38dc9fa2e"
       ],
-      "reasoning_method": "offline-rules",
+      "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
-        {
-          "plan": "Send a spare bus to cover G1 as a precaution",
-          "id": "replacement_bus:precaution",
-          "critic": "rejected - confidence in the cause is only 0.50 with nothing backing it up; sending a bus could be a false alarm"
-        },
         {
           "plan": "Keep watching G1 for 4 more minutes; act if it does not reappear",
           "id": "monitor",
@@ -49,7 +45,7 @@
         "id": "monitor",
         "action": "monitor",
         "summary": "Keep watching G1 for 4 more minutes; act if it does not reappear",
-        "reason": "No evidence of a real fault yet, so keep watching before committing a bus.",
+        "reason": "The incident involves a GPS glitch with 0.65 confidence and uncertainty about persistence; a 4\u2011minute monitoring period aligns with the existing timeline, ensures passenger safety by triggering replacement only if the bus does not reappear, and avoids unnecessary spare\u2011bus deployment across the network.",
         "stops_affected": [
           "COG",
           "RWK",
@@ -57,19 +53,14 @@
           "WAT",
           "CEN"
         ],
-        "method": "offline-rules"
+        "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "no position from G1 for 4 min",
-        "why": "G1 stopped reporting while moving normally and on schedule; no fault reported. Most likely a GPS/communications dropout.",
-        "confidence": 0.5,
+        "why": "Bus G1 stopped transmitting position at 07:09:30 while en route; the bus_track shows normal movement until 07:07:30, and the last context position had speed 0.0. No rain (precip_mm=0), no road closures, and driver D08 was on shift, indicating a GPS signal loss rather than environmental or operational fault.",
+        "confidence": 0.65,
         "decision": "Keep watching G1 for 4 more minutes; act if it does not reappear",
-        "rejected": [
-          {
-            "plan": "Send a spare bus to cover G1 as a precaution",
-            "why": "confidence in the cause is only 0.50 with nothing backing it up; sending a bus could be a false alarm"
-          }
-        ]
+        "rejected": []
       }
     },
     {
@@ -84,13 +75,15 @@
       "resolved_at": null,
       "resolution": null,
       "cause": "late_train",
-      "confidence": 0.95,
-      "explanation": "T1 Western Line due 07:53 is arriving 08:02; 42 passengers transferring to Route E will miss the 07:59 bus.",
+      "confidence": 0.85,
+      "explanation": "The T1 Western Line train was 9 minutes late (scheduled 07:53, actual 08:02), directly causing 42 passengers to miss their connecting Route E bus departing at 07:59. Weather showed no rain (precip_mm 0.0), there were no events at stops, and passenger counts were moderate, ruling out other causes.",
       "evidence": [
         "ev-9f246c6f38",
+        "ev-9f4ac879f5",
+        "ev-5b3b062504",
         "ev-58fb9a5a07"
       ],
-      "reasoning_method": "offline-rules",
+      "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
         {
@@ -99,27 +92,35 @@
           "critic": "rejected - holding Route E for 7 min delays everyone downstream (limit 5 min)"
         },
         {
-          "plan": "Tell transferring passengers the next bus is at 08:14",
-          "id": "alert_only",
+          "plan": "Extra Route E departure for the late train: spare S1 with driver D11 from the depot, at Central Station, Eddy Ave by 07:52",
+          "id": "extra_bus:S1:D11",
           "critic": "approved"
         }
       ],
       "decision": {
-        "id": "alert_only",
-        "action": "alert_only",
-        "summary": "Tell transferring passengers the next bus is at 08:14",
-        "reason": "Least disruptive option; passengers get updated times.",
+        "id": "extra_bus:S1:D11",
+        "action": "extra_bus",
+        "summary": "Extra Route E departure for the late train: spare S1 with driver D11 from the depot, at Central Station, Eddy Ave by 07:52",
+        "reason": "Chooses an accessible bus with a driver whose shift covers the assignment, ensuring passengers with mobility needs are served without violating labor rules or causing downstream delays.",
+        "bus": "S1",
+        "driver": "D11",
+        "eta": "07:52",
+        "dispatch_at": "07:36",
+        "finish_time": "08:40",
         "stops_affected": [
           "CEN"
         ],
-        "passengers_affected": 42,
-        "method": "offline-rules"
+        "passengers_affected": 24,
+        "wheelchair_waiting": [],
+        "bus_accessible": true,
+        "driver_shift_end": "14:15",
+        "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "T1 Western Line due 07:53 now arriving 08:02: 42 passengers will miss the 07:59 Route E bus",
-        "why": "T1 Western Line due 07:53 is arriving 08:02; 42 passengers transferring to Route E will miss the 07:59 bus.",
-        "confidence": 0.95,
-        "decision": "Tell transferring passengers the next bus is at 08:14",
+        "why": "The T1 Western Line train was 9 minutes late (scheduled 07:53, actual 08:02), directly causing 42 passengers to miss their connecting Route E bus departing at 07:59. Weather showed no rain (precip_mm 0.0), there were no events at stops, and passenger counts were moderate, ruling out other causes.",
+        "confidence": 0.85,
+        "decision": "Extra Route E departure for the late train: spare S1 with driver D11 from the depot, at Central Station, Eddy Ave by 07:52",
         "rejected": [
           {
             "plan": "Hold the 07:59 Route E bus for 7 min",
@@ -134,16 +135,16 @@
       "id": "alert-inc-2",
       "active_from": "07:34",
       "cause": "OTHER_CAUSE",
-      "effect": "SIGNIFICANT_DELAYS",
+      "effect": "ADDITIONAL_SERVICE",
       "informed_entity": [
         {
           "route_id": "E",
           "stop_id": "CEN"
         }
       ],
-      "header_text": "Route E: buses are running late at Central Station, Eddy Ave. T1 Western Line due 07:53 is arriving 08:02; 42 passengers transferring to Route E will miss the 07:59 bus.",
-      "description_text": "",
-      "method": "template"
+      "header_text": "Route E: extra service added",
+      "description_text": "T1 train 9 min late (07:53\u219208:02) made 42 passengers miss the 07:59 Route E bus. No rain or stop delays. A spare S1 bus with driver D11 now departs Central Station, Eddy Ave at 07:52.",
+      "method": "nemotron-via-nightshift"
     }
   ],
   "memory": {
@@ -194,17 +195,17 @@
     "incidents": 2,
     "decisions_approved": 2,
     "escalated": 0,
-    "critic_rejections": 2,
+    "critic_rejections": 1,
     "proactive_actions": 0,
-    "passengers_informed": 42
+    "passengers_informed": 24
   },
   "models_used": {
     "none (sample mode: recorded/offline reasoning)": 0
   },
   "world_model": {
-    "facts_ingested": 1977,
-    "duplicates_skipped": 0,
-    "provenance_rows": 2043
+    "facts_ingested": 1980,
+    "duplicates_skipped": 1,
+    "provenance_rows": 2046
   },
   "network": {
     "stops": [
@@ -10085,6 +10086,6 @@
     }
   ],
   "trace_id": "2025-05-07-wed",
-  "log_file": "logs/trace-2025-05-07-wed.jsonl",
-  "execution_time_seconds": 0.7
+  "log_file": "logs\\trace-2025-05-07-wed.jsonl",
+  "execution_time_seconds": 18.9
 }

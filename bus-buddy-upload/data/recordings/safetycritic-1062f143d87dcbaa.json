@@ -1,0 +1,8 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "block": false,
+    "concerns": [],
+    "reason": "The plan is an alert-only warning that safely and fairly manages crowding, with all hard rules already validated and passed."
+  }
+}

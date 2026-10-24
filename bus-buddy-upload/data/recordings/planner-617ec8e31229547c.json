@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "hold:7",
+    "reason": "Holding the 07:59 bus until ~08:06 gives the 42 passengers a safe 4-minute buffer after the train arrives at 08:02, ensuring they can board without needing extra resources or violating driver shifts."
+  }
+}

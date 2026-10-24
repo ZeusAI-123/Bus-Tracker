@@ -1,0 +1,14 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "final": {
+      "cause": "weather_congestion",
+      "confidence": 0.8,
+      "evidence_ids": [
+        "ev-f6010d80e5"
+      ],
+      "explanation": "Bus A1 on route A was running 5.8 minutes late at 06:58, and measurable rain (1.7mm in hour 6, 3.3mm in hour 5) was recorded in the preceding two hours, which aligns with the known pattern of rain slowing Sydney peak-hour traffic.",
+      "uncertain": "Whether other factors such as a specific event, road closure, or mechanical fault contributed, as no data for those was returned by tools."
+    }
+  }
+}

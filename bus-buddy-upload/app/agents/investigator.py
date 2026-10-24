@@ -28,7 +28,11 @@ Tools (call with JSON args):
 Either request tools: {"tool_calls": [{"tool": "...", "args": {...}}]}
 or answer: {"final": {"cause": one of %s, "confidence": 0-1, "evidence_ids": ["ev-..."],
 "explanation": "plain English, 1-2 sentences", "uncertain": "what you are not sure about"}}
-Only cite evidence_ids returned by tools. Use memory lessons if relevant. Max 3 rounds of tools.""" % CAUSES
+Only cite evidence_ids returned by tools. Use memory lessons if relevant. Max 3 rounds of tools.
+Guidance: rain clearly slows Sydney peak-hour traffic. If a route is running late while there is any
+measurable rain (precip_mm > 0) in the last two hours, and there is no fault, road closure or event,
+the cause is weather_congestion with confidence 0.7 or more. For crowds at a stop, check get_events and
+get_passenger_counts: an event at those stops means event_crowding. Usually 1-2 rounds of tools are enough.""" % CAUSES
 
 
 class Investigator:
@@ -41,11 +45,13 @@ class Investigator:
         lesson_text = [{"key": l["key"], "lesson": l["content"].get("summary"), "score": l["score"]} for l in lessons]
         transcript = [{"incident": _brief(inc), "context": _ctx_brief(context), "memory": lesson_text}]
         for round_no in range(4):
+            if round_no == 3:
+                transcript.append({"instruction": "No more tools. Give your final answer now."})
             reply = self.ai.json_call(agent="Investigator", system=SYSTEM, user=json.dumps(transcript, default=str), sim_time=t)
             if reply is None:
                 return self._offline(inc, lessons)
-            if "final" in reply:
-                final = reply["final"]
+            if "final" in reply or "cause" in reply:
+                final = reply.get("final", reply)
                 bad = [e for e in final.get("evidence_ids", []) if e not in self.tools.evidence]
                 if bad and round_no < 3:
                     transcript.append({"error": f"These evidence ids do not exist: {bad}. Cite only ids returned by tools."})

@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S2:D11",
+    "reason": "The replacement bus cuts the service gap to ~12 minutes and operates well within its projected load of 40 passengers, unlike alert_only which leaves all 63 passengers waiting 60 minutes with no bus."
+  }
+}

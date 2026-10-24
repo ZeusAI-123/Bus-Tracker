@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route A service update",
+    "description": "Bus A1 is running late due to rain. A spare bus S2 with driver D11 is being deployed to fill the gap. Service will resume by 07:22."
+  }
+}

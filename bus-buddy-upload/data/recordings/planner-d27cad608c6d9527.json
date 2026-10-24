@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S1:D10",
+    "reason": "The bus is wheelchair-accessible, ensuring fair service for the passenger at NTN. With a projected load of 40, the 60-seat capacity is sufficient for safe boarding."
+  }
+}

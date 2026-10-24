@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "It deploys an accessible bus to the crowded UNS stop by 07:40, directly serving the exam crowd while ensuring passengers with mobility needs are not excluded. It\u2019s significantly fairer and safer than the alert_only option, which has insufficient capacity for the expected demand."
+  }
+}

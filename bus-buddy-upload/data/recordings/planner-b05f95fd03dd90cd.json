@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "It provides an accessible bus to serve all passengers fairly, and its early arrival at 07:07 minimizes the 5.8\u2011minute service gap as recommended by the route's rainy\u2011day lesson."
+  }
+}

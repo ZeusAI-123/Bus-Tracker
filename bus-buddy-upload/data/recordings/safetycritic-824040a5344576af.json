@@ -1,0 +1,8 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "block": false,
+    "concerns": [],
+    "reason": "The plan safely updates arrival times with an alert-only action, already cleared by all hard rule checks and containing no unchecked safety or fairness issues."
+  }
+}

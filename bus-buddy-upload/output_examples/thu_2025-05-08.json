@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "replay/offline"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 0,
@@ -26,31 +26,31 @@
       "resolution": null,
       "cause": "event_crowding",
       "confidence": 0.9,
-      "explanation": "UNSW morning exam session is bringing about 279 people to UNS, KEN on Route E, more than the regular buses can carry.",
+      "explanation": "A morning exam session at UNSW (07:30\u201108:15) generated extra passenger demand at stops UNS and KEN, matching the observed crowding of 279 people.",
       "evidence": [
         "ev-17aae1cae0",
         "ev-6f6ec7e184"
       ],
-      "reasoning_method": "offline-rules",
+      "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
         {
-          "plan": "Extra shuttle runs for crowds on Route E: spare S2 with driver D10 from the depot, at UNSW Kensington by 07:40",
-          "id": "extra_bus:S2:D10",
+          "plan": "Extra shuttle runs for crowds on Route E: spare S1 with driver D10 from the depot, at UNSW Kensington by 07:40",
+          "id": "extra_bus:S1:D10",
           "critic": "rejected - driver D10 finishes their shift at 07:45 but this work runs until 08:30"
         },
         {
-          "plan": "Extra shuttle runs for crowds on Route E: spare S2 with driver D11 from the depot, at UNSW Kensington by 07:43",
-          "id": "extra_bus:S2:D11",
+          "plan": "Extra shuttle runs for crowds on Route E: spare S1 with driver D11 from the depot, at UNSW Kensington by 07:43",
+          "id": "extra_bus:S1:D11",
           "critic": "approved"
         }
       ],
       "decision": {
-        "id": "extra_bus:S2:D11",
+        "id": "extra_bus:S1:D11",
         "action": "extra_bus",
-        "summary": "Extra shuttle runs for crowds on Route E: spare S2 with driver D11 from the depot, at UNSW Kensington by 07:43",
-        "reason": "Adds capacity where passengers are waiting.",
-        "bus": "S2",
+        "summary": "Extra shuttle runs for crowds on Route E: spare S1 with driver D11 from the depot, at UNSW Kensington by 07:43",
+        "reason": "S1 is wheelchair-accessible and driver D11 is available well within shift hours, providing 60 extra seats to relieve the crowd at UNSW Kensington fairly and safely.",
+        "bus": "S1",
         "driver": "D11",
         "eta": "07:43",
         "dispatch_at": "07:15",
@@ -60,18 +60,18 @@
         ],
         "passengers_affected": 178,
         "wheelchair_waiting": [],
-        "bus_accessible": false,
+        "bus_accessible": true,
         "driver_shift_end": "14:15",
-        "method": "offline-rules"
+        "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "279 people expected from 07:30 at UNSW Kensington (178), Kensington, Anzac Pde (101)",
-        "why": "UNSW morning exam session is bringing about 279 people to UNS, KEN on Route E, more than the regular buses can carry.",
+        "why": "A morning exam session at UNSW (07:30\u201108:15) generated extra passenger demand at stops UNS and KEN, matching the observed crowding of 279 people.",
         "confidence": 0.9,
-        "decision": "Extra shuttle runs for crowds on Route E: spare S2 with driver D11 from the depot, at UNSW Kensington by 07:43",
+        "decision": "Extra shuttle runs for crowds on Route E: spare S1 with driver D11 from the depot, at UNSW Kensington by 07:43",
         "rejected": [
           {
-            "plan": "Extra shuttle runs for crowds on Route E: spare S2 with driver D10 from the depot, at UNSW Kensington by 07:40",
+            "plan": "Extra shuttle runs for crowds on Route E: spare S1 with driver D10 from the depot, at UNSW Kensington by 07:40",
             "why": "driver D10 finishes their shift at 07:45 but this work runs until 08:30"
           }
         ]
@@ -92,19 +92,25 @@
       },
       "resolved_at": null,
       "resolution": null,
-      "cause": "crowding_dwell",
-      "confidence": 0.75,
-      "explanation": "Route E is 6 min late: buses are taking longer to load UNSW morning exam session crowds.",
+      "cause": "unknown",
+      "confidence": 0.4,
+      "explanation": "Bus E1 was 5.9 min late at 07:48. Weather data (ev-1594848f9c) shows no rain (precip_mm 0.0 in hours 6-7), ruling out weather_congestion per the rain-threshold rule. Road closures (ev-47c1edcb13) and maintenance faults (ev-ea86fafff0) are empty. The bus track (ev-8394f9faab) shows the bus stationary for ~90 seconds (07:36\u201307:37:30) before slow movement, but without event, passenger count, or rain data, the exact delay cause cannot be determined.",
       "evidence": [
         "ev-1594848f9c",
-        "ev-1430181df5",
-        "ev-47c1edcb13"
+        "ev-47c1edcb13",
+        "ev-ea86fafff0",
+        "ev-8394f9faab"
       ],
-      "reasoning_method": "offline-rules",
+      "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
         {
-          "plan": "Warn passengers to expect full buses",
+          "plan": "Fill the gap on Route E: spare S1 with driver D11 from the depot, at UNSW Kensington by 08:18",
+          "id": "extra_bus:S1:D11",
+          "critic": "rejected - confidence in the cause is only 0.40 with nothing backing it up; sending a bus could be a false alarm; S1 is already committed to another incident this morning"
+        },
+        {
+          "plan": "Update arrival times for Route E passengers",
           "id": "alert_only",
           "critic": "approved"
         }
@@ -112,21 +118,28 @@
       "decision": {
         "id": "alert_only",
         "action": "alert_only",
-        "summary": "Warn passengers to expect full buses",
-        "reason": "Least disruptive option; passengers get updated times.",
-        "bus": "Route E regular buses",
+        "summary": "Update arrival times for Route E passengers",
+        "reason": "The delay cause is uncertain with only 0.4 confidence and no spare bus available, so updating arrival times prevents a false deployment while keeping passengers informed. This safely and fairly manages the disruption without risking resource misallocation.",
         "stops_affected": [
-          "UNS"
+          "UNS",
+          "KEN",
+          "MP",
+          "CEN"
         ],
         "passengers_affected": 324,
-        "method": "offline-rules"
+        "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "E1 running 6 min late",
-        "why": "Route E is 6 min late: buses are taking longer to load UNSW morning exam session crowds.",
-        "confidence": 0.75,
-        "decision": "Warn passengers to expect full buses",
-        "rejected": []
+        "why": "Bus E1 was 5.9 min late at 07:48. Weather data (ev-1594848f9c) shows no rain (precip_mm 0.0 in hours 6-7), ruling out weather_congestion per the rain-threshold rule. Road closures (ev-47c1edcb13) and maintenance faults (ev-ea86fafff0) are empty. The bus track (ev-8394f9faab) shows the bus stationary for ~90 seconds (07:36\u201307:37:30) before slow movement, but without event, passenger count, or rain data, the exact delay cause cannot be determined.",
+        "confidence": 0.4,
+        "decision": "Update arrival times for Route E passengers",
+        "rejected": [
+          {
+            "plan": "Fill the gap on Route E: spare S1 with driver D11 from the depot, at UNSW Kensington by 08:18",
+            "why": "confidence in the cause is only 0.40 with nothing backing it up; sending a bus could be a false alarm; S1 is already committed to another incident this morning"
+          }
+        ]
       }
     }
   ],
@@ -142,24 +155,36 @@
           "stop_id": "UNS"
         }
       ],
-      "header_text": "Route E: an extra bus will run at UNSW Kensington from about 07:43 to help with delays and crowding.",
-      "description_text": "",
-      "method": "template"
+      "header_text": "Route E: Extra service for UNSW exam crowds",
+      "description_text": "Exam session at UNSW (07:30\u201308:15) added demand at UNS and KEN stops (279 people). A spare shuttle (S1, driver D11) will arrive at UNSW Kensington by 07:43.",
+      "method": "nemotron-via-nightshift"
     },
     {
       "id": "alert-inc-2",
       "active_from": "07:48",
-      "cause": "OTHER_CAUSE",
+      "cause": "UNKNOWN_CAUSE",
       "effect": "SIGNIFICANT_DELAYS",
       "informed_entity": [
         {
           "route_id": "E",
           "stop_id": "UNS"
+        },
+        {
+          "route_id": "E",
+          "stop_id": "KEN"
+        },
+        {
+          "route_id": "E",
+          "stop_id": "MP"
+        },
+        {
+          "route_id": "E",
+          "stop_id": "CEN"
         }
       ],
-      "header_text": "Route E: buses are running late at UNSW Kensington. Route E is 6 min late: buses are taking longer to load UNSW morning exam session crowds.",
-      "description_text": "",
-      "method": "template"
+      "header_text": "Route E delay update",
+      "description_text": "Bus E1 is running late at 07:48. We're investigating the delay and updating arrival times for all Route E stops. Thank you for your patience.",
+      "method": "nemotron-via-nightshift"
     }
   ],
   "memory": {
@@ -210,7 +235,7 @@
     "incidents": 2,
     "decisions_approved": 2,
     "escalated": 0,
-    "critic_rejections": 1,
+    "critic_rejections": 2,
     "proactive_actions": 0,
     "passengers_informed": 502
   },
@@ -218,9 +243,9 @@
     "none (sample mode: recorded/offline reasoning)": 0
   },
   "world_model": {
-    "facts_ingested": 1994,
+    "facts_ingested": 1995,
     "duplicates_skipped": 0,
-    "provenance_rows": 2060
+    "provenance_rows": 2061
   },
   "network": {
     "stops": [
@@ -10101,6 +10126,6 @@
     }
   ],
   "trace_id": "2025-05-08-thu",
-  "log_file": "logs/trace-2025-05-08-thu.jsonl",
-  "execution_time_seconds": 0.7
+  "log_file": "logs\\trace-2025-05-08-thu.jsonl",
+  "execution_time_seconds": 16.2
 }

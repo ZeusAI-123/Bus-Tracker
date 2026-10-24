@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "alert_only",
+    "reason": "The delay cause is uncertain with only 0.4 confidence and no spare bus available, so updating arrival times prevents a false deployment while keeping passengers informed. This safely and fairly manages the disruption without risking resource misallocation."
+  }
+}

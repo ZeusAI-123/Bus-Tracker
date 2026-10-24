@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "alert_only",
+    "reason": "The delay has low confidence (0.3) with no identified maintenance, road, driver, or weather faults, so deploying a spare bus risks a false alarm. Updating arrival times informs passengers safely and fairly without unnecessary operational risk."
+  }
+}

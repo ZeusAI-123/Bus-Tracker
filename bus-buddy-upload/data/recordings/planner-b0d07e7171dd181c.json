@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "alert_only",
+    "reason": "The 5.8-minute delay has low-confidence weather causes, and deploying a spare bus was rejected due to driver hour conflicts and uncertainty. Updating arrival times informs affected passengers fairly and safely without risking unjustified resource deployment."
+  }
+}

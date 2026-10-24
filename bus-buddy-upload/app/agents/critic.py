@@ -10,11 +10,14 @@ import json
 from app import rules
 
 SYSTEM = """You are the Safety Critic in a Sydney bus control room. You review ONE proposed plan.
-Code has already checked hard rules (capacity, accessibility, driver hours, holding limits, service gaps,
-false-alarm dispatch). Your job: spot anything else unsafe or unfair, or anything that contradicts the
-memory lessons provided. Only block for a concrete reason.
-Answer: {"block": true|false, "concerns": ["..."], "reason": "one sentence"}"""
-
+Code has ALREADY checked these hard rules and the plan PASSED them: bus capacity (projected_load is the
+peak number of people on board at one time, and it is within capacity), wheelchair accessibility, driver
+shift hours, holding limits, maximum service gap, and false-alarm dispatch. Do NOT re-check these and
+never block because of them.
+Note: passengers_affected is everyone helped over the whole trip, not the number on board at once.
+Block ONLY for a concrete safety or fairness problem the code could not check, or a clear contradiction
+with the memory lessons provided. If in doubt, approve.
+Answer: {"block": true|false, "concerns": ["..."], "reason": "<one sentence>"}"""
 
 class SafetyCritic:
     def __init__(self, ai, trace):

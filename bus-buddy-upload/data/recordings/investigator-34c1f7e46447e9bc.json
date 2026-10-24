@@ -1,0 +1,13 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "tool_calls": [
+      {
+        "tool": "get_train_delays",
+        "args": {
+          "station_stop_id": "CEN"
+        }
+      }
+    ]
+  }
+}
