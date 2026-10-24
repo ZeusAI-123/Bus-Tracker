@@ -20,8 +20,9 @@ and **remembers** patterns so it can act before the same delay happens again.
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env               # SAMPLE_MODE=true by default
-python run.py --week               # runs all 5 demo mornings, writes output_examples/
+python run.py --week               # runs all 7 demo mornings, writes output_examples/
 python scripts/score.py            # checks results against the answer key
+python scripts/build_control_room.py  # rebuilds the control-room screen from output_examples/
 python run.py --serve              # API + control-room screen on http://localhost:8000
 ```
 
@@ -70,9 +71,17 @@ POST /run {"date": "...", "memory": "on"}
 | Tue | Bus C1 breaks down; wheelchair user waiting at Newtown | Critic rejects the non-accessible spare (S2) and a driver whose shift ends; send S1 |
 | Wed | Train into Central 9 min late; GPS gap on G1 (**trap**) | Critic rejects a 7-min hold; tell passengers about the next bus. Do **not** send a bus for the GPS gap |
 | Thu | UNSW exam crowds at Kensington/UNSW | Extra shuttle; Critic rejects driver D10 (shift ends 07:45); use D11 |
+| Fri | One lane of Glebe Point Rd closed (water main repair); Route B crawls past it | Find the closure as the cause (not rain or traffic); update Route B passengers |
+| Wed (second week) | **Two problems at once**: C1 breaks down (wheelchair user at Newtown), then UNSW graduation crowds | Accessible S1 replaces C1; the shuttle must not reuse S1 or its driver; Critic rejects D10 (shift ends 07:45) |
 | Mon again (real rainy date) | Same rain pattern | **Memory acts at 06:30, before the delay**. Memory-off run only reacts once buses are late |
 
-Current result: `6/6 expected behaviours correct` (sample mode, offline reasoning).
+`python scripts/score.py` checks 9 expected behaviours across the 7 mornings.
+
+**Control room screen:** `ui/control-room.html` (also served at `/` by `python run.py --serve`) replays every morning:
+buses moving on the route map, the incident feed, a decision card with each plan the Safety Critic approved or
+rejected, the passenger alerts, and the memory on/off comparison. Click a route for its buses and stops. It opens
+straight from disk; rebuild it with `python scripts/build_control_room.py` after `python run.py --week`.
+The first screen, which runs one morning live through `POST /run`, is at `/classic`.
 
 ---
 

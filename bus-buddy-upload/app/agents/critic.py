@@ -54,8 +54,11 @@ def exclude_after_rejection(options: list[dict], plan: dict, problems: list[dict
             out = [o for o in out if o["action"] != "hold"]
         elif r == "confidence":
             out = [o for o in out if o["action"] not in rules.DISPATCH_ACTIONS]
-        elif r in ("capacity", "resource_free"):
+        elif r == "capacity":
             out = [o for o in out if o.get("bus") != plan.get("bus")]
+        elif r == "resource_free":   # drop every option that uses a bus or driver already committed today
+            used = set(plan.get("used_today", []))
+            out = [o for o in out if o.get("bus") not in used and o.get("driver") not in used]
         elif r == "service_gap":
             out = [o for o in out if o["action"] not in ("alert_only", "monitor")]
     return out

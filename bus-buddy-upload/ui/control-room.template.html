@@ -297,7 +297,7 @@ footer { font-size: 12px; color: var(--muted); max-width: 110ch; }
 (function () {
   const D = JSON.parse(document.getElementById("bb-data").textContent);
   const NET = D.network, M = D.mornings;
-  const ORDER = ["mon1", "tue", "wed", "thu", "mon2"];
+  const ORDER = Object.keys(M).filter(k => k !== "mon2off");   // mornings in the order the builder wrote them
   const START = 390, END = 510;
   const toMin = s => { const [h, m] = s.split(":").map(Number); return h * 60 + m; };
   const hm = x => { const t = Math.floor(x + 1e-6); return String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"); };

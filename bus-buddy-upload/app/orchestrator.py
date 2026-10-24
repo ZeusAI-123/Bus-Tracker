@@ -175,7 +175,7 @@ def run_morning(date: str, *, memory: str = "on", sample_mode: Optional[bool] = 
                                 "status": m["status"], "mornings": m["content"].get("based_on_mornings")} for m in mem.all("semantic")]},
         "agents": AGENTS,
         "metrics": metrics(handled),
-        "models_used": ai.models_used or {"none (sample mode: recorded/offline reasoning)": 0},
+        "models_used": ai.models_used or {"none (no model or recording available: offline rules)": 0},
         "world_model": {"facts_ingested": world.stats["ingested"], "duplicates_skipped": world.stats["duplicates_skipped"],
                         "provenance_rows": world.provenance_count()},
         "network": net["public"],

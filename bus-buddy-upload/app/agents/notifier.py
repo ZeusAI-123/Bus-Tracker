@@ -5,7 +5,14 @@ from __future__ import annotations
 import json
 
 SYSTEM = """You write public transport service alerts for Sydney bus passengers.
-Plain, calm, specific: what happened, what we are doing, the new time. Max 240 characters each.
+Plain, calm, specific: what happened, what we are doing, and the expected time at the affected stop.
+Rules:
+- Header starts with the route, e.g. "Route C: bus breakdown".
+- Never mention internal codes: no fleet numbers (S1, C1), driver ids (D11) or evidence ids. Say
+  "a replacement bus", "an extra bus" or "your Route C bus".
+- Give expected times as "expected about 07:36". Never promise that service "will resume" or be
+  "back to normal", and never mention things that are not happening (e.g. "no rain").
+- Name the affected stops passengers know. Max 240 characters each.
 Answer: {"header": "...", "description": "..."}"""
 
 GTFS_CAUSE = {"breakdown": "TECHNICAL_PROBLEM", "weather_congestion": "WEATHER", "late_train": "OTHER_CAUSE",
