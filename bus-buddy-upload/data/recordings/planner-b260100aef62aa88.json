@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "S1 is bus-accessible, ensuring fair service for passengers with disabilities, and its 07:07 arrival minimizes delay for the 61 affected passengers."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "block": false,
+    "concerns": [],
+    "reason": "All pre-checked hard rules passed; no unchecked safety or fairness issues detected."
+  }
+}

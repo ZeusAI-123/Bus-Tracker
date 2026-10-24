@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "It assigns an accessible bus with a driver still on shift, directly reducing the delay for 324 passengers while complying with driver rest rules and supporting fair service for all riders."
+  }
+}

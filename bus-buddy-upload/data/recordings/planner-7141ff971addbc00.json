@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:precaution",
+    "reason": "Sending a spare bus ensures passengers on route G aren't left without service during an already 4-minute position loss, maintaining safety and fairness."
+  }
+}

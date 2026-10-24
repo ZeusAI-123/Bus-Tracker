@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "It uses an accessible bus to ensure fairness for passengers with mobility needs, and the driver\u2019s shift end at 14:15 comfortably covers the deployment, guaranteeing safe, compliant operation while still arriving by 07:22 to minimize passenger wait times."
+  }
+}

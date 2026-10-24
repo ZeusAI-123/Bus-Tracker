@@ -1,0 +1,14 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "cause": "breakdown",
+    "confidence": 0.55,
+    "evidence_ids": [
+      "ev-557e16055c",
+      "ev-6a558e9e54",
+      "ev-b257edaea4"
+    ],
+    "explanation": "Bus C1 stopped between stops with no measurable rain, active road closures, or stop events detected. The bus track (ev-b257edaea4) shows movement ceasing after 07:17, consistent with a mechanical or operational failure.",
+    "uncertain": "Exact nature of the breakdown (e.g., engine, door, system fault) not identified from available tools."
+  }
+}

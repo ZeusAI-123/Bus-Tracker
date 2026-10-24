@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Service C: Mechanical delay",
-    "description": "Bus C1 had an engine warning and stopped between stops from 07:19. A spare bus (S1, driver D11) is replacing it at Newtown, King St. Expected arrival: 07:36."
-  }
-}

@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route E: service delay",
+    "description": "Your Route E bus is delayed due to traffic. An extra bus is being deployed. Expected about 08:15 at Moore Park. Affected stops: UNSW Kensington, Kensington Anzac Pde, Moore Park, Central Station Eddy Ave."
+  }
+}

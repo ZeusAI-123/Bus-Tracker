@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "extra_bus:S2:D11",
-    "reason": "The extra bus directly reduces the 5.8-minute gap for 61 passengers using an available spare and driver, with no shift-hour or resource conflicts. It follows the route's rainy-day lesson that early extra buses keep delays down."
-  }
-}

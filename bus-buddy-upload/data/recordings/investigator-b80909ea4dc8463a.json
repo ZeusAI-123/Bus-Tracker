@@ -1,0 +1,13 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "cause": "weather_congestion",
+    "confidence": 0.75,
+    "evidence_ids": [
+      "ev-f6010d80e5",
+      "ev-0ee9a6c92c"
+    ],
+    "explanation": "Bus A1 on route A is running 5.8 min late with measurable rain (3.3\u202fmm at 05:00, 1.7\u202fmm at 06:00) in the last two hours, and no road closures or events are reported, indicating weather-related congestion as the cause.",
+    "uncertain": "possible other unobserved factors or exact rain impact on dwell time"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "cause": "unknown",
+    "confidence": 0.3,
+    "evidence_ids": [
+      "ev-d3a9ea3b68"
+    ],
+    "explanation": "Bus B1 is 5.6 minutes late with no measurable rain (precip_mm 0.0) recorded in the last two hours; no road closures, events, or other faults are indicated by the available evidence.",
+    "uncertain": "The specific reason for the delay cannot be confirmed from the current set of tool results."
+  }
+}

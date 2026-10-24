@@ -1,8 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "block": false,
-    "concerns": [],
-    "reason": "The plan is a passenger alert with no service deployment, already validated by hard rule checks and introducing no new safety or fairness issues."
-  }
-}

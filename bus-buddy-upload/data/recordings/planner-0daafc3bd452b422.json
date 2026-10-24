@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "replacement_bus:S1:D11",
-    "reason": "Bus S1 is wheelchair-accessible, ensuring the passenger at NTN is served fairly, and driver D11\u2019s shift ends at 14:15, providing a safe time buffer after the 07:36 arrival unlike D10 who finishes at 07:45."
-  }
-}

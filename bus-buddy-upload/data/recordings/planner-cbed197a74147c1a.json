@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S1:D10",
+    "reason": "Spare S1 with driver D10 is fully accessible, ensuring the wheelchair passenger at NTN is served fairly. It also minimizes the service gap to ~12 minutes, getting passengers on their way quickly while staying within the driver's shift constraints."
+  }
+}

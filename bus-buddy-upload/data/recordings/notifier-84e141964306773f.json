@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route A: extra bus",
+    "description": "Route A is delayed. An extra bus is being deployed to reduce wait times. Expected about 06:43 at Five Dock, Great North Rd."
+  }
+}

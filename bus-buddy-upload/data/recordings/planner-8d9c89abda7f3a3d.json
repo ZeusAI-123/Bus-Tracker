@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "replacement_bus:S1:D10",
-    "reason": "Bus S1 is accessible, ensuring fairness for the wheelchair user at NTN, and driver D10 can deploy by 07:36 within their shift."
-  }
-}

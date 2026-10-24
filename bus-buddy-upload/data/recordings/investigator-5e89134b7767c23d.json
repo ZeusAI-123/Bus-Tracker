@@ -1,0 +1,12 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "cause": "breakdown",
+    "confidence": 0.85,
+    "evidence_ids": [
+      "ev-291020d03d"
+    ],
+    "explanation": "Bus C1 had an engine warning light reported by the driver at depot check at 06:50 (ev-291020d03d, severity medium) and was found stationary between stops from 07:19, consistent with a mechanical breakdown causing the stop.",
+    "uncertain": "Exact mechanical fault not diagnosed; no driver interview available to confirm if the bus was operated despite the warning."
+  }
+}

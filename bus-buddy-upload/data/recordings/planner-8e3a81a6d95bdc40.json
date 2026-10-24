@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "extra_bus:S1:D11",
-    "reason": "It deploys an accessible bus with a driver currently on shift, directly closing the 5.9\u2011minute service gap for all 324 passengers while respecting safety and equity requirements."
-  }
-}

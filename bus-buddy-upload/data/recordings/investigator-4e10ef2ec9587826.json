@@ -1,0 +1,12 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "cause": "late_train",
+    "confidence": 0.9,
+    "evidence_ids": [
+      "ev-9f246c6f38"
+    ],
+    "explanation": "The T1 Western Line train was delayed, arriving at 08:02 instead of the scheduled 07:53, causing 42 passengers to miss the connecting Route E bus departing at 07:59.",
+    "uncertain": "Whether external factors such as weather or road conditions also contributed to the delay."
+  }
+}

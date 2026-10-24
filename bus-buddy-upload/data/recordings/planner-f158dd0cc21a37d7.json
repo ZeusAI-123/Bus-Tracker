@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "alert_only",
+    "reason": "The cause confidence is only 0.55 with no verified evidence, so deploying a replacement bus risks a false alarm and unfair resource use. Alerting passengers keeps them informed while avoiding an unjustified deployment that could compromise safety."
+  }
+}

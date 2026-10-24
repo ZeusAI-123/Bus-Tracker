@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "extra_bus:S1:D11",
-    "reason": "Driver D11 is within legal shift limits, ensuring safe operation; the S1 bus is accessible, providing equitable service for passengers with mobility needs among the 324 affected by crowding delays."
-  }
-}

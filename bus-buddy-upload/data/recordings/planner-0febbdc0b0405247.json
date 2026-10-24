@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "It uses an accessible bus to serve all passengers fairly, and it arrives by 07:11, the earliest possible time, quickly covering the 5.6-minute gap for the 65 affected passengers."
+  }
+}

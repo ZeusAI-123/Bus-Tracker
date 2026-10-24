@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "replay"
+    "ai": "record"
   },
   "conditions": {
     "rain_mm_morning": 0,
@@ -29,14 +29,19 @@
       "resolved_at": null,
       "resolution": null,
       "cause": "breakdown",
-      "confidence": 0.8,
-      "explanation": "Bus C1 had an engine warning light reported by the driver at depot check at 06:50 (ev-291020d03d, severity medium) and was observed stationary between stops from 07:19, consistent with a mechanical failure causing the stop.",
+      "confidence": 0.85,
+      "explanation": "Bus C1 had an engine warning light reported by the driver at depot check at 06:50 (ev-291020d03d, severity medium) and was found stationary between stops from 07:19, consistent with a mechanical breakdown causing the stop.",
       "evidence": [
         "ev-291020d03d"
       ],
       "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
+        {
+          "plan": "Replace broken-down bus: spare S1 with driver D10 from the depot, at Newtown, King St by 07:36",
+          "id": "replacement_bus:S1:D10",
+          "critic": "rejected - driver D10 finishes their shift at 07:45 but this work runs until 08:08"
+        },
         {
           "plan": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
           "id": "replacement_bus:S1:D11",
@@ -47,7 +52,7 @@
         "id": "replacement_bus:S1:D11",
         "action": "replacement_bus",
         "summary": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
-        "reason": "The accessible bus with driver D11 ensures wheelchair access at NTN. It also operates within the driver's shift limit, avoiding safety violations and delivering timely service to all 63 affected passengers.",
+        "reason": "Bus S1 is wheelchair accessible, ensuring fair service for the passenger waiting at NTN, and driver D11 has shift coverage until 14:15, avoiding the driver hours conflict that rejected the D10 option.",
         "bus": "S1",
         "driver": "D11",
         "eta": "07:36",
@@ -69,10 +74,15 @@
       },
       "decision_card": {
         "incident": "C1 stationary between stops since 07:19",
-        "why": "Bus C1 had an engine warning light reported by the driver at depot check at 06:50 (ev-291020d03d, severity medium) and was observed stationary between stops from 07:19, consistent with a mechanical failure causing the stop.",
-        "confidence": 0.8,
+        "why": "Bus C1 had an engine warning light reported by the driver at depot check at 06:50 (ev-291020d03d, severity medium) and was found stationary between stops from 07:19, consistent with a mechanical breakdown causing the stop.",
+        "confidence": 0.85,
         "decision": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
-        "rejected": []
+        "rejected": [
+          {
+            "plan": "Replace broken-down bus: spare S1 with driver D10 from the depot, at Newtown, King St by 07:36",
+            "why": "driver D10 finishes their shift at 07:45 but this work runs until 08:08"
+          }
+        ]
       }
     }
   ],
@@ -100,8 +110,8 @@
           "stop_id": "MKV"
         }
       ],
-      "header_text": "Service C: Mechanical delay",
-      "description_text": "Bus C1 had an engine warning and stopped between stops from 07:19. A spare bus (S1, driver D11) is replacing it at Newtown, King St. Expected arrival: 07:36.",
+      "header_text": "Route C: bus breakdown",
+      "description_text": "A Route C bus has broken down between stops. A replacement bus is expected about 07:36 at Newtown, King St. Services at Stanmore, Parramatta Rd, Petersham and Marrickville Metro may be delayed.",
       "method": "nemotron-via-nightshift"
     }
   ],
@@ -153,17 +163,17 @@
     "incidents": 1,
     "decisions_approved": 1,
     "escalated": 0,
-    "critic_rejections": 0,
+    "critic_rejections": 1,
     "proactive_actions": 0,
     "passengers_informed": 63
   },
   "models_used": {
-    "none (sample mode: recorded/offline reasoning)": 0
+    "nvidia/nemotron-3.5-lightning-30b-a3b": 6
   },
   "world_model": {
-    "facts_ingested": 1992,
+    "facts_ingested": 1991,
     "duplicates_skipped": 0,
-    "provenance_rows": 2056
+    "provenance_rows": 2055
   },
   "network": {
     "stops": [
@@ -10045,5 +10055,5 @@
   ],
   "trace_id": "2025-04-29-tue",
   "log_file": "logs\\trace-2025-04-29-tue.jsonl",
-  "execution_time_seconds": 19.7
+  "execution_time_seconds": 135.1
 }

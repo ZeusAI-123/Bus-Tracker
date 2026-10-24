@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route E: extra service added",
-    "description": "T1 train 9 min late (07:53\u219208:02) made 42 passengers miss the 07:59 Route E bus. No rain or stop delays. A spare S1 bus with driver D11 now departs Central Station, Eddy Ave at 07:52."
-  }
-}

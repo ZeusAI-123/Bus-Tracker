@@ -1,0 +1,15 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "cause": "gps_glitch",
+    "confidence": 0.8,
+    "evidence_ids": [
+      "ev-e38dc9fa2e",
+      "ev-9f4ac879f5",
+      "ev-7b46a75918",
+      "ev-722430f5a9"
+    ],
+    "explanation": "Bus G1 stopped transmitting GPS data for four minutes; the driver was on shift, weather was dry (precip_mm = 0.0), and no road closures were reported, making a GPS glitch the most likely cause.",
+    "uncertain": "whether the loss of position was due to a temporary signal loss rather than a permanent device failure"
+  }
+}

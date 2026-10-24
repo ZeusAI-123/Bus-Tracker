@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "extra_bus:S1:D11",
-    "reason": "S1 is wheelchair-accessible and driver D11 is available well within shift hours, providing 60 extra seats to relieve the crowd at UNSW Kensington fairly and safely."
-  }
-}

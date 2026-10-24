@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route E: delays at UNSW Kensington",
-    "description": "Bus E1 is delayed at UNSW Kensington due to passenger boarding. Services are running slowly with full buses. Allow extra time."
-  }
-}

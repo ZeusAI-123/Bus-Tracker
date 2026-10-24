@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S2:D11",
+    "reason": "Extra bus S2 with driver D11 avoids shift constraint violations and provides 60-seat capacity to serve the 42 stranded passengers fairly, rather than stranding them for a 9-minute gap."
+  }
+}

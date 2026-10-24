@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "monitor",
-    "reason": "The incident involves a GPS glitch with 0.65 confidence and uncertainty about persistence; a 4\u2011minute monitoring period aligns with the existing timeline, ensures passenger safety by triggering replacement only if the bus does not reappear, and avoids unnecessary spare\u2011bus deployment across the network."
-  }
-}

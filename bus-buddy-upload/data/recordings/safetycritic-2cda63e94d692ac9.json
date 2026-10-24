@@ -1,0 +1,8 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "block": false,
+    "concerns": [],
+    "reason": "The plan is a precautionary spare bus deployment with no unchecked safety or fairness issues, and the code has already verified all hard constraints."
+  }
+}

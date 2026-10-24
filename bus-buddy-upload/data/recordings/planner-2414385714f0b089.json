@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "alert_only",
+    "reason": "With only 0.3 confidence in the cause and no verified fault, deploying a bus risks a false alarm and strains already-committed resources. Updating arrival times keeps passengers informed safely and fairly without operational overreach."
+  }
+}

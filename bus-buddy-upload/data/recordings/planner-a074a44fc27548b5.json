@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S1:D11",
+    "reason": "Bus S1 is wheelchair accessible, ensuring fair service for the passenger waiting at NTN, and driver D11 has shift coverage until 14:15, avoiding the driver hours conflict that rejected the D10 option."
+  }
+}
