@@ -43,6 +43,7 @@ class Nightshift:
 
         if self.mode == "replay" and rec_path.exists():
             saved = json.loads(rec_path.read_text())
+            self.models_used[saved["model"]] = self.models_used.get(saved["model"], 0) + 1
             self._log(agent, sim_time, saved["model"], "replayed recorded reply", saved["reply"], key)
             return saved["reply"]
 

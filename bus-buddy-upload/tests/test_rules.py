@@ -35,6 +35,14 @@ def test_false_alarm_guard():
     assert [x["rule"] for x in rules.check_all(p)] == ["confidence"]
 
 
+def test_busy_driver_does_not_rule_out_the_bus():
+    used = ["S1", "D12"]
+    opts = [plan(id="a", bus="S2", driver="D12", used_today=used), plan(id="b", bus="S2", driver="D11", used_today=used),
+            plan(id="c", bus="S1", driver="D11", used_today=used)]
+    left = exclude_after_rejection(opts, opts[0], [{"rule": "resource_free", "problem": "D12 is already committed"}])
+    assert [o["id"] for o in left] == ["b"]
+
+
 def test_exclusion_after_rejection():
     opts = [plan(id="a", bus="S2", bus_accessible=False), plan(id="b", bus="S1"), {"id": "c", "action": "alert_only"}]
     left = exclude_after_rejection(opts, opts[0], [{"rule": "accessibility", "problem": "x"}])

@@ -42,3 +42,13 @@ def test_trace_written(tmp_path):
     lines = (SETTINGS.logs_dir.parent / res["log_file"]).read_text().splitlines()
     agents = {json.loads(l)["agent_name"] for l in lines}
     assert {"Monitor", "Investigator", "Planner", "SafetyCritic", "Notifier"} <= agents
+
+
+def test_two_problems_at_once_do_not_share_a_bus_or_driver(tmp_path):
+    res = run("busy", mem_db=tmp_path / "m.db")
+    breakdown = next(i for i in res["incidents"] if i["type"] == "stopped")
+    crowd = next(i for i in res["incidents"] if i["type"] == "crowding")
+    assert breakdown["decision"]["bus"] == "S1"            # the accessible spare goes to the wheelchair user
+    assert crowd["decision"]["action"] == "extra_bus"
+    assert crowd["decision"]["bus"] != breakdown["decision"]["bus"]
+    assert crowd["decision"]["driver"] != breakdown["decision"]["driver"]

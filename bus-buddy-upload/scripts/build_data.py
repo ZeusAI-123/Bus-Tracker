@@ -96,6 +96,9 @@ DWELL_S = 30
 LAYOVER_MIN = 4
 
 SLOW_SEGMENT = ("A", "LEI", "ANN")  # Parramatta Rd, Leichhardt -> Annandale: crawls in the rain
+# The first five mornings share one random stream (kept identical to earlier builds, so their recorded
+# AI answers stay valid). Mornings added later get their own seeded stream so they don't shift it.
+SHARED_STREAM = {"mon1", "mon2", "tue", "wed", "thu"}
 
 
 # ---------------------------------------------------------------- helpers ----
@@ -167,7 +170,7 @@ def pick_dates(weather: dict) -> dict:
     """Two real rainy Mondays (memory scenario) + dry Tue/Wed/Thu for the other scenarios."""
     if not weather["time"]:
         return {"mon1": "2025-06-16", "tue": "2025-06-17", "wed": "2025-06-18", "thu": "2025-06-19",
-                "mon2": "2025-07-07", "_note": "synthetic weather fallback"}
+                "mon2": "2025-07-07", "closure": "2025-06-20", "busy": "2025-06-25", "_note": "synthetic weather fallback"}
     days = sorted({t[:10] for t in weather["time"]})
     ds = [date.fromisoformat(x) for x in days]
     rainy_mondays = [d for d in ds if d.weekday() == 0 and morning_rain(weather, d) >= 1.0]
@@ -182,6 +185,13 @@ def pick_dates(weather: dict) -> dict:
         if not cands:
             cands = [d for d in ds if d.weekday() == wd and morning_rain(weather, d) == 0]
         picks[key] = min(cands, key=lambda d: (d - mon1).days).isoformat()
+    # two more dry mornings after Thursday: a road closure (Friday) and two problems at once (Wednesday)
+    after = date.fromisoformat(picks["thu"])
+    for key, wd in (("closure", 4), ("busy", 2)):
+        cands = [d for d in ds if d.weekday() == wd and d > after and morning_rain(weather, d) == 0
+                 and d.isoformat() not in picks.values()]
+        picks[key] = cands[0].isoformat()
+        after = cands[0]
     return {"mon1": mon1.isoformat(), "mon2": mon2.isoformat(), **picks}
 
 
@@ -245,6 +255,16 @@ def scenarios(dates: dict) -> dict:
                        "crowd_dwell": {"bus": "E1", "extra_dwell_min": 7, "stops": ["KEN", "UNS"], "after": "07:20"}},
         dates["mon2"]: {"key": "mon2", "label": "Rainy Monday again: memory should act before the delay",
                         "rain_slowdown": True},
+        dates["closure"]: {"key": "closure", "label": "Lane closure on Glebe Point Rd slows Route B",
+                           "road_closure": {"route": "B", "from_stop": "GLB", "to_stop": "ULT", "slow_factor": 0.3,
+                                            "reason": "Emergency water main repair, one lane closed", "from": "06:50", "to": "09:00"}},
+        dates["busy"]: {"key": "busy", "label": "Two problems at once: C1 breaks down, then UNSW crowds need a shuttle",
+                        "breakdown": {"bus": "C1", "at": "07:20"},
+                        "maintenance": [{"bus": "C1", "time": "06:50", "issue": "Engine warning light reported by driver at depot check", "severity": "medium"}],
+                        "wheelchair": {"stop": "NTN", "from": "07:15", "to": "07:50"},
+                        "event": {"stop": "UNS", "name": "UNSW graduation ceremony", "from": "07:45", "to": "08:30", "extra_pax": 130,
+                                  "also_stop": "KEN"},
+                        "extra_spare_driver": {"driver": "D12", "from": "07:00", "to": "14:00"}},
     }
 
 
@@ -267,6 +287,14 @@ def answer_key(dates: dict) -> dict:
         dates["mon2"]: {"scenario": "mon2", "expected": [
             {"route": "A", "type": "proactive", "cause": "weather_congestion", "actions_ok": ["extra_bus"],
              "before": "07:05", "needs_memory": True}]},
+        dates["closure"]: {"scenario": "closure", "expected": [
+            {"route": "B", "type": "late", "cause": "road_closure", "actions_ok": ["alert_only", "extra_bus"],
+             "must_not": []}]},
+        dates["busy"]: {"scenario": "busy", "expected": [
+            {"bus": "C1", "type": "stopped", "cause": "breakdown", "actions_ok": ["replacement_bus"],
+             "must_use": {"bus": "S1"}, "must_not": [{"bus": "S2", "why": "not wheelchair accessible"}]},
+            {"route": "E", "type": "crowding", "cause": "event_crowding", "actions_ok": ["extra_bus"],
+             "must_not": [{"bus": "S1", "why": "already replacing C1"}, {"driver": "D10", "why": "shift ends 07:45"}]}]},
     }
 
 
@@ -335,13 +363,21 @@ def build(refresh: bool) -> None:
     sc = scenarios(dates)
     akey = answer_key(dates)
     tables = {k: [] for k in ("driver_shifts", "maintenance_reports", "road_closures", "events", "train_delays", "passenger_counts", "weather_hourly")}
-    for d in [v for k, v in dates.items() if not k.startswith("_")]:
+    for key, d in [(k, v) for k, v in dates.items() if not k.startswith("_")]:
         s = sc[d]
+        rng = random if key in SHARED_STREAM else random.Random(f"{SEED}-{d}")
         # drivers: D1..D9 assigned in order, D9/D10 spare
         for i, bus in enumerate(BLOCKS):
             tables["driver_shifts"].append({"service_date": d, "driver_id": f"D{i+1:02d}", "bus_id": bus, "shift_start": "05:45", "shift_end": "13:45", "status": "on_shift"})
         tables["driver_shifts"].append({"service_date": d, "driver_id": "D10", "bus_id": None, "shift_start": "06:15", "shift_end": "07:45", "status": "spare"})
         tables["driver_shifts"].append({"service_date": d, "driver_id": "D11", "bus_id": None, "shift_start": "07:15", "shift_end": "14:15", "status": "spare"})
+        if s.get("extra_spare_driver"):
+            x = s["extra_spare_driver"]
+            tables["driver_shifts"].append({"service_date": d, "driver_id": x["driver"], "bus_id": None, "shift_start": x["from"], "shift_end": x["to"], "status": "spare"})
+        if s.get("road_closure"):
+            rc = s["road_closure"]
+            tables["road_closures"].append({"service_date": d, "route_id": rc["route"], "from_stop": rc["from_stop"], "to_stop": rc["to_stop"],
+                                            "reason": rc["reason"], "start": rc["from"], "end": rc["to"]})
         # weather rows (06-09)
         for t, p, tmp in zip(weather["time"], weather["precip"], weather["temp"]):
             if t.startswith(d) and 5 <= int(t[11:13]) <= 9:
@@ -379,7 +415,7 @@ def build(refresh: bool) -> None:
         for sid in STOPS:
             for q in range(8):  # 06:30 .. 08:15
                 t = (base.replace(hour=6, minute=30) + timedelta(minutes=15 * q)).strftime("%H:%M")
-                waiting = random.randint(3, 18) + (12 if sid in ("CEN", "RSQ", "TWH", "WYN") else 0)
+                waiting = rng.randint(3, 18) + (12 if sid in ("CEN", "RSQ", "TWH", "WYN") else 0)
                 wc = 0
                 e = s.get("event")
                 if e and sid in (e["stop"], e.get("also_stop")) and e["from"] <= t <= e["to"]:
@@ -394,6 +430,7 @@ def build(refresh: bool) -> None:
     st_rows = pd.DataFrame(stop_times)
     for key, d in [(k, v) for k, v in dates.items() if not k.startswith("_")]:
         s = sc[d]
+        rng = random if key in SHARED_STREAM else random.Random(f"{SEED}-pos-{d}")
         rain_hours = {r["hour"] for r in tables["weather_hourly"] if r["service_date"] == d and r["precip_mm"] >= 0.3}
         rows = []
         for bus, rid in BLOCKS.items():
@@ -427,13 +464,18 @@ def build(refresh: bool) -> None:
                         continue
                     seg_len = g["stop_dist"][k] - g["stop_dist"][k - 1] or 1.0
                     speed = seg_len / max(g["leg_s"][k - 1], 30)  # m/s planned
-                    f = random.uniform(0.88, 1.12)
+                    f = rng.uniform(0.88, 1.12)
                     if t.hour in rain_hours:
                         f *= 0.95
                     # wet Parramatta Rd crawls all morning on the rainy scenario days
                     if s.get("rain_slowdown") and rid == SLOW_SEGMENT[0] and tr.direction_id == 0 \
                             and g["stops"][k - 1] == SLOW_SEGMENT[1]:
                         f *= 0.4
+                    # traffic squeezes past the closed lane, both directions, while the closure is on
+                    rc = s.get("road_closure")
+                    if rc and rid == rc["route"] and {g["stops"][k - 1], g["stops"][k]} == {rc["from_stop"], rc["to_stop"]} \
+                            and rc["from"] <= t.strftime("%H:%M") < rc["to"]:
+                        f *= rc["slow_factor"]
                     step = 30.0
                     if dwell_left > 0:
                         move = 0.0
@@ -448,8 +490,8 @@ def build(refresh: bool) -> None:
                             dwell_left += cd["extra_dwell_min"] * 60 / len(cd["stops"])
                         k += 1
                     lat, lon = point_at(g["points"], g["cum"], dist)
-                    lat += random.uniform(-0.00008, 0.00008)
-                    lon += random.uniform(-0.00008, 0.00008)
+                    lat += rng.uniform(-0.00008, 0.00008)
+                    lon += rng.uniform(-0.00008, 0.00008)
                     rows.append(_ping(bus, rid, tr.trip_id, t, lat, lon, round(move / step * 3.6, 1), dist))
                     t += timedelta(seconds=30)
                 clock = t

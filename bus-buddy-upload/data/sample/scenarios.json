@@ -4,7 +4,9 @@
     "mon2": "2025-05-19",
     "tue": "2025-04-29",
     "wed": "2025-05-07",
-    "thu": "2025-05-08"
+    "thu": "2025-05-08",
+    "closure": "2025-05-09",
+    "busy": "2025-05-14"
   },
   "scenarios": {
     "2025-04-28": {
@@ -76,6 +78,53 @@
       "key": "mon2",
       "label": "Rainy Monday again: memory should act before the delay",
       "rain_slowdown": true
+    },
+    "2025-05-09": {
+      "key": "closure",
+      "label": "Lane closure on Glebe Point Rd slows Route B",
+      "road_closure": {
+        "route": "B",
+        "from_stop": "GLB",
+        "to_stop": "ULT",
+        "slow_factor": 0.3,
+        "reason": "Emergency water main repair, one lane closed",
+        "from": "06:50",
+        "to": "09:00"
+      }
+    },
+    "2025-05-14": {
+      "key": "busy",
+      "label": "Two problems at once: C1 breaks down, then UNSW crowds need a shuttle",
+      "breakdown": {
+        "bus": "C1",
+        "at": "07:20"
+      },
+      "maintenance": [
+        {
+          "bus": "C1",
+          "time": "06:50",
+          "issue": "Engine warning light reported by driver at depot check",
+          "severity": "medium"
+        }
+      ],
+      "wheelchair": {
+        "stop": "NTN",
+        "from": "07:15",
+        "to": "07:50"
+      },
+      "event": {
+        "stop": "UNS",
+        "name": "UNSW graduation ceremony",
+        "from": "07:45",
+        "to": "08:30",
+        "extra_pax": 130,
+        "also_stop": "KEN"
+      },
+      "extra_spare_driver": {
+        "driver": "D12",
+        "from": "07:00",
+        "to": "14:00"
+      }
     }
   }
 }

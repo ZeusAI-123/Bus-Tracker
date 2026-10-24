@@ -24,3 +24,13 @@ service_date,hour,precip_mm,temp_c,source
 2025-05-08,7,0.0,14.7,open-meteo archive
 2025-05-08,8,0.0,14.1,open-meteo archive
 2025-05-08,9,0.0,14.7,open-meteo archive
+2025-05-09,5,0.0,12.6,open-meteo archive
+2025-05-09,6,0.0,13.2,open-meteo archive
+2025-05-09,7,0.0,13.1,open-meteo archive
+2025-05-09,8,0.0,13.0,open-meteo archive
+2025-05-09,9,0.0,13.6,open-meteo archive
+2025-05-14,5,0.0,13.6,open-meteo archive
+2025-05-14,6,0.0,13.4,open-meteo archive
+2025-05-14,7,0.0,13.5,open-meteo archive
+2025-05-14,8,0.0,13.4,open-meteo archive
+2025-05-14,9,0.0,14.4,open-meteo archive

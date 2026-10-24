@@ -32,7 +32,9 @@ Only cite evidence_ids returned by tools. Use memory lessons if relevant. Max 3 
 Guidance: rain clearly slows Sydney peak-hour traffic. If a route is running late while there is any
 measurable rain (precip_mm > 0) in the last two hours, and there is no fault, road closure or event,
 the cause is weather_congestion with confidence 0.7 or more. For crowds at a stop, check get_events and
-get_passenger_counts: an event at those stops means event_crowding. Usually 1-2 rounds of tools are enough.""" % CAUSES
+get_passenger_counts: an event at those stops means event_crowding. If get_road_closures shows a closure on
+the incident's own route that is active at the time of the delay, the cause is road_closure (closures on other
+routes do not count). Usually 1-2 rounds of tools are enough.""" % CAUSES
 
 
 class Investigator:

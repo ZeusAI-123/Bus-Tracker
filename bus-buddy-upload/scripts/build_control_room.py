@@ -1,4 +1,4 @@
-"""Builds ui/control-room.html: a self-contained replay of the five demo mornings.
+"""Builds ui/control-room.html: a self-contained replay of the demo mornings.
 
   python scripts/build_control_room.py      after `python run.py --week` has written output_examples/
 
@@ -20,6 +20,8 @@ MORNINGS = [("mon1", "mon1_2025-04-28", "Mon 28 Apr", "Rainy Monday: Route A cra
             ("tue", "tue_2025-04-29", "Tue 29 Apr", "Bus C1 breaks down"),
             ("wed", "wed_2025-05-07", "Wed 7 May", "Late train + GPS trap"),
             ("thu", "thu_2025-05-08", "Thu 8 May", "UNSW exam crowds"),
+            ("closure", "closure_2025-05-09", "Fri 9 May", "Lane closed on Route B"),
+            ("busy", "busy_2025-05-14", "Wed 14 May", "Two problems at once"),
             ("mon2", "mon2_2025-05-19", "Mon 19 May", "Rain again: memory acts early"),
             ("mon2off", "mon2_2025-05-19_memory_off", "Mon 19 May", "Same morning, memory off")]
 

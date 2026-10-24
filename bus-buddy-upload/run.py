@@ -2,7 +2,7 @@
 
   python run.py --serve                 start the API + screen on http://localhost:8000
   python run.py --date 2025-04-29       run one morning, print a summary, save JSON to runs/
-  python run.py --week                  run all 5 scenario mornings in order (memory builds up),
+  python run.py --week                  run all 7 scenario mornings in order (memory builds up),
                                         plus the rainy Monday again with memory OFF for comparison,
                                         and write output_examples/
 """
@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import sys
 
 from app.config import SETTINGS
@@ -26,6 +27,14 @@ def _summary(res: dict) -> None:
             print(f"    resolved {i['resolved_at']}: {i['resolution']}")
     print(f"  alerts: {len(res['service_alerts'])}  lessons: {[l['summary'] for l in res['memory']['lessons']]}")
     print(f"  metrics: {res['metrics']}\n  trace: {res['log_file']}")
+
+
+def _fresh(run_id: str) -> str:
+    """The week reuses fixed run ids; clear last time's world state and trace so the morning really runs again
+    (otherwise the World Model resumes the finished run and returns its old result)."""
+    shutil.rmtree(SETTINGS.runs_dir / run_id, ignore_errors=True)
+    (SETTINGS.logs_dir / f"trace-{run_id}.jsonl").unlink(missing_ok=True)
+    return run_id
 
 
 def main() -> None:
@@ -46,15 +55,15 @@ def main() -> None:
         from app.engines.hmem import HMem
         HMem(SETTINGS.memory_db).reset()
         dates = json.loads((SETTINGS.sample_dir / "scenarios.json").read_text())["dates"]
-        order = ["mon1", "tue", "wed", "thu", "mon2"]
+        order = ["mon1", "tue", "wed", "thu", "closure", "busy", "mon2"]   # date order, so memory builds up
         SETTINGS.runs_dir.mkdir(exist_ok=True)
         out_dir = SETTINGS.data_dir.parent / "output_examples"
         out_dir.mkdir(exist_ok=True)
         for key in order:
-            res = run_morning(dates[key], memory="on", run_id=f"{dates[key]}-{key}")
+            res = run_morning(dates[key], memory="on", run_id=_fresh(f"{dates[key]}-{key}"))
             _summary(res)
             (out_dir / f"{key}_{dates[key]}.json").write_text(json.dumps(res, indent=2, default=str))
-        res = run_morning(dates["mon2"], memory="off", run_id=f"{dates['mon2']}-mon2-nomemory")
+        res = run_morning(dates["mon2"], memory="off", run_id=_fresh(f"{dates['mon2']}-mon2-nomemory"))
         _summary(res)
         (out_dir / f"mon2_{dates['mon2']}_memory_off.json").write_text(json.dumps(res, indent=2, default=str))
         return

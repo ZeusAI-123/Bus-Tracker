@@ -1,3 +1,5 @@
 service_date,stop_id,name,start,end,expected_extra_pax
 2025-05-08,UNS,UNSW morning exam session,07:30,08:15,170
 2025-05-08,KEN,UNSW morning exam session,07:30,08:15,85
+2025-05-14,UNS,UNSW graduation ceremony,07:45,08:30,130
+2025-05-14,KEN,UNSW graduation ceremony,07:45,08:30,65
