@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route E: crowding at UNSW Kensington",
-    "description": "Crowding at UNSW Kensington due to an UNSW graduation ceremony. An extra bus is approaching to help. expected about 07:56"
-  }
-}

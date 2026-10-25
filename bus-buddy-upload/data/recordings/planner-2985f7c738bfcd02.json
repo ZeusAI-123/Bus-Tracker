@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "extra_bus:S1:D11",
-    "reason": "S1 is wheelchair-accessible, ensuring fair service for all passengers, and driver D11's shift covers the dispatch window until 08:30."
-  }
-}

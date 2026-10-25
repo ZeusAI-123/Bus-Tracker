@@ -1,0 +1,13 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "cause": "breakdown",
+    "confidence": 0.8,
+    "evidence_ids": [
+      "ev-291020d03d",
+      "ev-8193fabfc9"
+    ],
+    "explanation": "Bus C1 had an engine warning light reported at 06:50 (medium severity) and was later observed stationary between stops from 07:19, consistent with a mechanical breakdown.",
+    "uncertain": "Whether the engine warning directly caused the 07:19 stoppage or if another factor contributed."
+  }
+}

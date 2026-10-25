@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "hold:7",
-    "reason": "The 7\u2011minute hold delays the bus to 08:06, matching the train\u2019s 08:02 arrival so all 42 passengers can transfer safely. It\u2019s a targeted fix that avoids stranding passengers or deploying extra buses with mismatched timing."
-  }
-}

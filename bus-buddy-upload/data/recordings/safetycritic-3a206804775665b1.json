@@ -1,8 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "block": false,
-    "concerns": [],
-    "reason": "The plan transparently updates arrival times and has already passed all checked hard safety rules with no indicated safety or fairness problems."
-  }
-}

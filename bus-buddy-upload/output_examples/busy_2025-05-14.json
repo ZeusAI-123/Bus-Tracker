@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "record"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 0,
@@ -29,10 +29,10 @@
       "resolved_at": null,
       "resolution": null,
       "cause": "breakdown",
-      "confidence": 0.55,
-      "explanation": "Bus C1 stopped between stops with no measurable rain, active road closures, or stop events detected. The bus track (ev-b257edaea4) shows movement ceasing after 07:17, consistent with a mechanical or operational failure.",
+      "confidence": 0.85,
+      "explanation": "Bus C1 had an engine warning light reported at depot check (ev-f3f3446138), no active road closures were found on its route (ev-6a558e9e54), and the bus track confirms it stopped between stops (ev-b257edaea4), pointing to a mechanical breakdown as the cause.",
       "evidence": [
-        "ev-557e16055c",
+        "ev-f3f3446138",
         "ev-6a558e9e54",
         "ev-b257edaea4"
       ],
@@ -42,33 +42,39 @@
         {
           "plan": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
           "id": "replacement_bus:S1:D11",
-          "critic": "rejected - confidence in the cause is only 0.55 with nothing backing it up; sending a bus could be a false alarm"
-        },
-        {
-          "plan": "Alert passengers only; no replacement",
-          "id": "alert_only",
-          "critic": "rejected - stops NTN, STM, PET, MKV would wait 60 min for a bus (limit 30)"
+          "critic": "approved"
         }
       ],
       "decision": {
-        "action": "escalated",
-        "summary": "Escalated to the human controller"
+        "id": "replacement_bus:S1:D11",
+        "action": "replacement_bus",
+        "summary": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
+        "reason": "S1 is the only accessible bus, ensuring the wheelchair passenger waiting at NTN is served fairly; D11 has a shift ending at 14:15, avoiding fatigue risks while meeting the 07:36 ETA.",
+        "bus": "S1",
+        "driver": "D11",
+        "eta": "07:36",
+        "dispatch_at": "07:26",
+        "finish_time": "08:08",
+        "stops_affected": [
+          "NTN",
+          "STM",
+          "PET",
+          "MKV"
+        ],
+        "passengers_affected": 56,
+        "wheelchair_waiting": [
+          "NTN"
+        ],
+        "bus_accessible": true,
+        "driver_shift_end": "14:15",
+        "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "C1 stationary between stops since 07:19",
-        "why": "Bus C1 stopped between stops with no measurable rain, active road closures, or stop events detected. The bus track (ev-b257edaea4) shows movement ceasing after 07:17, consistent with a mechanical or operational failure.",
-        "confidence": 0.55,
-        "decision": "Escalated to the human controller",
-        "rejected": [
-          {
-            "plan": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
-            "why": "confidence in the cause is only 0.55 with nothing backing it up; sending a bus could be a false alarm"
-          },
-          {
-            "plan": "Alert passengers only; no replacement",
-            "why": "stops NTN, STM, PET, MKV would wait 60 min for a bus (limit 30)"
-          }
-        ]
+        "why": "Bus C1 had an engine warning light reported at depot check (ev-f3f3446138), no active road closures were found on its route (ev-6a558e9e54), and the bus track confirms it stopped between stops (ev-b257edaea4), pointing to a mechanical breakdown as the cause.",
+        "confidence": 0.85,
+        "decision": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
+        "rejected": []
       }
     },
     {
@@ -83,8 +89,8 @@
       "resolved_at": null,
       "resolution": null,
       "cause": "event_crowding",
-      "confidence": 0.9,
-      "explanation": "The crowding at stops UNS and KEN is caused by an UNSW graduation ceremony event scheduled from 07:45 to 08:30, which generated extra passengers as confirmed by the event and passenger count data.",
+      "confidence": 0.88,
+      "explanation": "A UNSW graduation ceremony scheduled from 07:45\u201308:30 at stops UNS and KEN generated expected extra passengers matching the 210 people waiting (140 at UNS, 70 at KEN), causing the crowding incident.",
       "evidence": [
         "ev-0b4d4648fb",
         "ev-8040d8c226"
@@ -93,17 +99,27 @@
       "memory_used": [],
       "plans_considered": [
         {
-          "plan": "Extra shuttle runs for crowds on Route E: spare S1 with driver D12 from the depot, at UNSW Kensington by 07:56",
-          "id": "extra_bus:S1:D12",
+          "plan": "Warn passengers to expect full buses",
+          "id": "alert_only",
+          "critic": "rejected - Route E regular buses would carry 210 passengers (capacity 120)"
+        },
+        {
+          "plan": "Extra shuttle runs for crowds on Route E: spare S1 with driver D11 from the depot, at UNSW Kensington by 07:56",
+          "id": "extra_bus:S1:D11",
+          "critic": "rejected - S1 is already committed to another incident this morning"
+        },
+        {
+          "plan": "Extra shuttle runs for crowds on Route E: spare S2 with driver D12 from the depot, at UNSW Kensington by 07:56",
+          "id": "extra_bus:S2:D12",
           "critic": "approved"
         }
       ],
       "decision": {
-        "id": "extra_bus:S1:D12",
+        "id": "extra_bus:S2:D12",
         "action": "extra_bus",
-        "summary": "Extra shuttle runs for crowds on Route E: spare S1 with driver D12 from the depot, at UNSW Kensington by 07:56",
-        "reason": "Provides an accessible shuttle for 45 passengers before the event peak, and assigns a driver with a shift ending well after the ceremony, ensuring operational safety and fairness compared to overfull regular buses.",
-        "bus": "S1",
+        "summary": "Extra shuttle runs for crowds on Route E: spare S2 with driver D12 from the depot, at UNSW Kensington by 07:56",
+        "reason": "Driver D12's shift covers the dispatch and arrival times, ensuring reliable service, whereas D10's shift ends before the bus arrives, creating an operational risk.",
+        "bus": "S2",
         "driver": "D12",
         "eta": "07:56",
         "dispatch_at": "07:28",
@@ -113,20 +129,56 @@
         ],
         "passengers_affected": 140,
         "wheelchair_waiting": [],
-        "bus_accessible": true,
+        "bus_accessible": false,
         "driver_shift_end": "14:00",
         "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "210 people expected from 07:45 at UNSW Kensington (140), Kensington, Anzac Pde (70)",
-        "why": "The crowding at stops UNS and KEN is caused by an UNSW graduation ceremony event scheduled from 07:45 to 08:30, which generated extra passengers as confirmed by the event and passenger count data.",
-        "confidence": 0.9,
-        "decision": "Extra shuttle runs for crowds on Route E: spare S1 with driver D12 from the depot, at UNSW Kensington by 07:56",
-        "rejected": []
+        "why": "A UNSW graduation ceremony scheduled from 07:45\u201308:30 at stops UNS and KEN generated expected extra passengers matching the 210 people waiting (140 at UNS, 70 at KEN), causing the crowding incident.",
+        "confidence": 0.88,
+        "decision": "Extra shuttle runs for crowds on Route E: spare S2 with driver D12 from the depot, at UNSW Kensington by 07:56",
+        "rejected": [
+          {
+            "plan": "Warn passengers to expect full buses",
+            "why": "Route E regular buses would carry 210 passengers (capacity 120)"
+          },
+          {
+            "plan": "Extra shuttle runs for crowds on Route E: spare S1 with driver D11 from the depot, at UNSW Kensington by 07:56",
+            "why": "S1 is already committed to another incident this morning"
+          }
+        ]
       }
     }
   ],
   "service_alerts": [
+    {
+      "id": "alert-inc-1",
+      "active_from": "07:24",
+      "cause": "TECHNICAL_PROBLEM",
+      "effect": "MODIFIED_SERVICE",
+      "informed_entity": [
+        {
+          "route_id": "C",
+          "stop_id": "NTN"
+        },
+        {
+          "route_id": "C",
+          "stop_id": "STM"
+        },
+        {
+          "route_id": "C",
+          "stop_id": "PET"
+        },
+        {
+          "route_id": "C",
+          "stop_id": "MKV"
+        }
+      ],
+      "header_text": "Route C: bus breakdown",
+      "description_text": "Mechanical breakdown on Route C. A replacement bus is being deployed. expected about 07:36 at Newtown, King St. Affected stops: Newtown, King St; Stanmore, Parramatta Rd; Petersham; Marrickville Metro.",
+      "method": "nemotron-via-nightshift"
+    },
     {
       "id": "alert-inc-2",
       "active_from": "07:26",
@@ -138,8 +190,8 @@
           "stop_id": "UNS"
         }
       ],
-      "header_text": "Route E: crowding at UNSW Kensington",
-      "description_text": "Crowding at UNSW Kensington due to an UNSW graduation ceremony. An extra bus is approaching to help. expected about 07:56",
+      "header_text": "Route E: crowding",
+      "description_text": "Graduation ceremony at UNSW causing extra passengers and crowding at UNSW Kensington. An extra bus is being deployed. Expected about 07:56",
       "method": "nemotron-via-nightshift"
     }
   ],
@@ -189,14 +241,14 @@
   ],
   "metrics": {
     "incidents": 2,
-    "decisions_approved": 1,
-    "escalated": 1,
+    "decisions_approved": 2,
+    "escalated": 0,
     "critic_rejections": 2,
     "proactive_actions": 0,
-    "passengers_informed": 140
+    "passengers_informed": 196
   },
   "models_used": {
-    "nvidia/nemotron-3.5-lightning-30b-a3b": 9
+    "nvidia/nemotron-3.5-lightning-30b-a3b": 12
   },
   "world_model": {
     "facts_ingested": 1991,
@@ -10083,5 +10135,5 @@
   ],
   "trace_id": "2025-05-14-busy",
   "log_file": "logs\\trace-2025-05-14-busy.jsonl",
-  "execution_time_seconds": 207.6
+  "execution_time_seconds": 26.2
 }

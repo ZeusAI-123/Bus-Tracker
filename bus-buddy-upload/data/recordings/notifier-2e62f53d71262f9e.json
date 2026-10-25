@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route A: bus running late",
-    "description": "Service on Route A is running late due to traffic delays. A replacement bus is en route and is expected about 07:22 at Haberfield, Parramatta Rd. Affected stops include Leichhardt, Norton St, Annandale, Parramatta Rd and Railway Square (Central)."
-  }
-}

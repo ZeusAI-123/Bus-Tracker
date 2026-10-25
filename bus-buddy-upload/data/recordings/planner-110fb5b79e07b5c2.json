@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "It deploys an accessible bus (S1) to fairly accommodate all stranded passengers, and driver D11\u2019s shift end (14:15) covers the deployment without violating labor constraints."
+  }
+}

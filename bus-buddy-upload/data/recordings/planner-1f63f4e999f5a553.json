@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "S1\u2019s accessibility promotes fairness for all passengers, and D11\u2019s shift ending at 14:15 avoids any scheduling conflict with the 07:56 arrival time."
+  }
+}

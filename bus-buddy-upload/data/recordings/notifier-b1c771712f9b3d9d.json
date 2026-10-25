@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route C: bus breakdown",
+    "description": "Mechanical breakdown on Route C. A replacement bus is being deployed. expected about 07:36 at Newtown, King St. Affected stops: Newtown, King St; Stanmore, Parramatta Rd; Petersham; Marrickville Metro."
+  }
+}

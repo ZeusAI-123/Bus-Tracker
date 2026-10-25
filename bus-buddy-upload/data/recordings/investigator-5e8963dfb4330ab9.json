@@ -1,0 +1,13 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "cause": "gps_glitch",
+    "confidence": 0.6,
+    "evidence_ids": [
+      "ev-9a8cf44381",
+      "ev-722430f5a9"
+    ],
+    "explanation": "Bus G1 was last tracked moving normally at 07:07:30 (speed ~21 km/h), then lost position for 4 minutes with no maintenance fault detected, pointing to a GPS signal loss as the most likely cause.",
+    "uncertain": "Whether the position gap was a brief satellite glitch or a longer-term tracking failure."
+  }
+}

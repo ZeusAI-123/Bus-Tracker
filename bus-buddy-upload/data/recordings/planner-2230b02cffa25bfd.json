@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "It provides accessible capacity with a driver shift ending at 14:15, ensuring reliable deployment and fairness for passengers including those with mobility needs."
+  }
+}

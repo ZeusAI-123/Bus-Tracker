@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "off",
-    "ai": "record"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 5.1,
@@ -29,14 +29,21 @@
       "resolved_at": null,
       "resolution": null,
       "cause": "weather_congestion",
-      "confidence": 0.7,
-      "explanation": "Bus A1 is running late due to measurable rainfall (3.3 mm and 1.7 mm in the last two hours) slowing Sydney peak-hour traffic, with no active road closures or events identified.",
+      "confidence": 0.75,
+      "explanation": "Bus A1 is 5.8 minutes late at 06:58. Rain was measurable in the last two hours (3.3mm at hour 5, 1.7mm at hour 6), no road closures on route A were detected, and no events causing crowding were reported. These conditions match the weather_congestion cause with confidence 0.7 or more.",
       "evidence": [
-        "ev-f6010d80e5"
+        "ev-f6010d80e5",
+        "ev-0ee9a6c92c",
+        "ev-43539407f8"
       ],
       "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
+        {
+          "plan": "Fill the gap on Route A: spare S1 with driver D10 from the depot, at Haberfield, Parramatta Rd by 07:07",
+          "id": "extra_bus:S1:D10",
+          "critic": "rejected - driver D10 finishes their shift at 07:45 but this work runs until 08:30"
+        },
         {
           "plan": "Fill the gap on Route A: spare S1 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
           "id": "extra_bus:S1:D11",
@@ -47,7 +54,7 @@
         "id": "extra_bus:S1:D11",
         "action": "extra_bus",
         "summary": "Fill the gap on Route A: spare S1 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
-        "reason": "It uses an accessible bus to ensure fairness for passengers with mobility needs, and the driver\u2019s shift end at 14:15 comfortably covers the deployment, guaranteeing safe, compliant operation while still arriving by 07:22 to minimize passenger wait times.",
+        "reason": "S1 is wheelchair-accessible, ensuring fair service for all passengers including those with mobility needs, and driver D11 is within shift limits until 14:15, making the deployment safe and compliant.",
         "bus": "S1",
         "driver": "D11",
         "eta": "07:22",
@@ -67,10 +74,15 @@
       },
       "decision_card": {
         "incident": "A1 running 6 min late",
-        "why": "Bus A1 is running late due to measurable rainfall (3.3 mm and 1.7 mm in the last two hours) slowing Sydney peak-hour traffic, with no active road closures or events identified.",
-        "confidence": 0.7,
+        "why": "Bus A1 is 5.8 minutes late at 06:58. Rain was measurable in the last two hours (3.3mm at hour 5, 1.7mm at hour 6), no road closures on route A were detected, and no events causing crowding were reported. These conditions match the weather_congestion cause with confidence 0.7 or more.",
+        "confidence": 0.75,
         "decision": "Fill the gap on Route A: spare S1 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
-        "rejected": []
+        "rejected": [
+          {
+            "plan": "Fill the gap on Route A: spare S1 with driver D10 from the depot, at Haberfield, Parramatta Rd by 07:07",
+            "why": "driver D10 finishes their shift at 07:45 but this work runs until 08:30"
+          }
+        ]
       }
     }
   ],
@@ -98,8 +110,8 @@
           "stop_id": "RSQ"
         }
       ],
-      "header_text": "Route A: bus running late",
-      "description_text": "Service on Route A is running late due to traffic delays. A replacement bus is en route and is expected about 07:22 at Haberfield, Parramatta Rd. Affected stops include Leichhardt, Norton St, Annandale, Parramatta Rd and Railway Square (Central).",
+      "header_text": "Route A: bus delayed",
+      "description_text": "A replacement bus is arriving at Haberfield Parramatta Rd, Leichhardt Norton St, Annandale Parramatta Rd, and Railway Square Central. Expected about 07:22.",
       "method": "nemotron-via-nightshift"
     }
   ],
@@ -158,17 +170,17 @@
     "incidents": 1,
     "decisions_approved": 1,
     "escalated": 0,
-    "critic_rejections": 0,
+    "critic_rejections": 1,
     "proactive_actions": 0,
     "passengers_informed": 61
   },
   "models_used": {
-    "nvidia/nemotron-3.5-lightning-30b-a3b": 5
+    "nvidia/nemotron-3.5-lightning-30b-a3b": 7
   },
   "world_model": {
-    "facts_ingested": 1990,
+    "facts_ingested": 1992,
     "duplicates_skipped": 0,
-    "provenance_rows": 2054
+    "provenance_rows": 2056
   },
   "network": {
     "stops": [
@@ -10050,5 +10062,5 @@
   ],
   "trace_id": "2025-05-19-mon2-nomemory",
   "log_file": "logs\\trace-2025-05-19-mon2-nomemory.jsonl",
-  "execution_time_seconds": 167.1
+  "execution_time_seconds": 21.8
 }

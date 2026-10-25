@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route G: bus service disruption",
-    "description": "A bus on Route G has experienced a technical delay. A replacement bus is being deployed to minimise disruption. Services may experience delays at Coogee, Randwick, Zetland, Waterloo and Central Station (Eddy Ave)."
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "extra_bus:S1:D11",
-    "reason": "It deploys an accessible bus with a driver who has a full shift buffer, ensuring passenger fairness and operational safety while arriving at 07:43 to help manage the exam crowd."
-  }
-}

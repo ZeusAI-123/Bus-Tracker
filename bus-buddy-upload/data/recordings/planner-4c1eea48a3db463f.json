@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "alert_only",
-    "reason": "It updates passengers on the delay transparently, avoiding resource deployment given the uncertain cause and driver hours conflict."
-  }
-}

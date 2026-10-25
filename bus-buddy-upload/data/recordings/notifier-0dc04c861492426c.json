@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route B: bus running late",
-    "description": "Your Route B bus is running late. We are updating arrival times at affected stops: Rozelle, Victoria Rd, Glebe Point Rd, Ultimo, Harris St, and Town Hall. Expected time updates are being prepared."
-  }
-}

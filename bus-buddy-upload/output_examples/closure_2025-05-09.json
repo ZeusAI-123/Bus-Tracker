@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "record"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 0,
@@ -28,10 +28,11 @@
       },
       "resolved_at": null,
       "resolution": null,
-      "cause": "unknown",
-      "confidence": 0.3,
-      "explanation": "Bus B1 is 5.6 minutes late with no measurable rain (precip_mm 0.0) recorded in the last two hours; no road closures, events, or other faults are indicated by the available evidence.",
+      "cause": "road_closure",
+      "confidence": 0.85,
+      "explanation": "Bus B1 on route B is delayed due to an active road closure (emergency water main repair, one lane closed) on route B that was operational from 06:50 to 09:00 and was in effect at the 07:02 detection time. No measurable rain (precip 0.0mm) or stop events were contributing factors.",
       "evidence": [
+        "ev-1394c1f02a",
         "ev-d3a9ea3b68"
       ],
       "reasoning_method": "nemotron-via-nightshift",
@@ -40,19 +41,24 @@
         {
           "plan": "Fill the gap on Route B: spare S1 with driver D10 from the depot, at Rozelle, Victoria Rd by 07:11",
           "id": "extra_bus:S1:D10",
-          "critic": "rejected - driver D10 finishes their shift at 07:45 but this work runs until 08:30; confidence in the cause is only 0.30 with nothing backing it up; sending a bus could be a false alarm"
+          "critic": "rejected - driver D10 finishes their shift at 07:45 but this work runs until 08:30"
         },
         {
-          "plan": "Update arrival times for Route B passengers",
-          "id": "alert_only",
+          "plan": "Fill the gap on Route B: spare S1 with driver D11 from the depot, at Rozelle, Victoria Rd by 07:22",
+          "id": "extra_bus:S1:D11",
           "critic": "approved"
         }
       ],
       "decision": {
-        "id": "alert_only",
-        "action": "alert_only",
-        "summary": "Update arrival times for Route B passengers",
-        "reason": "It updates passengers on the delay transparently, avoiding resource deployment given the uncertain cause and driver hours conflict.",
+        "id": "extra_bus:S1:D11",
+        "action": "extra_bus",
+        "summary": "Fill the gap on Route B: spare S1 with driver D11 from the depot, at Rozelle, Victoria Rd by 07:22",
+        "reason": "It deploys an accessible spare bus within driver hours, directly filling the 5.6-minute service gap for all 65 affected passengers, whereas alert_only leaves the gap unaddressed and the non-accessible S2 option disadvantages wheelchair users.",
+        "bus": "S1",
+        "driver": "D11",
+        "eta": "07:22",
+        "dispatch_at": "07:15",
+        "finish_time": "08:30",
         "stops_affected": [
           "ROZ",
           "GLB",
@@ -60,17 +66,20 @@
           "TWH"
         ],
         "passengers_affected": 65,
+        "wheelchair_waiting": [],
+        "bus_accessible": true,
+        "driver_shift_end": "14:15",
         "method": "nemotron-via-nightshift"
       },
       "decision_card": {
         "incident": "B1 running 6 min late",
-        "why": "Bus B1 is 5.6 minutes late with no measurable rain (precip_mm 0.0) recorded in the last two hours; no road closures, events, or other faults are indicated by the available evidence.",
-        "confidence": 0.3,
-        "decision": "Update arrival times for Route B passengers",
+        "why": "Bus B1 on route B is delayed due to an active road closure (emergency water main repair, one lane closed) on route B that was operational from 06:50 to 09:00 and was in effect at the 07:02 detection time. No measurable rain (precip 0.0mm) or stop events were contributing factors.",
+        "confidence": 0.85,
+        "decision": "Fill the gap on Route B: spare S1 with driver D11 from the depot, at Rozelle, Victoria Rd by 07:22",
         "rejected": [
           {
             "plan": "Fill the gap on Route B: spare S1 with driver D10 from the depot, at Rozelle, Victoria Rd by 07:11",
-            "why": "driver D10 finishes their shift at 07:45 but this work runs until 08:30; confidence in the cause is only 0.30 with nothing backing it up; sending a bus could be a false alarm"
+            "why": "driver D10 finishes their shift at 07:45 but this work runs until 08:30"
           }
         ]
       }
@@ -80,8 +89,8 @@
     {
       "id": "alert-inc-1",
       "active_from": "07:02",
-      "cause": "UNKNOWN_CAUSE",
-      "effect": "SIGNIFICANT_DELAYS",
+      "cause": "CONSTRUCTION",
+      "effect": "ADDITIONAL_SERVICE",
       "informed_entity": [
         {
           "route_id": "B",
@@ -100,8 +109,8 @@
           "stop_id": "TWH"
         }
       ],
-      "header_text": "Route B: bus running late",
-      "description_text": "Your Route B bus is running late. We are updating arrival times at affected stops: Rozelle, Victoria Rd, Glebe Point Rd, Ultimo, Harris St, and Town Hall. Expected time updates are being prepared.",
+      "header_text": "Route B: bus delayed",
+      "description_text": "Delays on Route B due to a road closure. A replacement bus is being deployed. Expected about 07:22 at Rozelle, Victoria Rd, Glebe Point Rd, Ultimo, Harris St and Town Hall.",
       "method": "nemotron-via-nightshift"
     }
   ],
@@ -161,9 +170,9 @@
     "nvidia/nemotron-3.5-lightning-30b-a3b": 6
   },
   "world_model": {
-    "facts_ingested": 1987,
+    "facts_ingested": 1989,
     "duplicates_skipped": 0,
-    "provenance_rows": 2051
+    "provenance_rows": 2053
   },
   "network": {
     "stops": [
@@ -10045,5 +10054,5 @@
   ],
   "trace_id": "2025-05-09-closure",
   "log_file": "logs\\trace-2025-05-09-closure.jsonl",
-  "execution_time_seconds": 109.7
+  "execution_time_seconds": 26.4
 }

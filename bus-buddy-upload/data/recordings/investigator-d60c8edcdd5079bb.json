@@ -1,0 +1,16 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "final": {
+      "cause": "weather_congestion",
+      "confidence": 0.75,
+      "evidence_ids": [
+        "ev-f6010d80e5",
+        "ev-0ee9a6c92c",
+        "ev-0b9d32c955"
+      ],
+      "explanation": "Bus A1 on route A is 5.8 minutes late at 06:58 during morning peak with measurable rain (1.7\u20133.3mm) in the preceding two hours, and no road closures, events, or mechanical issues were detected, consistent with weather-related congestion.",
+      "uncertain": "Potential unobserved minor traffic signal adjustments or boarding variations not captured by available tools could also contribute, but the primary evidence strongly supports weather congestion."
+    }
+  }
+}

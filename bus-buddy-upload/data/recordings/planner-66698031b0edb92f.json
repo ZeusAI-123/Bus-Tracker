@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "It\u2019s the earliest accessible extra bus (ETA 06:43), ensuring wheelchair users and all passengers receive fair, timely service while directly countering the 14-minute delay."
+  }
+}

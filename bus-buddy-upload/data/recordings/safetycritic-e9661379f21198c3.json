@@ -1,8 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "block": false,
-    "concerns": [],
-    "reason": "The plan contains no concrete safety or fairness issues; all hard rules were already verified by the code and the proposal is internally consistent."
-  }
-}

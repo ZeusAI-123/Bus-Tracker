@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S1:D11",
+    "reason": "Bus S1 is accessible, ensuring the wheelchair passenger at Newtown King St is served fairly, and driver D11 has a later shift end providing operational resilience and avoiding fatigue risks."
+  }
+}

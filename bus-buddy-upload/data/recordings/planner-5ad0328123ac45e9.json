@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "It deploys the earliest accessible bus (arriving 07:07), directly reducing the 5.8\u2011minute gap for all 61 passengers while fairly accommodating those with mobility needs."
+  }
+}

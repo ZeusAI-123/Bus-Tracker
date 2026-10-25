@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "extra_bus:S1:D11",
-    "reason": "It deploys an accessible bus driven by a driver with a full shift, arriving at 07:52 to serve all 42 passengers before their missed connection, ensuring safety and fairness."
-  }
-}

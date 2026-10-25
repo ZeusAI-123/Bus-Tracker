@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "Deployes an accessible bus to fill the 5.8-min gap earliest at 07:07, ensuring fair service for all passengers including those with mobility needs. It matches 60-seat capacity to affected passengers and uses a driver well within shift limits."
+  }
+}

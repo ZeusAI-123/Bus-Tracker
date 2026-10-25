@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S2:D12",
+    "reason": "Driver D12's shift covers the dispatch and arrival times, ensuring reliable service, whereas D10's shift ends before the bus arrives, creating an operational risk."
+  }
+}

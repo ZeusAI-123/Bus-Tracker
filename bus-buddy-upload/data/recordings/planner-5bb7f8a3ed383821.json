@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "monitor",
+    "reason": "A GPS glitch likely means G1 is still operating; dispatching a spare would cause unnecessary disruption with no driver available to deploy it. Monitoring confirms whether the bus reappears before taking further action."
+  }
+}

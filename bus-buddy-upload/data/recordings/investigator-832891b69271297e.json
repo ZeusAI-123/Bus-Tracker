@@ -1,0 +1,15 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "final": {
+      "cause": "road_closure",
+      "confidence": 0.85,
+      "evidence_ids": [
+        "ev-1394c1f02a",
+        "ev-d3a9ea3b68"
+      ],
+      "explanation": "Bus B1 on route B is delayed due to an active road closure (emergency water main repair, one lane closed) on route B that was operational from 06:50 to 09:00 and was in effect at the 07:02 detection time. No measurable rain (precip 0.0mm) or stop events were contributing factors.",
+      "uncertain": "none"
+    }
+  }
+}

@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route E: extra bus running",
-    "description": "Morning UNSW exam has created extra passengers at UNSW Kensington. An extra bus is running on Route E to help. Expected about 07:43 at UNSW Kensington."
-  }
-}

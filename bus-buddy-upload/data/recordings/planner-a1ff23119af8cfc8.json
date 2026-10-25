@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "extra_bus:S2:D11",
-    "reason": "This option directly fills the 5.8-minute service gap caused by weather congestion, getting passengers back on schedule faster than simply updating arrival times. It uses an available spare bus and driver without the driver-hour or resource conflicts that invalidated the previous attempt."
-  }
-}

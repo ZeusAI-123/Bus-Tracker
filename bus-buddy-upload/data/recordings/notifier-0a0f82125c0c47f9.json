@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route A: bus delay",
+    "description": "A bus on Route A is delayed during morning peak. A replacement bus is being deployed. Affected stops: Haberfield, Parramatta Rd; Leichhardt, Norton St; Annandale, Parramatta Rd; Railway Square (Central). Expected about 07:22"
+  }
+}

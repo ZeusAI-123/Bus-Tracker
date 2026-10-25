@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "hold:7",
+    "reason": "It holds the 07:59 bus until 08:06, matching the train's arrival and letting all 42 passengers complete their connection. This is a fair, minimal intervention for a delay caused by the late train."
+  }
+}

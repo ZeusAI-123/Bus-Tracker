@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S1:D11",
+    "reason": "S1 is the only accessible bus, ensuring the wheelchair passenger waiting at NTN is served fairly; D11 has a shift ending at 14:15, avoiding fatigue risks while meeting the 07:36 ETA."
+  }
+}
