@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "replay"
+    "ai": "record"
   },
   "conditions": {
     "rain_mm_morning": 2.5,
@@ -29,12 +29,14 @@
       "resolved_at": null,
       "resolution": null,
       "cause": "weather_congestion",
-      "confidence": 0.8,
-      "explanation": "Route A is 5 min late; 1.0 mm of rain in the last two hours is slowing traffic.",
+      "confidence": 0.75,
+      "explanation": "Bus A1 is running 5.3 minutes late during light rain (0.8 mm at hour 5, 0.2 mm at hour 6) with no road closures or stop events detected; rain is slowing peak-hour traffic.",
       "evidence": [
-        "ev-b80e47c5ae"
+        "ev-b80e47c5ae",
+        "ev-2cc4c9bc92",
+        "ev-1e29950a85"
       ],
-      "reasoning_method": "offline-rules",
+      "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
         {
@@ -52,7 +54,7 @@
         "id": "extra_bus:S1:D11",
         "action": "extra_bus",
         "summary": "Fill the gap on Route A: spare S1 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
-        "reason": "It assigns an accessible bus with driver D11, whose shift ends at 14:15, eliminating the driver-hours conflict. This ensures wheelchair users are included, serving passengers safely and fairly.",
+        "reason": "Driver D11 is within legal shift limits (shift ends 14:15, work finishes 08:30), and bus S1 is wheelchair-accessible, ensuring fair service for all passengers while directly addressing the 5.3-minute gap.",
         "bus": "S1",
         "driver": "D11",
         "eta": "07:22",
@@ -72,8 +74,8 @@
       },
       "decision_card": {
         "incident": "A1 running 5 min late",
-        "why": "Route A is 5 min late; 1.0 mm of rain in the last two hours is slowing traffic.",
-        "confidence": 0.8,
+        "why": "Bus A1 is running 5.3 minutes late during light rain (0.8 mm at hour 5, 0.2 mm at hour 6) with no road closures or stop events detected; rain is slowing peak-hour traffic.",
+        "confidence": 0.75,
         "decision": "Fill the gap on Route A: spare S1 with driver D11 from the depot, at Haberfield, Parramatta Rd by 07:22",
         "rejected": [
           {
@@ -109,14 +111,14 @@
         }
       ],
       "header_text": "Route A: bus delay",
-      "description_text": "Route A is delayed due to traffic. A replacement bus is running. Expected about 07:22. Affected stops: Haberfield, Parramatta Rd; Leichhardt, Norton St; Annandale, Parramatta Rd; Railway Square (Central).",
+      "description_text": "Your Route A bus is delayed due to traffic. A replacement bus is being deployed to catch up. Affected stops: Haberfield Parramatta Rd, Leichhardt Norton St, Annandale Parramatta Rd, Railway Square Central. Expected about 07:22",
       "method": "nemotron-via-nightshift"
     }
   ],
   "memory": {
     "lesson_changes": [
       {
-        "id": 22,
+        "id": 25,
         "key": "route:A|cause:weather_congestion|cond:rain",
         "change": "created",
         "status": "active"
@@ -173,12 +175,12 @@
     "passengers_informed": 61
   },
   "models_used": {
-    "nvidia/nemotron-3.5-lightning-30b-a3b": 5
+    "nvidia/nemotron-3.5-lightning-30b-a3b": 7
   },
   "world_model": {
-    "facts_ingested": 1989,
-    "duplicates_skipped": 1,
-    "provenance_rows": 2053
+    "facts_ingested": 1990,
+    "duplicates_skipped": 0,
+    "provenance_rows": 2054
   },
   "network": {
     "stops": [
@@ -10060,5 +10062,5 @@
   ],
   "trace_id": "2025-04-28-mon1",
   "log_file": "logs\\trace-2025-04-28-mon1.jsonl",
-  "execution_time_seconds": 45.2
+  "execution_time_seconds": 222.5
 }

@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "replay"
+    "ai": "record"
   },
   "conditions": {
     "rain_mm_morning": 0,
@@ -10135,5 +10135,5 @@
   ],
   "trace_id": "2025-05-14-busy",
   "log_file": "logs\\trace-2025-05-14-busy.jsonl",
-  "execution_time_seconds": 26.2
+  "execution_time_seconds": 41.2
 }

@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "replay"
+    "ai": "record"
   },
   "conditions": {
     "rain_mm_morning": 5.1,
@@ -29,7 +29,9 @@
       "explanation": "It is raining and memory says: Route A runs about 14 min late on rainy mornings; an early extra bus keeps the gap down.",
       "evidence": [
         "ev-6cc47dc414",
-        "ev-b80e47c5ae"
+        "ev-b80e47c5ae",
+        "ev-2cc4c9bc92",
+        "ev-1e29950a85"
       ],
       "reasoning_method": "memory (H-MEM) + weather",
       "memory_used": [
@@ -53,7 +55,7 @@
         "id": "extra_bus:S1:D10",
         "action": "extra_bus",
         "summary": "Run an early extra Route A bus through the morning peak: spare S1 with driver D10 from the depot, at Five Dock, Great North Rd by 06:43",
-        "reason": "It\u2019s the earliest accessible extra bus (ETA 06:43), ensuring wheelchair users and all passengers receive fair, timely service while directly countering the 14-minute delay.",
+        "reason": "It provides accessible seating for all passengers, including wheelchair users, and deploys the earliest extra bus (dispatch 06:32, eta 06:43) to directly reduce the 14-minute delay for the 17 passengers at Five Dock.",
         "bus": "S1",
         "driver": "D10",
         "eta": "06:43",
@@ -202,7 +204,7 @@
   "memory": {
     "lesson_changes": [
       {
-        "id": 22,
+        "id": 25,
         "key": "route:A|cause:weather_congestion|cond:rain",
         "change": "reinforced"
       }
@@ -10146,5 +10148,5 @@
   ],
   "trace_id": "2025-05-19-mon2",
   "log_file": "logs\\trace-2025-05-19-mon2.jsonl",
-  "execution_time_seconds": 26.2
+  "execution_time_seconds": 143.8
 }

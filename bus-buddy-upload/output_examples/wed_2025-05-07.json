@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "replay"
+    "ai": "record"
   },
   "conditions": {
     "rain_mm_morning": 0,
@@ -10096,5 +10096,5 @@
   ],
   "trace_id": "2025-05-07-wed",
   "log_file": "logs\\trace-2025-05-07-wed.jsonl",
-  "execution_time_seconds": 22.1
+  "execution_time_seconds": 62.6
 }
