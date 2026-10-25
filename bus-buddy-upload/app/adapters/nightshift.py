@@ -2,7 +2,8 @@
 
 - Nightshift speaks the OpenAI chat format, so we use the OpenAI client pointed at it.
 - Every call logs which model answered (needed for the NVIDIA Nemotron award).
-- AI_RECORDING=record saves each reply to data/recordings/; replay serves them back,
+- AI_RECORDING=record saves each new reply to data/recordings/ (and reuses replies already saved there,
+  so a re-run only asks for what is missing); replay serves them back,
   which lets judges see the real agent behaviour without running Nightshift.
 - If no model is reachable (and nothing is recorded), callers get None and use
   their documented offline fallback, which is labelled in the trace as such.
@@ -41,7 +42,7 @@ class Nightshift:
         key = hashlib.sha1(f"{agent}|{system}|{user}".encode()).hexdigest()[:16]
         rec_path = SETTINGS.recordings_dir / f"{agent.lower()}-{key}.json"
 
-        if self.mode == "replay" and rec_path.exists():
+        if self.mode in ("replay", "record") and rec_path.exists():   # record reuses saved replies; delete data/recordings to refresh
             saved = json.loads(rec_path.read_text())
             self.models_used[saved["model"]] = self.models_used.get(saved["model"], 0) + 1
             self._log(agent, sim_time, saved["model"], "replayed recorded reply", saved["reply"], key)
