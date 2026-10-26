@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "off",
-    "ai": "record"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 5.1,
@@ -10062,5 +10062,5 @@
   ],
   "trace_id": "2025-05-19-mon2-nomemory",
   "log_file": "logs\\trace-2025-05-19-mon2-nomemory.jsonl",
-  "execution_time_seconds": 60.9
+  "execution_time_seconds": 19.2
 }

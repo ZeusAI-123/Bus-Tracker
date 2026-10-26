@@ -6,7 +6,7 @@
   "mode": {
     "sample_mode": true,
     "memory": "on",
-    "ai": "record"
+    "ai": "replay"
   },
   "conditions": {
     "rain_mm_morning": 2.5,
@@ -118,7 +118,7 @@
   "memory": {
     "lesson_changes": [
       {
-        "id": 25,
+        "id": 28,
         "key": "route:A|cause:weather_congestion|cond:rain",
         "change": "created",
         "status": "active"
@@ -10062,5 +10062,5 @@
   ],
   "trace_id": "2025-04-28-mon1",
   "log_file": "logs\\trace-2025-04-28-mon1.jsonl",
-  "execution_time_seconds": 222.5
+  "execution_time_seconds": 72.2
 }
