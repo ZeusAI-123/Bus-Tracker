@@ -1,0 +1,16 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "final": {
+      "cause": "breakdown",
+      "confidence": 0.85,
+      "evidence_ids": [
+        "ev-5c35b4561c",
+        "ev-8193fabfc9",
+        "ev-4912074ec6"
+      ],
+      "explanation": "Bus C1 had an engine warning light reported at 06:50 (ev-5c35b4561c) and was found stationary between stops since 07:19, consistent with a mechanical breakdown causing the stop.",
+      "uncertain": "The bus track (ev-8193fabfc9) shows the bus was still moving past 07:13:46, but the incident reports stationary since 07:19; the exact timing of the subsequent stop is unclear but the engine warning is the primary lead."
+    }
+  }
+}

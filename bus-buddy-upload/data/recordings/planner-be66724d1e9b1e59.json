@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S1:D11",
+    "reason": "Bus S1 is accessible, required for the wheelchair passenger waiting at NTN, and driver D11 has shift coverage until 14:15, providing a safe margin beyond the 07:36 arrival compared to D10's tight 9-minute buffer. This also avoids the 60-minute service gap of the alert-only option."
+  }
+}
