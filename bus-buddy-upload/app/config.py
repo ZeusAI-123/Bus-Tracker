@@ -27,6 +27,9 @@ class Settings:
     zetaris_positions: str = os.getenv("ZETARIS_POSITIONS_TABLE", "busbuddy_s3.vehicle_positions")
     zetaris_weather: str = os.getenv("ZETARIS_WEATHER_TABLE", "busbuddy_pg.public.weather_hourly")
     zetaris_timeout: int = int(os.getenv("ZETARIS_TIMEOUT_SECONDS", "45"))
+    zetaris_user: str = os.getenv("ZETARIS_USERNAME", "")
+    zetaris_password: str = os.getenv("ZETARIS_PASSWORD", "")
+    zetaris_row_limit: int = int(os.getenv("ZETARIS_ROW_LIMIT", "100000"))
 
     nightshift_url: str = os.getenv("METERLESS_BASE_URL", "http://127.0.0.1:8088/v1")
     nightshift_token: str = os.getenv("METERLESS_RUNTIME_TOKEN", "")

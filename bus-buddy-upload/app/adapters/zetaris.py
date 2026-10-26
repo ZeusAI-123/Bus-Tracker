@@ -19,6 +19,13 @@ import json
 import re
 import time
 from typing import Any, Optional
+import uuid
+
+try:   # use the computer's trusted certificates (Windows CERTIFICATE_VERIFY_FAILED fix)
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass
 
 import requests
 
@@ -38,6 +45,7 @@ class Zetaris:
         self.sample_mode = SETTINGS.sample_mode if sample_mode is None else sample_mode
         self.trace = trace
         self._duck = None
+        self._token = None
         if self.sample_mode:
             self._open_duckdb()
 
@@ -87,26 +95,40 @@ class Zetaris:
             sql = re.sub(rf"\b{name}\b", self.physical(name), sql)
         return sql
 
-    def _post_sql(self, sql: str) -> list[dict]:
-        url = SETTINGS.zetaris_url.rstrip("/") + "/query"
-        headers = {"Content-Type": "application/json", "X-Org-Id": SETTINGS.zetaris_org,
-                   "Authorization": f"Bearer {SETTINGS.zetaris_key}"}
-        last = None
-        for attempt in range(3):
-            try:
-                r = requests.post(url, json={"sql": sql}, headers=headers, timeout=SETTINGS.zetaris_timeout)
-                r.raise_for_status()
-                body = r.json()
-                if isinstance(body, dict) and "rows" in body and "columns" in body:
-                    cols = [c["name"] if isinstance(c, dict) else c for c in body["columns"]]
-                    return [dict(zip(cols, row)) for row in body["rows"]]
-                if isinstance(body, list):
-                    return body
-                return body.get("data", [])
-            except Exception as e:  # retry with backoff, then surface a clear error
-                last = e
-                time.sleep(1.5 * (attempt + 1))
-        raise ZetarisError(f"Zetaris did not answer after 3 attempts: {last}")
+        def _post_sql(self, sql: str) -> list[dict]:
+            """Zetaris managed cluster: log in once, then POST the SQL to run-stream and read the rows."""
+            base = SETTINGS.zetaris_url.rstrip("/")
+            last = None
+            for attempt in range(3):
+                try:
+                    if not self._token:
+                        self._login(base)
+                    r = requests.post(
+                        base + "/api/proxy/sql-editor/sqls/run-stream",
+                        json={"queryId": str(uuid.uuid4()), "sql": sql, "source": "SqlEditor",
+                            "chunkSize": 10000, "limit": SETTINGS.zetaris_row_limit},
+                        headers={"Authorization": f"Bearer {self._token}", "X-Org-ID": SETTINGS.zetaris_org,
+                                "X-Request-ID": str(uuid.uuid4()), "Accept": "text/plain",
+                                "Origin": base, "Referer": base + "/"},
+                        timeout=SETTINGS.zetaris_timeout)
+                    if r.status_code == 401:
+                        self._token = None          # login expired: log in again on the next try
+                        raise ZetarisError("login expired")
+                    r.raise_for_status()
+                    return _parse_stream(r.text)
+                except Exception as e:  # retry with backoff, then surface a clear error
+                    last = e
+                    time.sleep(1.5 * (attempt + 1))
+            raise ZetarisError(f"Zetaris did not answer after 3 attempts: {last}")
+
+        def _login(self, base: str) -> None:
+            r = requests.post(base + "/api/auth/login",
+                            json={"username": SETTINGS.zetaris_user, "password": SETTINGS.zetaris_password},
+                            timeout=SETTINGS.zetaris_timeout)
+            r.raise_for_status()
+            self._token = _find_token(r.json())
+            if not self._token:
+                raise ZetarisError("Zetaris login answered without a token")
 
     def _open_duckdb(self) -> None:
         import duckdb
@@ -126,3 +148,35 @@ class Zetaris:
         for row in cur.fetchall():
             out.append({c: (v.isoformat() if hasattr(v, "isoformat") else v) for c, v in zip(cols, row)})
         return out
+
+def _parse_stream(text: str) -> list[dict]:
+    """run-stream answer: first line = column names, then one JSON list per row (all values as text)."""
+    lines = [json.loads(l) for l in text.splitlines() if l.strip()]
+    lists = [l for l in lines if isinstance(l, list)]
+    if not lists:
+        return []
+    cols = lists[0]
+    return [{c: _value(v) for c, v in zip(cols, row)} for row in lists[1:]]
+
+
+def _value(v):
+    """'3.73' -> 3.73, '42' -> 42; times like '07:20' and ids like 'C1' stay text."""
+    if not isinstance(v, str):
+        return v
+    for cast in (int, float):
+        try:
+            return cast(v)
+        except ValueError:
+            pass
+    return v
+
+
+def _find_token(obj):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if "token" in k.lower() and isinstance(v, str) and len(v) > 20:
+                return v
+            found = _find_token(v)
+            if found:
+                return found
+    return None

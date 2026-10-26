@@ -8,6 +8,4 @@ requests==2.32.3
 python-dotenv==1.0.1
 pytest==8.2.2
 httpx==0.27.0
-# Only needed for the optional loaders in scripts/
-# psycopg2-binary==2.9.9
-# boto3==1.34.131
+truststore==0.0.10
