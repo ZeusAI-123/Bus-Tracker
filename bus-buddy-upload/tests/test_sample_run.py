@@ -1,4 +1,4 @@
-"""End to end in sample mode (no Zetaris, no Nightshift): the five planted mornings behave as expected."""
+
 import json
 
 from app.config import SETTINGS
@@ -15,9 +15,9 @@ def test_breakdown_needs_accessible_bus(tmp_path):
     res = run("tue", mem_db=tmp_path / "m.db")
     inc = next(i for i in res["incidents"] if i["type"] == "stopped")
     assert inc["cause"] == "breakdown"
-    assert inc["decision"]["bus"] == "S1"                 # the wheelchair-accessible spare
+    assert inc["decision"]["bus"] == "S1"                
     assert inc["decision"]["bus_accessible"] is True
-    # S2 (not accessible) must never be approved, whoever proposed it
+   
     assert all(p["critic"] != "approved" for p in inc["plans_considered"] if ":S2:" in p["id"])
 
 
@@ -30,7 +30,7 @@ def test_gps_glitch_does_not_send_a_bus(tmp_path):
 
 def test_memory_acts_before_the_delay(tmp_path):
     db = tmp_path / "m.db"
-    run("mon1", mem_db=db)                         # learn from the first rainy Monday
+    run("mon1", mem_db=db)                         
     with_mem = run("mon2", mem_db=db)
     without = run("mon2", memory="off")
     assert any(i["type"] == "proactive" and i["route"] == "A" for i in with_mem["incidents"])
@@ -48,7 +48,7 @@ def test_two_problems_at_once_do_not_share_a_bus_or_driver(tmp_path):
     res = run("busy", mem_db=tmp_path / "m.db")
     breakdown = next(i for i in res["incidents"] if i["type"] == "stopped")
     crowd = next(i for i in res["incidents"] if i["type"] == "crowding")
-    assert breakdown["decision"]["bus"] == "S1"            # the accessible spare goes to the wheelchair user
+    assert breakdown["decision"]["bus"] == "S1"            
     assert crowd["decision"]["action"] == "extra_bus"
     assert crowd["decision"]["bus"] != breakdown["decision"]["bus"]
     assert crowd["decision"]["driver"] != breakdown["decision"]["driver"]
