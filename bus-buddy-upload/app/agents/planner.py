@@ -1,8 +1,4 @@
-"""Planner: suggests fixes. CODE works out the facts for each option (arrival times,
-seats, accessibility, driver hours, service gaps); the MODEL picks which one to try
-and explains why. After a Safety Critic rejection, options that share the rejected
-property are removed and the Planner chooses again (the critic feedback loop).
-"""
+
 from __future__ import annotations
 
 import json
@@ -22,7 +18,7 @@ class Planner:
     def __init__(self, ai, world, network, zetaris, trace, date: str):
         self.ai, self.world, self.net, self.z, self.trace, self.date = ai, world, network, zetaris, trace, date
 
-    # ------------------------------------------------------------- options
+    
     def options(self, inc: dict, finding: dict, now: datetime) -> list[dict]:
         cause, kind = finding["cause"], inc["type"]
         base = {"incident_id": inc["id"], "route": inc.get("route_id"), "cause": cause,
@@ -46,9 +42,9 @@ class Planner:
                                  "capacity": bus["capacity"], "driver_shift_end": drv["shift_end"][:5],
                                  "dispatch_at": f"{dispatch_at:%H:%M}", "eta": f"{arrive:%H:%M}", "finish_time": work_until,
                                  "stops_affected": stops, "wheelchair_waiting": wheelchair, "passengers_affected": waiting,
-                                 # people board and alight along the way: peak on board ~ the busiest stop + half the rest
+                                
                                  "projected_load": _projected_load(action, waiting_by_stop, inc, arrive, work_until, self.date),
-                                 # only a replacement leaves stops with no bus until it arrives
+                                 
                                  "service_gap_min": max(0.0, (arrive - now).total_seconds() / 60) if action == "replacement_bus" else None})
 
         if kind in ("stopped",) or cause == "breakdown":
@@ -124,7 +120,7 @@ class Planner:
                        incident_id=inc["id"], method=pick["method"], options=[o["id"] for o in options])
         return pick
 
-    # ------------------------------------------------------------- helpers
+   
     def _spares(self) -> list[dict]:
         return [b for b in self.world.entities("bus") if not b.get("route_id")]
 
@@ -175,9 +171,9 @@ def _projected_load(action: str, per_stop: dict, inc: dict, arrive, work_until: 
     if action == "replacement_bus":
         return _peak_load(per_stop, inc)
     if inc["type"] in ("crowding", "bunching"):
-        regular = 2 * 60                                    # two scheduled buses in the window
+        regular = 2 * 60                                    
         minutes = max(10.0, (_at(date, work_until) - arrive).total_seconds() / 60)
-        runs = max(1, int(minutes // 15))                   # ~15 min per short Kensington-UNSW shuttle loop
+        runs = max(1, int(minutes // 15))                  
         return int(max(0, sum(per_stop.values()) - regular) / runs)
     return None
 
@@ -186,15 +182,13 @@ def _peak_load(per_stop: dict, inc: dict) -> int:
     if not per_stop:
         return 0
     if inc["type"] in ("crowding", "bunching") or len(per_stop) == 1:
-        return max(per_stop.values())          # one crowded stop: everyone boards at once
+        return max(per_stop.values())         
     vals = sorted(per_stop.values(), reverse=True)
     return int(vals[0] + 0.5 * sum(vals[1:]))
 
 
 def _heuristic(options: list[dict], inc: dict) -> dict:
-    """Offline choice: what a hurried controller might try first, which the Critic then checks.
-    Cheapest/fastest action first; for spares, keep the accessible bus in reserve and use the
-    driver with the shortest remaining shift first."""
+   
     order = {"hold": 0, "alert_only": 1, "monitor": 2, "replacement_bus": 0, "extra_bus": 1}
     if inc["type"] in ("late",):
         order = {"alert_only": 0, "extra_bus": 1}
