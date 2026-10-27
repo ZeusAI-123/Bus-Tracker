@@ -1,11 +1,4 @@
-"""Entry point.
 
-  python run.py --serve                 start the API + screen on http://localhost:8000
-  python run.py --date 2025-04-29       run one morning, print a summary, save JSON to runs/
-  python run.py --week                  run all 7 scenario mornings in order (memory builds up),
-                                        plus the rainy Monday again with memory OFF for comparison,
-                                        and write output_examples/
-"""
 from __future__ import annotations
 
 import argparse
