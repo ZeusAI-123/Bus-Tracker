@@ -205,7 +205,7 @@ $f = "logs\" + (Get-ChildItem logs\trace-2025-04-29-mem-*.jsonl | Sort-Object La
 "Nemotron answers: " + (Select-String -Path $f -Pattern '"model_call"').Count
 "AI failures     : " + (Select-String -Path $f -Pattern 'model_error|model_unavailable').Count
 ```
-Our proof run is in `output_examples/traces/tue_2025-04-29_zetaris_live.jsonl`: 195 Zetaris queries,
+Our proof run is in `bus-buddy-upload/logs/trace-2025-04-29-mem-4f490d.jsonl`: 195 Zetaris queries,
 5 Nemotron answers, 0 fallbacks, and the same decision as sample mode (C1 breakdown, accessible spare S1 sent).
 
 Set `SAMPLE_MODE=true` again afterwards. The saved outputs and the replay use sample mode.
@@ -322,7 +322,8 @@ data/recordings/  recorded Nemotron replies used by the replay
 ui/               control-room.html (main screen), control-room.template.html, index.html (/classic)
 notebooks/        zetaris_connection_test.ipynb
 input_examples/   sample POST /run requests
-output_examples/  results of the 7 mornings + memory-off run; traces/ holds the Zetaris proof run
+output_examples/  results of the 7 mornings + memory-off run
+logs/             run traces; trace-2025-04-29-mem-4f490d.jsonl is the Zetaris proof run
 tests/            rules, World Model, H-MEM, end-to-end sample runs
 ```
 
