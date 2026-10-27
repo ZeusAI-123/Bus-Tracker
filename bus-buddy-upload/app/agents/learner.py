@@ -1,10 +1,4 @@
-"""Learner (end of morning) and Pre-check (start of morning).
 
-Learner: turns this morning's explained incidents into H-MEM episodes, then
-consolidates them into lessons ("Route A runs ~12 min late on rainy mornings").
-Pre-check: at 06:30, looks at today's conditions, recalls lessons and, if one
-applies, raises a 'proactive' incident so the agent acts BEFORE the delay.
-"""
 from __future__ import annotations
 
 from datetime import datetime
