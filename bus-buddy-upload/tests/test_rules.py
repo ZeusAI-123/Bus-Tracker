@@ -1,4 +1,4 @@
-"""Safety Critic hard rules."""
+
 from app import rules
 from app.agents.critic import exclude_after_rejection
 
