@@ -1,8 +1,4 @@
-"""Monitor: pure code, runs every tick. Turns raw positions and feeds into incidents.
 
-Raises one incident per problem (later ticks update it, they don't duplicate it):
-  late, stopped, missing, bunching (per bus/route) and connection_risk, crowding (per stop).
-"""
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -18,19 +14,19 @@ def _t(date: str, hhmmss: str) -> datetime:
 class Monitor:
     def __init__(self, date: str, network: dict, zetaris, trace):
         self.date = date
-        self.net = network          # trips, stop_times by trip, buses, stops
+        self.net = network          
         self.z = zetaris
         self.trace = trace
-        self.history: dict[str, list[dict]] = {}   # bus -> pings
-        self.open: dict[str, dict] = {}            # incident key -> incident
+        self.history: dict[str, list[dict]] = {}   
+        self.open: dict[str, dict] = {}            
         self.counter = 0
 
-    # ---------------------------------------------------------------- ingest
+    
     def add_pings(self, pings: list[dict]) -> None:
         for p in pings:
             self.history.setdefault(p["bus_id"], []).append(p)
 
-    # ---------------------------------------------------------------- checks
+  
     def check(self, now: datetime) -> tuple[list[dict], list[dict]]:
         """Returns (new_incidents, resolved_incidents)."""
         new, resolved = [], []
@@ -56,7 +52,7 @@ class Monitor:
                 resolved.append(inc)
             if not last or not trip:
                 continue
-            # late: compare actual distance along trip with the timetable
+            
             own_trip = self.net["trips"].get(last["trip_id"])
             already = any(k in self.open for k in (f"stopped:{bus}", f"missing:{bus}"))
             if own_trip and not already:
@@ -69,7 +65,7 @@ class Monitor:
                         new.append(inc)
                     else:
                         self.open[f"late:{bus}"]["late_min"] = max(self.open[f"late:{bus}"].get("late_min", 0), round(late, 1))
-            # stopped: not moving, away from any stop
+           
             recent = [p for p in pings if (now - _ts(p)).total_seconds() <= LIMITS["stopped_threshold_min"] * 60]
             if len(recent) >= LIMITS["stopped_threshold_min"] * 2 and all(p["speed_kmh"] < 2 for p in recent) \
                     and not self._near_stop(last):
@@ -128,7 +124,7 @@ class Monitor:
                 new.append(inc)
         return new
 
-    # ---------------------------------------------------------------- helpers
+   
     def _raise(self, key: str, itype: str, now: datetime, **fields) -> Optional[dict]:
         if key in self.open:
             return None
