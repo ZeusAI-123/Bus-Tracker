@@ -1,4 +1,4 @@
-"""Meterless World Model engine: conformance tests (idempotent ingest, provenance, resume, context)."""
+
 from app.engines.world_model import WorldModel
 
 
@@ -11,7 +11,7 @@ def test_ingest_is_idempotent(tmp_path):
     fact = dict(key="pos:C1:07:20:00", entity_id="C1", kind="position", value={"lat": 1, "lon": 2},
                 sim_time="07:20", source="zetaris:vehicle_positions", agent="Monitor")
     assert w.ingest(**fact) is True
-    assert w.ingest(**fact) is False          # same fact twice -> no duplicate
+    assert w.ingest(**fact) is False          
     assert w.stats == {"ingested": 1, "duplicates_skipped": 1}
     assert len(w.facts("C1", "position")) == 1
 
@@ -29,8 +29,8 @@ def test_resume_after_crash(tmp_path):
     w = make(tmp_path)
     w.ingest(key="k1", entity_id="C1", kind="position", value={"lat": 1}, sim_time="07:00", source="s", agent="a")
     w.checkpoint("07:00")
-    del w                                     # simulate a crash
-    w2 = make(tmp_path)                       # reopen the same run
+    del w                                    
+    w2 = make(tmp_path)                      
     assert w2.last_checkpoint() == "07:00"
     assert w2.ingest(key="k1", entity_id="C1", kind="position", value={"lat": 1}, sim_time="07:00", source="s", agent="a") is False
 
