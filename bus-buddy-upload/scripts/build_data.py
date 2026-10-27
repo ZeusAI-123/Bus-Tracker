@@ -1,23 +1,4 @@
-"""Builds all demo data for Bus Buddy (Sydney, morning peak 06:30-08:30).
 
-What it makes (written to data/sample/, the same tables we load into Postgres/S3
-and register in Zetaris):
-  gtfs_routes, gtfs_stops, gtfs_trips, gtfs_stop_times, gtfs_shapes  (GTFS format)
-  buses, driver_shifts, maintenance_reports, road_closures, events,
-  train_delays, passenger_counts, weather_hourly                      (CSV)
-  vehicle_positions/<date>.parquet                                    (one per morning)
-  answer_key.json, scenarios.json
-
-Network: 8 routes x 5 stops using real Sydney place locations. Road paths come
-ONCE from the public OSRM router and are cached in data/network/shapes.json, so
-nothing calls OSRM at runtime. When the team downloads the real Transport for
-NSW GTFS, replace gtfs_* with the trimmed real files (see README).
-
-Weather: real hourly history from Open-Meteo, cached in data/network/weather.json.
-
-Run:  .venv/bin/python scripts/build_data.py            (uses caches if present)
-      .venv/bin/python scripts/build_data.py --refresh  (re-fetch OSRM + weather)
-"""
 from __future__ import annotations
 
 import argparse
@@ -33,14 +14,13 @@ import requests
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from app.geo import haversine_m  # noqa: E402
+from app.geo import haversine_m  
 
 NET_DIR = ROOT / "data" / "network"
 OUT = ROOT / "data" / "sample"
 SEED = 42
 
-# ---------------------------------------------------------------- network ----
-# Approximate coordinates of real Sydney places. Route letters are ours, not TfNSW numbers.
+
 STOPS = {
     "FD":  ("Five Dock, Great North Rd", -33.8670, 151.1290),
     "HAB": ("Haberfield, Parramatta Rd", -33.8800, 151.1390),
@@ -95,13 +75,11 @@ PEAK_FACTOR = 1.35   # OSRM free-flow time -> peak-hour time
 DWELL_S = 30
 LAYOVER_MIN = 4
 
-SLOW_SEGMENT = ("A", "LEI", "ANN")  # Parramatta Rd, Leichhardt -> Annandale: crawls in the rain
-# The first five mornings share one random stream (kept identical to earlier builds, so their recorded
-# AI answers stay valid). Mornings added later get their own seeded stream so they don't shift it.
+SLOW_SEGMENT = ("A", "LEI", "ANN")  
 SHARED_STREAM = {"mon1", "mon2", "tue", "wed", "thu"}
 
 
-# ---------------------------------------------------------------- helpers ----
+
 def get_json(url: str, timeout: int = 60) -> dict:
     """requests first; fall back to curl (older macOS Python can't do the TLS handshake some hosts need)."""
     try:
@@ -185,7 +163,7 @@ def pick_dates(weather: dict) -> dict:
         if not cands:
             cands = [d for d in ds if d.weekday() == wd and morning_rain(weather, d) == 0]
         picks[key] = min(cands, key=lambda d: (d - mon1).days).isoformat()
-    # two more dry mornings after Thursday: a road closure (Friday) and two problems at once (Wednesday)
+    
     after = date.fromisoformat(picks["thu"])
     for key, wd in (("closure", 4), ("busy", 2)):
         cands = [d for d in ds if d.weekday() == wd and d > after and morning_rain(weather, d) == 0
@@ -235,7 +213,7 @@ def point_at(points, cum, dist):
     return (points[lo][0] + f * (points[hi][0] - points[lo][0]), points[lo][1] + f * (points[hi][1] - points[lo][1]))
 
 
-# -------------------------------------------------------------- scenarios ----
+
 def scenarios(dates: dict) -> dict:
     """Planted problems per morning. Times are local Sydney time."""
     return {
@@ -298,7 +276,7 @@ def answer_key(dates: dict) -> dict:
     }
 
 
-# -------------------------------------------------------------- simulation ---
+
 def build(refresh: bool) -> None:
     random.seed(SEED)
     OUT.mkdir(parents=True, exist_ok=True)
@@ -311,7 +289,7 @@ def build(refresh: bool) -> None:
     dates = pick_dates(weather)
     print("Scenario dates:", dates)
 
-    # --- GTFS static
+    
     gtfs_routes = [{"route_id": r, "route_short_name": r, "route_long_name": n, "route_type": 3} for r, (n, _) in ROUTES.items()]
     gtfs_stops = [{"stop_id": s, "stop_name": n, "stop_lat": la, "stop_lon": lo, "wheelchair_boarding": 1} for s, (n, la, lo) in STOPS.items()]
     gtfs_shapes, geo = [], {}
@@ -355,7 +333,7 @@ def build(refresh: bool) -> None:
             t = t + timedelta(minutes=LAYOVER_MIN)
             direction, n = 1 - direction, n + 1
 
-    # --- fleet, drivers
+
     buses = [{"bus_id": b, "route_id": r, "capacity": 60, "wheelchair_accessible": True, "home_lat": DEPOT[1], "home_lon": DEPOT[2]} for b, r in BLOCKS.items()]
     buses += [{"bus_id": "S1", "route_id": None, "capacity": 60, "wheelchair_accessible": True, "home_lat": DEPOT[1], "home_lon": DEPOT[2]},
               {"bus_id": "S2", "route_id": None, "capacity": 60, "wheelchair_accessible": False, "home_lat": DEPOT[1], "home_lon": DEPOT[2]}]
@@ -366,7 +344,7 @@ def build(refresh: bool) -> None:
     for key, d in [(k, v) for k, v in dates.items() if not k.startswith("_")]:
         s = sc[d]
         rng = random if key in SHARED_STREAM else random.Random(f"{SEED}-{d}")
-        # drivers: D1..D9 assigned in order, D9/D10 spare
+        
         for i, bus in enumerate(BLOCKS):
             tables["driver_shifts"].append({"service_date": d, "driver_id": f"D{i+1:02d}", "bus_id": bus, "shift_start": "05:45", "shift_end": "13:45", "status": "on_shift"})
         tables["driver_shifts"].append({"service_date": d, "driver_id": "D10", "bus_id": None, "shift_start": "06:15", "shift_end": "07:45", "status": "spare"})
@@ -378,19 +356,18 @@ def build(refresh: bool) -> None:
             rc = s["road_closure"]
             tables["road_closures"].append({"service_date": d, "route_id": rc["route"], "from_stop": rc["from_stop"], "to_stop": rc["to_stop"],
                                             "reason": rc["reason"], "start": rc["from"], "end": rc["to"]})
-        # weather rows (06-09)
+        
         for t, p, tmp in zip(weather["time"], weather["precip"], weather["temp"]):
             if t.startswith(d) and 5 <= int(t[11:13]) <= 9:
                 tables["weather_hourly"].append({"service_date": d, "hour": int(t[11:13]), "precip_mm": p or 0.0, "temp_c": tmp, "source": weather["source"]})
         if weather["source"] == "synthetic":
             for h in range(5, 10):
                 tables["weather_hourly"].append({"service_date": d, "hour": h, "precip_mm": 2.0 if s.get("rain_slowdown") else 0.0, "temp_c": 12.0, "source": "synthetic"})
-        # background maintenance noise
+        
         tables["maintenance_reports"].append({"service_date": d, "bus_id": "F1", "reported_at": "06:20", "issue": "Rear door sensor intermittent", "severity": "low"})
         for m in s.get("maintenance", []):
             tables["maintenance_reports"].append({"service_date": d, "bus_id": m["bus"], "reported_at": m["time"], "issue": m["issue"], "severity": m["severity"]})
-        # train arrivals at Central (on time unless planted). The planted late train is timed so its
-        # passengers would normally just make a real Route E departure from Central.
+
         e_deps = sorted(st["departure_time"][:5] for st in stop_times if st["stop_id"] == "CEN" and st["stop_sequence"] == 1
                         and st["trip_id"].startswith("E") and "07:15" <= st["departure_time"][:5] <= "08:10")
         td = s.get("train_delay")
@@ -411,9 +388,9 @@ def build(refresh: bool) -> None:
             tables["events"].append({"service_date": d, "stop_id": e["stop"], "name": e["name"], "start": e["from"], "end": e["to"], "expected_extra_pax": e["extra_pax"]})
             if e.get("also_stop"):
                 tables["events"].append({"service_date": d, "stop_id": e["also_stop"], "name": e["name"], "start": e["from"], "end": e["to"], "expected_extra_pax": e["extra_pax"] // 2})
-        # passenger counts per stop per 15 min
+       
         for sid in STOPS:
-            for q in range(8):  # 06:30 .. 08:15
+            for q in range(8):  
                 t = (base.replace(hour=6, minute=30) + timedelta(minutes=15 * q)).strftime("%H:%M")
                 waiting = rng.randint(3, 18) + (12 if sid in ("CEN", "RSQ", "TWH", "WYN") else 0)
                 wc = 0
@@ -425,7 +402,7 @@ def build(refresh: bool) -> None:
                     wc = 1
                 tables["passenger_counts"].append({"service_date": d, "stop_id": sid, "window_start": t, "waiting": waiting, "wheelchair_waiting": wc})
 
-    # --- vehicle positions (simulated drive along real shapes)
+   
     trip_rows = pd.DataFrame(trips)
     st_rows = pd.DataFrame(stop_times)
     for key, d in [(k, v) for k, v in dates.items() if not k.startswith("_")]:
@@ -463,15 +440,15 @@ def build(refresh: bool) -> None:
                         frozen = point_at(g["points"], g["cum"], dist)
                         continue
                     seg_len = g["stop_dist"][k] - g["stop_dist"][k - 1] or 1.0
-                    speed = seg_len / max(g["leg_s"][k - 1], 30)  # m/s planned
+                    speed = seg_len / max(g["leg_s"][k - 1], 30)  
                     f = rng.uniform(0.88, 1.12)
                     if t.hour in rain_hours:
                         f *= 0.95
-                    # wet Parramatta Rd crawls all morning on the rainy scenario days
+                    
                     if s.get("rain_slowdown") and rid == SLOW_SEGMENT[0] and tr.direction_id == 0 \
                             and g["stops"][k - 1] == SLOW_SEGMENT[1]:
                         f *= 0.4
-                    # traffic squeezes past the closed lane, both directions, while the closure is on
+                    
                     rc = s.get("road_closure")
                     if rc and rid == rc["route"] and {g["stops"][k - 1], g["stops"][k]} == {rc["from_stop"], rc["to_stop"]} \
                             and rc["from"] <= t.strftime("%H:%M") < rc["to"]:
@@ -506,7 +483,7 @@ def build(refresh: bool) -> None:
         df.to_parquet(OUT / "vehicle_positions" / f"{d}.parquet", index=False)
         print(f"  {key} {d}: {len(df)} positions, rain hours {sorted(rain_hours)}")
 
-    # --- write tables
+    
     empty_cols = {"road_closures": ["service_date", "route_id", "from_stop", "to_stop", "reason", "start", "end"],
                   "events": ["service_date", "stop_id", "name", "start", "end", "expected_extra_pax"]}
 
