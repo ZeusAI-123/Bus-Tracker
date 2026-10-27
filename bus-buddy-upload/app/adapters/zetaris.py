@@ -38,7 +38,7 @@ class Zetaris:
         if self.sample_mode:
             self._open_duckdb()
 
-    # ---------------------------------------------------------------- public
+    
     def query(self, sql: str, params: Optional[dict] = None, *, agent: str = "system",
               purpose: str = "", sim_time: Optional[str] = None) -> tuple[list[dict], str]:
         """Run SQL; returns (rows, evidence_id). evidence_id identifies this exact result in the trace."""
@@ -57,7 +57,7 @@ class Zetaris:
                            evidence_id=ev, latency_ms=int((time.time() - started) * 1000))
         return rows, ev
 
-    # ---------------------------------------------------------------- helpers
+    
     @staticmethod
     def _bind(sql: str, params: dict) -> str:
         """Tiny, safe parameter binding: :name -> quoted literal (values are our own, never user text)."""
@@ -177,8 +177,6 @@ def _find_token(obj):
     return None
 
 def _zetaris_dialect(sql: str) -> str:
-    """Adjust our SQL for Zetaris: quote the start/end columns the way it expects, and compare
-    time-of-day columns by their time only (it stores them as today's date + the time)."""
     sql = sql.replace('"start"', "`start`").replace('"end"', "`end`")
     m = re.search(r"\bWHERE\b", sql, re.I)
     if not m:
