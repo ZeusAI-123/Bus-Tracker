@@ -118,7 +118,7 @@
   "memory": {
     "lesson_changes": [
       {
-        "id": 28,
+        "id": 34,
         "key": "route:A|cause:weather_congestion|cond:rain",
         "change": "created",
         "status": "active"
@@ -10062,5 +10062,5 @@
   ],
   "trace_id": "2025-04-28-mon1",
   "log_file": "logs\\trace-2025-04-28-mon1.jsonl",
-  "execution_time_seconds": 72.2
+  "execution_time_seconds": 4.4
 }

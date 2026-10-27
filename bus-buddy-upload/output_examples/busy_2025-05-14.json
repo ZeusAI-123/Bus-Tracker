@@ -10135,5 +10135,5 @@
   ],
   "trace_id": "2025-05-14-busy",
   "log_file": "logs\\trace-2025-05-14-busy.jsonl",
-  "execution_time_seconds": 20.1
+  "execution_time_seconds": 5.0
 }
