@@ -1,4 +1,4 @@
-"""Small geometry and time helpers (no external services at runtime)."""
+
 from __future__ import annotations
 
 import math
@@ -14,7 +14,7 @@ def haversine_m(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 
 
 def road_eta_min(lat1: float, lon1: float, lat2: float, lon2: float, speed_kmh: float = 22.0) -> float:
-    """Rough peak-hour drive time: straight line x 1.35 road factor at an urban average speed."""
+    
     return haversine_m(lat1, lon1, lat2, lon2) * 1.35 / (speed_kmh * 1000 / 60)
 
 
