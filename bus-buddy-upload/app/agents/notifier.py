@@ -1,5 +1,4 @@
-"""Notifier: passenger service alerts (GTFS-Realtime Alert style) + a controller decision card.
-Nothing is actually sent; alerts are returned and shown on screen."""
+
 from __future__ import annotations
 
 import json
