@@ -1,12 +1,4 @@
-"""Investigator: explains WHY an incident happened, with evidence.
 
-Live mode: Nemotron (via Nightshift) chooses which Zetaris tools to call, up to
-3 rounds, then answers with a cause, a confidence and the evidence ids it relied on.
-Code then checks every cited evidence id really exists (no made-up evidence).
-
-Offline fallback (no model and no recording): a documented rule-based reasoner
-that calls the same tools. It is labelled "offline-rules" in the trace/output.
-"""
 from __future__ import annotations
 
 import json
@@ -40,8 +32,7 @@ missing -> get_bus_track, get_maintenance; late -> get_weather, get_road_closure
 crowding -> get_events, get_passenger_counts; connection_risk -> get_train_delays, get_passenger_counts.
 Usually 1-2 rounds of tools are enough.""" % CAUSES
 
-# Checks every investigation of this incident type must include. If the model answers without them,
-# code runs them and asks it to reconsider, so a skipped check can't hide the real cause.
+
 REQUIRED = {"stopped": ["get_maintenance", "get_road_closures", "get_bus_track"],
             "missing": ["get_bus_track", "get_maintenance"],
             "late": ["get_weather", "get_road_closures", "get_events"],
@@ -111,7 +102,7 @@ class Investigator:
                 "get_road_closures": {"route_id": inc.get("route_id")}, "get_events": {"stop_ids": stops},
                 "get_passenger_counts": {"stop_ids": stops}, "get_train_delays": {"station_stop_id": inc.get("stop_id")}}[name]
 
-    # ---------------------------------------------------------------- fallback
+    
     def _offline(self, inc: dict, lessons: list) -> dict:
         t, T = inc["detected_at"], self.tools
         kind = inc["type"]
