@@ -1,10 +1,4 @@
-"""Uploads the bus position files to S3 so Zetaris can read them (Zetaris can't read files on a laptop).
 
-  pip install boto3
-  AWS_PROFILE=<your profile> python scripts/upload_s3.py --bucket <bucket-name> [--prefix busbuddy/vehicle_positions/]
-
-Then register s3://<bucket>/<prefix> in Zetaris as a Parquet source named busbuddy_s3.vehicle_positions.
-"""
 import argparse
 from pathlib import Path
 
