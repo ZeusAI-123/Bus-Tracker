@@ -7,7 +7,7 @@ import time
 from typing import Any, Optional
 import uuid
 
-try:   # use the computer's trusted certificates (Windows CERTIFICATE_VERIFY_FAILED fix)
+try:   
     import truststore
     truststore.inject_into_ssl()
 except ImportError:
