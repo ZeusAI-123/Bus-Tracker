@@ -1,10 +1,4 @@
-"""Scores runs against data/sample/answer_key.json.
 
-  python scripts/score.py                 scores output_examples/*.json (made by `python run.py --week`)
-
-Checks per expected incident: found? right cause? acceptable action? any "must not" broken?
-Also compares the rainy Monday with memory ON vs OFF.
-"""
 from __future__ import annotations
 
 import json
