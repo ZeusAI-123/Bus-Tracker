@@ -1,8 +1,4 @@
-"""Hard safety and fairness rules the Safety Critic checks in code (no AI).
 
-Each rule returns a problem string, or None if the plan passes it. Values come
-from config.LIMITS so the team can adjust them to real operator rules.
-"""
 from __future__ import annotations
 
 from typing import Optional
