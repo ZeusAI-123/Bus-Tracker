@@ -1,10 +1,4 @@
-"""Runs one morning: load network -> pre-check -> 2-minute ticks -> learn -> report.
 
-Agent loop per incident:
-  Investigator (why, with evidence) -> Planner (pick an option) <-> Safety Critic
-  (reject -> drop options sharing the problem -> Planner again, max 3 attempts)
-  -> Notifier (service alert + decision card). Unresolved -> escalate to a human.
-"""
 from __future__ import annotations
 
 import json
@@ -114,7 +108,7 @@ def run_morning(date: str, *, memory: str = "on", sample_mode: Optional[bool] = 
         world.set_meta("handled", handled)
         world.set_meta("alerts", alerts)
 
-    # ---- start of morning
+    
     conditions = {}
     if not resume_from:
         pc = PreCheck(mem, tools, net, trace, date)
@@ -126,7 +120,7 @@ def run_morning(date: str, *, memory: str = "on", sample_mode: Optional[bool] = 
         conditions = world.get_meta("conditions", {})
         trace.log("Orchestrator", "resume", output_summary=f"resuming after {resume_from}")
 
-    # ---- ticks
+   
     prev = start - timedelta(minutes=TICK_MINUTES)
     now = start
     while now <= end:
@@ -160,7 +154,7 @@ def run_morning(date: str, *, memory: str = "on", sample_mode: Optional[bool] = 
         world.checkpoint(hm)
         prev, now = now, now + timedelta(minutes=TICK_MINUTES)
 
-    # ---- end of morning
+    
     learner = Learner(mem, trace)
     lesson_changes = learner.learn(date, handled, conditions)
     world.commit()
@@ -188,7 +182,7 @@ def run_morning(date: str, *, memory: str = "on", sample_mode: Optional[bool] = 
     return result
 
 
-# ------------------------------------------------------------------ network
+
 def load_network(z: Zetaris, world: WorldModel, date: str, trace) -> dict:
     q = lambda sql, purpose: z.query(sql, {"d": date}, agent="Orchestrator", purpose=purpose)[0]
     routes = q("SELECT * FROM gtfs_routes", "routes")
@@ -247,7 +241,7 @@ def load_network(z: Zetaris, world: WorldModel, date: str, trace) -> dict:
     return net
 
 
-# ------------------------------------------------------------------ views
+
 def _plan_view(p: Optional[dict]) -> Optional[dict]:
     if not p:
         return None
