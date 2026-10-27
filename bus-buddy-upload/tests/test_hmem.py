@@ -1,4 +1,4 @@
-"""Meterless H-MEM engine: conformance tests (store, consolidate, recall ranking, decay, conflict, approval)."""
+
 from app.engines.hmem import HMem
 
 KEY_A = "route:A|cause:weather_congestion|cond:rain"
@@ -45,7 +45,7 @@ def test_repeat_reinforces_and_contradiction_supersedes():
     change = m.consolidate("2025-06-02")[0]
     assert change["change"] == "superseded"
     statuses = sorted(r["status"] for r in m.all("semantic"))
-    assert statuses == ["active", "superseded"]          # old lesson kept for history
+    assert statuses == ["active", "superseded"]          
 
 
 def test_approval_boundary_blocks_unproven_lessons():
