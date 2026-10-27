@@ -1,8 +1,4 @@
-"""One JSONL trace per run (logs/trace-<run_id>.jsonl) plus readable stdout.
 
-Every agent step calls trace.log(...). Judges read this file to see how the
-agents reached their output, so log decisions, queries, models and retries.
-"""
 from __future__ import annotations
 
 import json
