@@ -32,7 +32,22 @@ Only cite evidence_ids returned by tools. Use memory lessons if relevant. Max 3 
 Guidance: rain clearly slows Sydney peak-hour traffic. If a route is running late while there is any
 measurable rain (precip_mm > 0) in the last two hours, and there is no fault, road closure or event,
 the cause is weather_congestion with confidence 0.7 or more. For crowds at a stop, check get_events and
-get_passenger_counts: an event at those stops means event_crowding. Usually 1-2 rounds of tools are enough.""" % CAUSES
+get_passenger_counts: an event at those stops means event_crowding. If get_road_closures shows a closure on
+the incident's own route that is active at the time of the delay, the cause is road_closure (closures on other
+routes do not count). Only say something was ruled out if you checked it with a tool.
+Required checks before answering: stopped -> get_maintenance, get_road_closures, get_bus_track;
+missing -> get_bus_track, get_maintenance; late -> get_weather, get_road_closures, get_events;
+crowding -> get_events, get_passenger_counts; connection_risk -> get_train_delays, get_passenger_counts.
+Usually 1-2 rounds of tools are enough.""" % CAUSES
+
+# Checks every investigation of this incident type must include. If the model answers without them,
+# code runs them and asks it to reconsider, so a skipped check can't hide the real cause.
+REQUIRED = {"stopped": ["get_maintenance", "get_road_closures", "get_bus_track"],
+            "missing": ["get_bus_track", "get_maintenance"],
+            "late": ["get_weather", "get_road_closures", "get_events"],
+            "crowding": ["get_events", "get_passenger_counts"],
+            "bunching": ["get_events"],
+            "connection_risk": ["get_train_delays", "get_passenger_counts"]}
 
 
 class Investigator:
@@ -44,6 +59,7 @@ class Investigator:
         lessons = self.memory.recall(filters={"route": inc.get("route_id")}, on_date=self.date) if inc.get("route_id") else []
         lesson_text = [{"key": l["key"], "lesson": l["content"].get("summary"), "score": l["score"]} for l in lessons]
         transcript = [{"incident": _brief(inc), "context": _ctx_brief(context), "memory": lesson_text}]
+        called: set[str] = set()
         for round_no in range(4):
             if round_no == 3:
                 transcript.append({"instruction": "No more tools. Give your final answer now."})
@@ -57,6 +73,15 @@ class Investigator:
                     transcript.append({"error": f"These evidence ids do not exist: {bad}. Cite only ids returned by tools."})
                     self.trace.log("Investigator", "rejected_uncited_evidence", sim_time=t, status="retry", output_summary=str(bad))
                     continue
+                skipped = [n for n in REQUIRED.get(inc["type"], []) if n not in called]
+                if skipped and round_no < 3:
+                    results = [self._run(n, self._default_args(n, inc), t) for n in skipped]
+                    called.update(skipped)
+                    transcript.append({"tool_results": results, "note": f"You answered without these required checks: {skipped}. "
+                                       "They were run for you. Reconsider and give your final answer."})
+                    self.trace.log("Investigator", "required_checks_added", sim_time=t, status="retry", output_summary=str(skipped),
+                                   incident_id=inc["id"])
+                    continue
                 final["evidence_ids"] = [e for e in final.get("evidence_ids", []) if e in self.tools.evidence]
                 if final.get("cause") not in CAUSES:
                     final["cause"] = "unknown"
@@ -64,19 +89,27 @@ class Investigator:
                 final["memory_used"] = lesson_text
                 self.trace.log("Investigator", "explained", sim_time=t, output_summary=f"{final['cause']} ({final.get('confidence')}): {final.get('explanation','')}", incident_id=inc["id"])
                 return final
-            results = []
-            for call in (reply.get("tool_calls") or [])[:4]:
-                fn = self.tools.menu().get(call.get("tool"))
-                if not fn:
-                    results.append({"tool": call.get("tool"), "error": "unknown tool"})
-                    continue
-                try:
-                    out = fn(**(call.get("args") or {}), sim_time=t)
-                    results.append({"tool": call["tool"], "evidence_id": out["evidence_id"], "rows": out["rows"][:12]})
-                except Exception as e:
-                    results.append({"tool": call.get("tool"), "error": str(e)})
-            transcript.append({"tool_results": results})
+            calls = (reply.get("tool_calls") or [])[:4]
+            called.update(c.get("tool") for c in calls)
+            transcript.append({"tool_results": [self._run(c.get("tool"), c.get("args") or {}, t) for c in calls]})
         return self._offline(inc, lessons)
+
+    def _run(self, name: str, args: dict, t: str) -> dict:
+        fn = self.tools.menu().get(name)
+        if not fn:
+            return {"tool": name, "error": "unknown tool"}
+        try:
+            out = fn(**args, sim_time=t)
+            return {"tool": name, "evidence_id": out["evidence_id"], "rows": out["rows"][:12]}
+        except Exception as e:
+            return {"tool": name, "error": str(e)}
+
+    def _default_args(self, name: str, inc: dict) -> dict:
+        stops = inc.get("stops") or ([inc["stop_id"]] if inc.get("stop_id") else self._route_stops(inc))
+        return {"get_maintenance": {"bus_id": inc.get("bus")}, "get_bus_track": {"bus_id": inc.get("bus")},
+                "get_driver_shift": {"bus_id": inc.get("bus")}, "get_weather": {},
+                "get_road_closures": {"route_id": inc.get("route_id")}, "get_events": {"stop_ids": stops},
+                "get_passenger_counts": {"stop_ids": stops}, "get_train_delays": {"station_stop_id": inc.get("stop_id")}}[name]
 
     # ---------------------------------------------------------------- fallback
     def _offline(self, inc: dict, lessons: list) -> dict:
@@ -155,7 +188,7 @@ class Investigator:
         return out
 
     def _route_stops(self, inc: dict) -> list:
-        return self.tools.world.entity(f"route:{inc['route_id']}").get("stops", []) if inc.get("route_id") else []
+        return (self.tools.world.entity(f"route:{inc['route_id']}") or {}).get("stops", []) if inc.get("route_id") else []
 
 
 def _brief(inc: dict) -> dict:

@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Service C: Bus delay",
-    "description": "Bus C1 stationary between stops since 07:19 due to engine warning. Replaced by spare S1 with driver D11 at Newtown King St. Services resume from 07:36."
-  }
-}

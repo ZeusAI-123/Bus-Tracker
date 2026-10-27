@@ -1,0 +1,25 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "tool_calls": [
+      {
+        "tool": "get_events",
+        "args": {
+          "stop_ids": [
+            "UNS",
+            "KEN"
+          ]
+        }
+      },
+      {
+        "tool": "get_passenger_counts",
+        "args": {
+          "stop_ids": [
+            "UNS",
+            "KEN"
+          ]
+        }
+      }
+    ]
+  }
+}

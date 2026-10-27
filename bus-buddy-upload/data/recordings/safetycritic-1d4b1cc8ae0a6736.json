@@ -1,8 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "block": false,
-    "concerns": [],
-    "reason": "The plan safely updates arrival times without deploying resources, and no concrete safety or fairness issues override the already-approved hard rules."
-  }
-}

@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "alert_only",
+    "reason": "No reliable cause identified and confidence is low (0.35), so deploying a bus risks a false alarm; updating arrival times keeps passengers informed safely and fairly."
+  }
+}

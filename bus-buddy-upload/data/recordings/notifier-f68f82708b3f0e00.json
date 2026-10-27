@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route E: Extra service for UNSW exam crowds",
-    "description": "Exam session at UNSW (07:30\u201308:15) added demand at UNS and KEN stops (279 people). A spare shuttle (S1, driver D11) will arrive at UNSW Kensington by 07:43."
-  }
-}

@@ -1,0 +1,8 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "block": false,
+    "concerns": [],
+    "reason": "All hard rules passed by code; no unblocked concrete safety or fairness issues, and no contradiction with the empty memory set."
+  }
+}

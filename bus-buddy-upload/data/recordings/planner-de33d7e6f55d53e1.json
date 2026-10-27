@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "alert_only",
+    "reason": "A single 60-capacity extra bus cannot safely serve 140 waiting passengers at UNS, and several driver options conflict with shift-end times. The alert informs all 210 passengers across both stops fairly without safety risks."
+  }
+}

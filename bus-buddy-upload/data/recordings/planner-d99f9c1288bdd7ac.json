@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "choice": "replacement_bus:S1:D11",
-    "reason": "The bus is accessible, so it can board the wheelchair passenger at NTN fairly, and driver D11 is within shift hours, unlike the rejected D10 option. It also restores service in about 12 minutes instead of 60, minimizing passenger disruption."
-  }
-}

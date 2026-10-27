@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route C: bus breakdown",
+    "description": "A bus has broken down between Newtown and Stanmore, affecting Route C services. A replacement bus is arriving at Newtown King St. expected about 07:36."
+  }
+}

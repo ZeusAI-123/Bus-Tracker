@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route A: extra bus running",
+    "description": "Route A is running late this morning. An extra bus is running to keep services moving. Expected about 06:43 at Five Dock, Great North Rd."
+  }
+}

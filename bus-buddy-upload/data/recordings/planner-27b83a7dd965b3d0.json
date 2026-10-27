@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "It assigns an accessible bus with driver D11, whose shift ends at 14:15, eliminating the driver-hours conflict. This ensures wheelchair users are included, serving passengers safely and fairly."
+  }
+}

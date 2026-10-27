@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route E: bus delay",
+    "description": "Train delay caused passengers to miss their connecting Route E bus. An extra Route E bus is departing from Central Station, Eddy Ave. Expected about 07:52."
+  }
+}

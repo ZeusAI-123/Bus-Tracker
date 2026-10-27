@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route E: crowding",
+    "description": "Graduation ceremony at UNSW causing extra passengers and crowding at UNSW Kensington. An extra bus is being deployed. Expected about 07:56"
+  }
+}

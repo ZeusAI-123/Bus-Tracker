@@ -30,9 +30,10 @@
       "resolution": null,
       "cause": "breakdown",
       "confidence": 0.8,
-      "explanation": "Bus C1 had an engine warning light reported by the driver at depot check at 06:50 (ev-291020d03d, severity medium) and was observed stationary between stops from 07:19, consistent with a mechanical failure causing the stop.",
+      "explanation": "Bus C1 had an engine warning light reported at 06:50 (medium severity) and was later observed stationary between stops from 07:19, consistent with a mechanical breakdown.",
       "evidence": [
-        "ev-291020d03d"
+        "ev-291020d03d",
+        "ev-8193fabfc9"
       ],
       "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
@@ -47,7 +48,7 @@
         "id": "replacement_bus:S1:D11",
         "action": "replacement_bus",
         "summary": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
-        "reason": "The accessible bus with driver D11 ensures wheelchair access at NTN. It also operates within the driver's shift limit, avoiding safety violations and delivering timely service to all 63 affected passengers.",
+        "reason": "Bus S1 is accessible, ensuring the wheelchair passenger at Newtown King St is served fairly, and driver D11 has a later shift end providing operational resilience and avoiding fatigue risks.",
         "bus": "S1",
         "driver": "D11",
         "eta": "07:36",
@@ -69,7 +70,7 @@
       },
       "decision_card": {
         "incident": "C1 stationary between stops since 07:19",
-        "why": "Bus C1 had an engine warning light reported by the driver at depot check at 06:50 (ev-291020d03d, severity medium) and was observed stationary between stops from 07:19, consistent with a mechanical failure causing the stop.",
+        "why": "Bus C1 had an engine warning light reported at 06:50 (medium severity) and was later observed stationary between stops from 07:19, consistent with a mechanical breakdown.",
         "confidence": 0.8,
         "decision": "Replace broken-down bus: spare S1 with driver D11 from the depot, at Newtown, King St by 07:36",
         "rejected": []
@@ -100,8 +101,8 @@
           "stop_id": "MKV"
         }
       ],
-      "header_text": "Service C: Mechanical delay",
-      "description_text": "Bus C1 had an engine warning and stopped between stops from 07:19. A spare bus (S1, driver D11) is replacing it at Newtown, King St. Expected arrival: 07:36.",
+      "header_text": "Route C: bus breakdown",
+      "description_text": "A Route C bus has broken down mechanically and is stationary between stops. A replacement bus is en route. expected about 07:36 at Newtown, King St, Stanmore, Parramatta Rd, Petersham and Marrickville Metro.",
       "method": "nemotron-via-nightshift"
     }
   ],
@@ -158,12 +159,12 @@
     "passengers_informed": 63
   },
   "models_used": {
-    "none (sample mode: recorded/offline reasoning)": 0
+    "nvidia/nemotron-3.5-lightning-30b-a3b": 5
   },
   "world_model": {
-    "facts_ingested": 1992,
+    "facts_ingested": 1991,
     "duplicates_skipped": 0,
-    "provenance_rows": 2056
+    "provenance_rows": 2055
   },
   "network": {
     "stops": [
@@ -10045,5 +10046,5 @@
   ],
   "trace_id": "2025-04-29-tue",
   "log_file": "logs\\trace-2025-04-29-tue.jsonl",
-  "execution_time_seconds": 19.7
+  "execution_time_seconds": 4.1
 }

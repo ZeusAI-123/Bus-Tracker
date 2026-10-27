@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route A: bus delayed",
+    "description": "A replacement bus is arriving at Haberfield Parramatta Rd, Leichhardt Norton St, Annandale Parramatta Rd, and Railway Square Central. Expected about 07:22."
+  }
+}

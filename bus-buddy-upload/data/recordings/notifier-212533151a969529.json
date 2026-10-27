@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route A: Service Delay",
-    "description": "Bus A1 is 5.8 min late at 06:58 due to morning rain and traffic congestion on Route A. Spare bus S1 with driver D11 departing Haberfield, Parramatta Rd to restore service. Expected recovery by 07:22."
-  }
-}

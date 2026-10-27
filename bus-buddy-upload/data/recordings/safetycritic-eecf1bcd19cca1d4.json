@@ -1,8 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "block": false,
-    "concerns": [],
-    "reason": "The plan is safe, fair, and consistent with all previously passed hard rules, making approval appropriate."
-  }
-}

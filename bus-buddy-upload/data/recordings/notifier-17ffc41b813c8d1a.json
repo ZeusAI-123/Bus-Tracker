@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route C: bus breakdown",
+    "description": "A Route C bus has broken down mechanically and is stationary between stops. A replacement bus is en route. expected about 07:36 at Newtown, King St, Stanmore, Parramatta Rd, Petersham and Marrickville Metro."
+  }
+}

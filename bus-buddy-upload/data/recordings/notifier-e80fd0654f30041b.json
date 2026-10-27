@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route B: bus delayed",
+    "description": "Delays on Route B due to a road closure. A replacement bus is being deployed. Expected about 07:22 at Rozelle, Victoria Rd, Glebe Point Rd, Ultimo, Harris St and Town Hall."
+  }
+}

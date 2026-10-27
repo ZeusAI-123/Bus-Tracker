@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route A rain delay",
-    "description": "Rain is delaying Route A services. We're deploying an extra bus from Five Dock, Great North Rd at 06:43 to keep services on track. Expect improved reliability shortly."
-  }
-}

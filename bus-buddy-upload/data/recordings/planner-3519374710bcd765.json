@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "It deploys an accessible bus to arrive earliest (07:07), fully covering the 61 affected passengers and ensuring fairness for those with mobility needs, unlike the non-accessible S2 options. It also resolves the service gap directly rather than just updating arrival times as the alert_only option would."
+  }
+}

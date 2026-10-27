@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D10",
+    "reason": "Deploying the accessible bus S1 with driver D10 ensures fairness for all passengers, including those with mobility needs, and recovers the 5.3\u2011minute gap earliest at 07:07."
+  }
+}

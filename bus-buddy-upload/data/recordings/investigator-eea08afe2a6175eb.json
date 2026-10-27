@@ -1,0 +1,15 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "final": {
+      "cause": "event_crowding",
+      "confidence": 0.9,
+      "evidence_ids": [
+        "ev-17aae1cae0",
+        "ev-6f6ec7e184"
+      ],
+      "explanation": "A scheduled UNSW morning exam session caused a surge in passenger demand at stops UNS and KEN, matching the observed 279 waiting passengers and aligning with event data, resulting in event-driven crowding.",
+      "uncertain": "none"
+    }
+  }
+}

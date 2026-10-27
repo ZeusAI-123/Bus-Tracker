@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:S1:D10",
+    "reason": "Bus S1 is accessible, ensuring the wheelchair passenger at NTN is served fairly, and the replacement minimizes the service gap to ~12 minutes, restoring schedule safely."
+  }
+}

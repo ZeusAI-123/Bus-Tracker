@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route C - Service Update",
-    "description": "Route C: Bus C1 broke down with engine warning at 07:23 near Newtown. Replacement bus S1 with driver D11 from depot arriving by 07:36. Services normal at Newtown King St, Stanmore Parramatta Rd, Petersham, and Marrickville Metro."
-  }
-}

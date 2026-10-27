@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "header": "Route E: bus delay",
+    "description": "Your Route E bus is running about 6 minutes late. We are updating arrival times. Expected about 07:45 at UNSW Kensington, Kensington Anzac Pde, Moore Park and Central Station Eddy Ave stops."
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "Driver D10\u2019s shift had already ended at 07:45, making those options unsafe. Deploying accessible bus S1 with driver D11 (on shift until 14:15) directly fills the 5.9\u2011minute gap for 324 passengers more fairly than only updating arrival times."
+  }
+}

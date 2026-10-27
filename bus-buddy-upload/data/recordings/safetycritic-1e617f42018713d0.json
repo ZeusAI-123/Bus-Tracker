@@ -1,8 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "block": false,
-    "concerns": [],
-    "reason": "The plan passes all pre-checked hard rules and contains no unchecked safety or fairness issues or contradictions with memory lessons."
-  }
-}

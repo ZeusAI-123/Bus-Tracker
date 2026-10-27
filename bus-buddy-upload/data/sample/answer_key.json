@@ -106,5 +106,60 @@
         "needs_memory": true
       }
     ]
+  },
+  "2025-05-09": {
+    "scenario": "closure",
+    "expected": [
+      {
+        "route": "B",
+        "type": "late",
+        "cause": "road_closure",
+        "actions_ok": [
+          "alert_only",
+          "extra_bus"
+        ],
+        "must_not": []
+      }
+    ]
+  },
+  "2025-05-14": {
+    "scenario": "busy",
+    "expected": [
+      {
+        "bus": "C1",
+        "type": "stopped",
+        "cause": "breakdown",
+        "actions_ok": [
+          "replacement_bus"
+        ],
+        "must_use": {
+          "bus": "S1"
+        },
+        "must_not": [
+          {
+            "bus": "S2",
+            "why": "not wheelchair accessible"
+          }
+        ]
+      },
+      {
+        "route": "E",
+        "type": "crowding",
+        "cause": "event_crowding",
+        "actions_ok": [
+          "extra_bus"
+        ],
+        "must_not": [
+          {
+            "bus": "S1",
+            "why": "already replacing C1"
+          },
+          {
+            "driver": "D10",
+            "why": "shift ends 07:45"
+          }
+        ]
+      }
+    ]
   }
 }

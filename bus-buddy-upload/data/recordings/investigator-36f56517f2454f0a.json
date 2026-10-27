@@ -1,0 +1,16 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "final": {
+      "cause": "weather_congestion",
+      "confidence": 0.75,
+      "evidence_ids": [
+        "ev-b80e47c5ae",
+        "ev-2cc4c9bc92",
+        "ev-1e29950a85"
+      ],
+      "explanation": "Bus A1 is running 5.3 minutes late during light rain (0.8 mm at hour 5, 0.2 mm at hour 6) with no road closures or stop events detected; rain is slowing peak-hour traffic.",
+      "uncertain": "none"
+    }
+  }
+}

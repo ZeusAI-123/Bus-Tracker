@@ -25,16 +25,20 @@
       "resolved_at": "07:18",
       "resolution": "G1 reporting again",
       "cause": "gps_glitch",
-      "confidence": 0.65,
-      "explanation": "Bus G1 stopped transmitting position at 07:09:30 while en route; the bus_track shows normal movement until 07:07:30, and the last context position had speed 0.0. No rain (precip_mm=0), no road closures, and driver D08 was on shift, indicating a GPS signal loss rather than environmental or operational fault.",
+      "confidence": 0.6,
+      "explanation": "Bus G1 was last tracked moving normally at 07:07:30 (speed ~21 km/h), then lost position for 4 minutes with no maintenance fault detected, pointing to a GPS signal loss as the most likely cause.",
       "evidence": [
         "ev-9a8cf44381",
-        "ev-9f4ac879f5",
-        "ev-e38dc9fa2e"
+        "ev-722430f5a9"
       ],
       "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
       "plans_considered": [
+        {
+          "plan": "Send a spare bus to cover G1 as a precaution",
+          "id": "replacement_bus:precaution",
+          "critic": "rejected - the cause is a GPS dropout, so the bus is most likely still running; a spare would be a false alarm. Keep watching instead; no driver is assigned to S1, so it cannot leave the depot"
+        },
         {
           "plan": "Keep watching G1 for 4 more minutes; act if it does not reappear",
           "id": "monitor",
@@ -45,7 +49,7 @@
         "id": "monitor",
         "action": "monitor",
         "summary": "Keep watching G1 for 4 more minutes; act if it does not reappear",
-        "reason": "The incident involves a GPS glitch with 0.65 confidence and uncertainty about persistence; a 4\u2011minute monitoring period aligns with the existing timeline, ensures passenger safety by triggering replacement only if the bus does not reappear, and avoids unnecessary spare\u2011bus deployment across the network.",
+        "reason": "A GPS glitch likely means G1 is still operating; dispatching a spare would cause unnecessary disruption with no driver available to deploy it. Monitoring confirms whether the bus reappears before taking further action.",
         "stops_affected": [
           "COG",
           "RWK",
@@ -57,10 +61,15 @@
       },
       "decision_card": {
         "incident": "no position from G1 for 4 min",
-        "why": "Bus G1 stopped transmitting position at 07:09:30 while en route; the bus_track shows normal movement until 07:07:30, and the last context position had speed 0.0. No rain (precip_mm=0), no road closures, and driver D08 was on shift, indicating a GPS signal loss rather than environmental or operational fault.",
-        "confidence": 0.65,
+        "why": "Bus G1 was last tracked moving normally at 07:07:30 (speed ~21 km/h), then lost position for 4 minutes with no maintenance fault detected, pointing to a GPS signal loss as the most likely cause.",
+        "confidence": 0.6,
         "decision": "Keep watching G1 for 4 more minutes; act if it does not reappear",
-        "rejected": []
+        "rejected": [
+          {
+            "plan": "Send a spare bus to cover G1 as a precaution",
+            "why": "the cause is a GPS dropout, so the bus is most likely still running; a spare would be a false alarm. Keep watching instead; no driver is assigned to S1, so it cannot leave the depot"
+          }
+        ]
       }
     },
     {
@@ -75,13 +84,13 @@
       "resolved_at": null,
       "resolution": null,
       "cause": "late_train",
-      "confidence": 0.85,
-      "explanation": "The T1 Western Line train was 9 minutes late (scheduled 07:53, actual 08:02), directly causing 42 passengers to miss their connecting Route E bus departing at 07:59. Weather showed no rain (precip_mm 0.0), there were no events at stops, and passenger counts were moderate, ruling out other causes.",
+      "confidence": 0.8,
+      "explanation": "The T1 Western Line train was 9 minutes late (07:53\u219208:02), causing 42 passengers to miss their 07:59 connecting Route E bus. No measurable rain, events, or road closures were identified as contributing factors.",
       "evidence": [
         "ev-9f246c6f38",
+        "ev-58fb9a5a07",
         "ev-9f4ac879f5",
-        "ev-5b3b062504",
-        "ev-58fb9a5a07"
+        "ev-5b3b062504"
       ],
       "reasoning_method": "nemotron-via-nightshift",
       "memory_used": [],
@@ -101,7 +110,7 @@
         "id": "extra_bus:S1:D11",
         "action": "extra_bus",
         "summary": "Extra Route E departure for the late train: spare S1 with driver D11 from the depot, at Central Station, Eddy Ave by 07:52",
-        "reason": "Chooses an accessible bus with a driver whose shift covers the assignment, ensuring passengers with mobility needs are served without violating labor rules or causing downstream delays.",
+        "reason": "It deploys an accessible bus (S1) to fairly accommodate all stranded passengers, and driver D11\u2019s shift end (14:15) covers the deployment without violating labor constraints.",
         "bus": "S1",
         "driver": "D11",
         "eta": "07:52",
@@ -118,8 +127,8 @@
       },
       "decision_card": {
         "incident": "T1 Western Line due 07:53 now arriving 08:02: 42 passengers will miss the 07:59 Route E bus",
-        "why": "The T1 Western Line train was 9 minutes late (scheduled 07:53, actual 08:02), directly causing 42 passengers to miss their connecting Route E bus departing at 07:59. Weather showed no rain (precip_mm 0.0), there were no events at stops, and passenger counts were moderate, ruling out other causes.",
-        "confidence": 0.85,
+        "why": "The T1 Western Line train was 9 minutes late (07:53\u219208:02), causing 42 passengers to miss their 07:59 connecting Route E bus. No measurable rain, events, or road closures were identified as contributing factors.",
+        "confidence": 0.8,
         "decision": "Extra Route E departure for the late train: spare S1 with driver D11 from the depot, at Central Station, Eddy Ave by 07:52",
         "rejected": [
           {
@@ -142,8 +151,8 @@
           "stop_id": "CEN"
         }
       ],
-      "header_text": "Route E: extra service added",
-      "description_text": "T1 train 9 min late (07:53\u219208:02) made 42 passengers miss the 07:59 Route E bus. No rain or stop delays. A spare S1 bus with driver D11 now departs Central Station, Eddy Ave at 07:52.",
+      "header_text": "Route E: bus delay",
+      "description_text": "Train delay caused passengers to miss their connecting Route E bus. An extra Route E bus is departing from Central Station, Eddy Ave. Expected about 07:52.",
       "method": "nemotron-via-nightshift"
     }
   ],
@@ -195,17 +204,17 @@
     "incidents": 2,
     "decisions_approved": 2,
     "escalated": 0,
-    "critic_rejections": 1,
+    "critic_rejections": 2,
     "proactive_actions": 0,
     "passengers_informed": 24
   },
   "models_used": {
-    "none (sample mode: recorded/offline reasoning)": 0
+    "nvidia/nemotron-3.5-lightning-30b-a3b": 11
   },
   "world_model": {
-    "facts_ingested": 1980,
-    "duplicates_skipped": 1,
-    "provenance_rows": 2046
+    "facts_ingested": 1979,
+    "duplicates_skipped": 0,
+    "provenance_rows": 2045
   },
   "network": {
     "stops": [
@@ -10087,5 +10096,5 @@
   ],
   "trace_id": "2025-05-07-wed",
   "log_file": "logs\\trace-2025-05-07-wed.jsonl",
-  "execution_time_seconds": 18.9
+  "execution_time_seconds": 4.8
 }

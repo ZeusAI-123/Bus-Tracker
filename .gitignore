@@ -1,3 +1,5 @@
 bus-buddy-upload/.env
 *.pyc
 *.db
+bus-buddy-upload/test.py
+bus-buddy-upload/notebooks/test.ipynb

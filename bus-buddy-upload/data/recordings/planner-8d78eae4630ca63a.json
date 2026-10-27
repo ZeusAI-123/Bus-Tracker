@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "replacement_bus:precaution",
+    "reason": "It proactively restores full route service, preventing passengers at COG, RWK, ZET, WAT, and CEN from enduring further unpredictable delays."
+  }
+}

@@ -1,7 +1,0 @@
-{
-  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
-  "reply": {
-    "header": "Route A: Service update",
-    "description": "Early morning light rain caused minor congestion, delaying Route A buses by around 6 minutes. Driver D01 confirmed on-shift. Revised arrival times now applying at Haberfield, Leichhardt, Annandale and Railway Square."
-  }
-}

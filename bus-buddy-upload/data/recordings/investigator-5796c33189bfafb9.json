@@ -1,0 +1,15 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "final": {
+      "cause": "event_crowding",
+      "confidence": 0.88,
+      "evidence_ids": [
+        "ev-0b4d4648fb",
+        "ev-8040d8c226"
+      ],
+      "explanation": "A UNSW graduation ceremony scheduled from 07:45\u201308:30 at stops UNS and KEN generated expected extra passengers matching the 210 people waiting (140 at UNS, 70 at KEN), causing the crowding incident.",
+      "uncertain": "none"
+    }
+  }
+}

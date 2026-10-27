@@ -1,0 +1,16 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "final": {
+      "cause": "breakdown",
+      "confidence": 0.85,
+      "evidence_ids": [
+        "ev-f3f3446138",
+        "ev-6a558e9e54",
+        "ev-b257edaea4"
+      ],
+      "explanation": "Bus C1 had an engine warning light reported at depot check (ev-f3f3446138), no active road closures were found on its route (ev-6a558e9e54), and the bus track confirms it stopped between stops (ev-b257edaea4), pointing to a mechanical breakdown as the cause.",
+      "uncertain": "The specific mechanical failure that caused the bus to stop after the warning light was reported."
+    }
+  }
+}

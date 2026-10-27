@@ -56,6 +56,19 @@ def check_confidence(plan: dict) -> Optional[str]:
     return None
 
 
+def check_gps_dropout(plan: dict) -> Optional[str]:
+    if plan["action"] in DISPATCH_ACTIONS and plan.get("cause") == "gps_glitch":
+        return ("the cause is a GPS dropout, so the bus is most likely still running; a spare would be a false alarm. "
+                "Keep watching instead")
+    return None
+
+
+def check_crew(plan: dict) -> Optional[str]:
+    if plan["action"] in DISPATCH_ACTIONS and plan.get("bus") and not plan.get("driver"):
+        return f"no driver is assigned to {plan['bus']}, so it cannot leave the depot"
+    return None
+
+
 def check_resource_free(plan: dict) -> Optional[str]:
     used = set(plan.get("used_today", []))
     for r in (plan.get("bus"), plan.get("driver")):
@@ -65,7 +78,7 @@ def check_resource_free(plan: dict) -> Optional[str]:
 
 
 RULES = [check_accessibility, check_capacity, check_service_gap, check_driver_hours,
-         check_hold, check_confidence, check_resource_free]
+         check_hold, check_confidence, check_gps_dropout, check_crew, check_resource_free]
 
 
 def check_all(plan: dict) -> list[dict]:

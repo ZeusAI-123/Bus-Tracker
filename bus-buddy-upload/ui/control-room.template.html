@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bus Buddy Control Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: control-desk split. Live network map + replay scrubber on the left, incident desk (feed, decision card, passenger alerts, memory) on the right. */
+:root {
+  --bg: #eaeef1; --panel: #ffffff; --panel-2: #f4f7f9; --ink: #13202a; --muted: #566773; --line: #d3dce2;
+  --map: #dfe6eb; --road: #9fb0bc; --road-hi: #c27c0e;
+  --accent: #b8720a; --accent-ink: #1d1300; --accent-soft: #f6e7cc;
+  --ok: #1d8466; --late: #c47f00; --stop: #cf3f3f; --miss: #6f58c4; --crowd: #2b6fb8; --pro: #0f7d8c;
+  --ok-soft: #dcefe8; --stop-soft: #f8e1e0;
+  --phone: #1a2630; --phone-ink: #eef3f6; --phone-muted: #a9b8c3;
+  --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d151c; --panel: #141f28; --panel-2: #192631; --ink: #e2e9ee; --muted: #8fa0ad; --line: #24333e;
+  --map: #101b24; --road: #3b4d5a; --road-hi: #f0b04a;
+  --accent: #f0b04a; --accent-ink: #1d1300; --accent-soft: #3a2c12;
+  --ok: #3fbf95; --late: #f0b04a; --stop: #f26d6d; --miss: #a592f0; --crowd: #64a6ee; --pro: #43c3d2;
+  --ok-soft: #133229; --stop-soft: #3a1b1d;
+  --phone: #22303b; --phone-ink: #eef3f6; --phone-muted: #9fb0bc;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d151c; --panel: #141f28; --panel-2: #192631; --ink: #e2e9ee; --muted: #8fa0ad; --line: #24333e;
+  --map: #101b24; --road: #3b4d5a; --road-hi: #f0b04a;
+  --accent: #f0b04a; --accent-ink: #1d1300; --accent-soft: #3a2c12;
+  --ok: #3fbf95; --late: #f0b04a; --stop: #f26d6d; --miss: #a592f0; --crowd: #64a6ee; --pro: #43c3d2;
+  --ok-soft: #133229; --stop-soft: #3a1b1d;
+  --phone: #22303b; --phone-ink: #eef3f6; --phone-muted: #9fb0bc;
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.45; }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 14px 24px; max-width: 1480px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 13px; color: var(--muted); }
+
+/* header */
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+.brand h1 { font-family: var(--f-display); font-weight: 700; font-size: 30px; letter-spacing: .01em; margin: 0; line-height: 1; }
+.brand h1 b { color: var(--accent); font-weight: 700; }
+.brand span { color: var(--muted); font-size: 13px; }
+.mornings { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-btn { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 6px 12px; display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; text-align: left; }
+.chip-btn small { color: var(--muted); font-size: 11.5px; }
+.chip-btn b { font-family: var(--f-display); font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.chip-btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip-btn[aria-pressed="true"] small { color: inherit; opacity: .75; }
+.ai-pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 6px 12px; font-size: 12.5px; color: var(--muted); }
+.ai-pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+.ai-pill b { color: var(--ink); font-weight: 600; }
+
+/* status strip */
+.strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); }
+.strip > div { padding: 10px 14px; border-left: 1px solid var(--line); min-width: 0; }
+.strip > div:first-child { border-left: 0; }
+.strip .v { font-family: var(--f-display); font-size: 28px; font-weight: 600; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.strip .v small { font-size: 15px; color: var(--muted); font-weight: 500; }
+.strip .k { font-size: 12px; color: var(--muted); }
+.strip .v.warn { color: var(--stop); }
+
+/* main grid */
+.desk { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); min-width: 0; }
+.panel-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+
+/* map */
+.map-wrap { position: relative; background: var(--map); border-radius: var(--r) var(--r) 0 0; overflow: hidden; }
+.map-wrap svg { display: block; width: 100%; height: auto; }
+.clock { position: absolute; top: 12px; right: 14px; text-align: right; font-family: var(--f-mono); font-size: 28px; font-weight: 500; letter-spacing: .02em; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 2px 10px; font-variant-numeric: tabular-nums; }
+.clock small { font-family: var(--f-body); font-size: 11px; color: var(--muted); display: block; line-height: 1.1; margin-top: -2px; }
+.legend { position: absolute; bottom: 10px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 11.5px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 5px; background: color-mix(in srgb, var(--panel) 85%, transparent); padding: 2px 7px; border-radius: 6px; }
+.legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.route-line { fill: none; stroke: var(--road); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s, stroke-width .2s; }
+.route-line.hi { stroke: var(--road-hi); stroke-width: 5.5; }
+.route-tag rect { fill: var(--panel); stroke: var(--road); }
+.route-tag text { font-family: var(--f-display); font-weight: 700; font-size: 15px; fill: var(--ink); }
+.route-tag.hi rect { stroke: var(--road-hi); fill: var(--road-hi); }
+.route-tag.hi text { fill: var(--accent-ink); }
+.stop-dot { fill: var(--panel); stroke: var(--muted); stroke-width: 1.4; }
+.stop-dot.hi { stroke: var(--road-hi); stroke-width: 2.4; }
+.stop-lbl { font-size: 12px; fill: var(--ink); paint-order: stroke; stroke: var(--map); stroke-width: 4px; font-family: var(--f-body); }
+.depot rect { fill: var(--ink); }
+.depot text { font-size: 11.5px; fill: var(--muted); font-family: var(--f-body); paint-order: stroke; stroke: var(--map); stroke-width: 4px; }
+.bus circle { stroke: var(--panel); stroke-width: 2.5; }
+.bus text { font-family: var(--f-mono); font-size: 11px; font-weight: 500; fill: var(--ink); paint-order: stroke; stroke: var(--map); stroke-width: 3.5px; }
+.spare circle { fill: var(--panel); stroke: var(--ok); stroke-width: 3; stroke-dasharray: 4 3; }
+.spare text { font-family: var(--f-mono); font-size: 11px; fill: var(--ok); font-weight: 500; paint-order: stroke; stroke: var(--map); stroke-width: 3.5px; }
+.spare path { fill: none; stroke: var(--ok); stroke-width: 2; stroke-dasharray: 5 5; opacity: .7; }
+.pulse { fill: none; stroke-width: 2.5; }
+@keyframes ring { from { r: 12; opacity: .9; } to { r: 34; opacity: 0; } }
+.pulse { animation: ring 1.6s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .pulse { animation: none; opacity: .6; } }
+
+/* scrubber */
+.scrub { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 8px; }
+.scrub-row { display: flex; align-items: center; gap: 10px; }
+.play { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; flex: none; }
+.play svg { width: 16px; height: 16px; fill: currentColor; }
+.track { position: relative; flex: 1; min-width: 0; padding-top: 16px; }
+.marks { position: absolute; top: 0; left: 8px; right: 8px; height: 14px; }
+.mark { position: absolute; top: 0; width: 12px; height: 12px; margin-left: -6px; border-radius: 3px; border: 0; padding: 0; transform: rotate(45deg); }
+input[type=range] { width: 100%; accent-color: var(--accent); margin: 0; }
+.ticks { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); padding: 0 4px; }
+.speed { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; flex: none; }
+.speed button { border: 0; background: transparent; padding: 6px 9px; font-size: 12px; color: var(--muted); }
+.speed button[aria-pressed="true"] { background: var(--panel-2); color: var(--ink); font-weight: 600; }
+
+/* right column */
+.side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.feed { list-style: none; margin: 0; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+.feed li button { width: 100%; text-align: left; background: transparent; border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 2px 10px; }
+.feed li button:hover { background: var(--panel-2); }
+.feed li button[aria-current="true"] { background: var(--panel-2); border-color: var(--line); }
+.feed .t { font-family: var(--f-mono); font-size: 13px; color: var(--muted); grid-row: span 2; padding-top: 1px; }
+.feed .ttl { font-weight: 600; min-width: 0; }
+.feed .sub { font-size: 12.5px; color: var(--muted); min-width: 0; }
+.empty { padding: 14px; color: var(--muted); font-size: 13px; }
+.tag { display: inline-flex; align-items: center; gap: 5px; font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; font-size: 12px; padding: 1px 7px; border-radius: 4px; color: #fff; vertical-align: 1px; }
+.tag.ok { background: var(--ok); } .tag.done { background: var(--muted); }
+
+/* decision card */
+.card-body { padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+.card-title { font-family: var(--f-display); font-size: 22px; font-weight: 600; line-height: 1.15; margin: 4px 0 0; text-wrap: balance; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
+.why { border-left: 3px solid var(--accent); padding: 2px 0 2px 12px; display: flex; flex-direction: column; gap: 8px; }
+.why p { margin: 0; max-width: 62ch; }
+.conf { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--muted); }
+.conf .bar { width: 120px; height: 6px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.conf .bar i { display: block; height: 100%; background: var(--accent); }
+.ev { display: flex; flex-wrap: wrap; gap: 5px; }
+.ev span { font-family: var(--f-mono); font-size: 11.5px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; }
+.by { font-size: 12px; color: var(--muted); }
+.by b { color: var(--ink); font-weight: 600; }
+.plans { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; counter-reset: p; }
+.plans li { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px 8px 12px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; position: relative; overflow: hidden; }
+.plans li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.plans li.rej { background: var(--stop-soft); } .plans li.rej::before { background: var(--stop); }
+.plans li.app { background: var(--ok-soft); } .plans li.app::before { background: var(--ok); }
+.plans .n { font-family: var(--f-mono); font-size: 12px; color: var(--muted); grid-row: span 2; padding-top: 2px; }
+.plans .verdict { font-size: 12.5px; }
+.plans .rej .verdict b { color: var(--stop); } .plans .app .verdict b { color: var(--ok); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.facts div { background: var(--panel-2); border-radius: 8px; padding: 7px 10px; min-width: 0; }
+.facts dt { font-size: 11.5px; color: var(--muted); }
+.facts dd { margin: 0; font-family: var(--f-display); font-size: 19px; font-weight: 600; }
+blockquote { margin: 0; font-size: 13.5px; color: var(--ink); max-width: 62ch; }
+blockquote::before { content: "Planner: "; font-weight: 600; color: var(--muted); }
+
+/* alerts */
+.phone { background: var(--phone); color: var(--phone-ink); border-radius: 18px; padding: 12px; margin: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
+.phone .bar { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--phone-muted); padding: 0 4px 2px; }
+.notif { background: color-mix(in srgb, var(--phone-ink) 9%, transparent); border-radius: 12px; padding: 9px 11px; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 2px 10px; animation: drop .35s ease-out; }
+@keyframes drop { from { transform: translateY(-6px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .notif { animation: none; } }
+.notif .badge { width: 30px; height: 30px; border-radius: 7px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; font-size: 17px; grid-row: span 3; }
+.notif .h { font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; gap: 8px; }
+.notif .h span { font-weight: 400; color: var(--phone-muted); font-family: var(--f-mono); font-size: 11.5px; flex: none; }
+.notif p { margin: 0; font-size: 12.5px; color: var(--phone-ink); opacity: .9; }
+.notif .src { font-size: 11px; color: var(--phone-muted); }
+.phone .none { color: var(--phone-muted); font-size: 12.5px; padding: 8px 4px; }
+
+/* memory */
+.mem { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 10px; }
+.lesson { border: 1px dashed var(--line); border-radius: 8px; padding: 9px 11px; display: flex; flex-direction: column; gap: 4px; }
+.lesson p { margin: 0; }
+.strength { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.strength .bar { width: 90px; height: 5px; background: var(--panel-2); border-radius: 3px; overflow: hidden; border: 1px solid var(--line); }
+.strength .bar i { display: block; height: 100%; background: var(--pro); }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.compare div { border-radius: 8px; padding: 8px 10px; background: var(--panel-2); }
+.compare div.on { outline: 2px solid var(--pro); }
+.compare dt { font-size: 11.5px; color: var(--muted); }
+.compare dd { margin: 0; font-family: var(--f-mono); font-size: 20px; }
+.compare dd small { font-family: var(--f-body); font-size: 11.5px; color: var(--muted); display: block; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 5px 10px; font-size: 12.5px; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--pro); color: #fff; font-weight: 600; }
+
+footer { font-size: 12px; color: var(--muted); max-width: 110ch; }
+
+/* route picker */
+.route-hit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: pointer; }
+.route-line.hov { stroke: var(--muted); stroke-width: 4.5; }
+.route-line.hi.hov { stroke: var(--road-hi); stroke-width: 5.5; }
+.route-tag { cursor: pointer; }
+.route-tag:focus { outline: none; }
+.route-tag:focus-visible rect { stroke: var(--accent); stroke-width: 3; }
+.legend .tip { background: transparent; padding-left: 0; }
+.x { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 2px 10px; font-size: 12px; color: var(--muted); }
+.x:hover { color: var(--ink); }
+.rt-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 14px; }
+.rt-head { display: flex; gap: 12px; align-items: center; }
+.rt-badge { width: 42px; height: 42px; border-radius: 8px; background: var(--road-hi); color: var(--accent-ink); display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; font-size: 25px; flex: none; }
+.rt-name { font-family: var(--f-display); font-size: 21px; font-weight: 600; line-height: 1.1; }
+.rt-buses { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.rt-buses li { display: grid; grid-template-columns: 34px auto minmax(0, 1fr); gap: 10px; align-items: center; background: var(--panel-2); border-radius: 6px; padding: 6px 9px; }
+.rt-buses .spd { justify-self: end; color: var(--muted); font-size: 12.5px; }
+.rt-stops { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 4px; font-size: 12.5px; }
+.rt-stops li { display: inline-flex; align-items: center; gap: 4px; }
+.rt-stops li + li::before { content: "→"; color: var(--muted); }
+.rt-stops span { border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; background: var(--panel); }
+.rt-stops li.aff span { border-color: var(--road-hi); background: var(--accent-soft); }
+.rt-body .feed { padding: 0; margin-top: 4px; }
+.rt-body .empty { padding: 4px 0 0; }
+
+@media (max-width: 1080px) { .desk { grid-template-columns: minmax(0, 1fr); } .strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } .strip > div:nth-child(4) { border-left: 0; } .strip > div:nth-child(n+4) { border-top: 1px solid var(--line); } }
+@media (max-width: 560px) { .brand h1 { font-size: 25px; } .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } .strip > div { border-left: 0 !important; border-top: 1px solid var(--line); } .strip > div:nth-child(-n+2) { border-top: 0; } .strip > div:nth-child(even) { border-left: 1px solid var(--line) !important; } .clock { font-size: 20px; } .legend { display: none; } .chip-btn small { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><h1>Bus <b>Buddy</b></h1><span>Sydney control room · morning peak 06:30–08:30</span></div>
+    <nav class="mornings" id="mornings" aria-label="Choose a morning"></nav>
+    <div class="ai-pill"><i></i><span>Reasoning by <b>NVIDIA Nemotron</b> via Meterless Nightshift · data via Zetaris</span></div>
+  </header>
+
+  <section class="strip" aria-label="Morning so far" id="strip"></section>
+
+  <div class="desk">
+    <section class="panel" aria-label="Network map and replay">
+      <div class="map-wrap">
+        <svg id="map" role="img" aria-label="Map of the eight bus routes with live bus positions"></svg>
+        <div class="clock" aria-live="off"><span id="clock">07:30</span><small id="cond">Dry morning</small></div>
+        <div class="legend">
+          <span><i style="background:var(--ok)"></i>On time</span>
+          <span><i style="background:var(--late)"></i>Late</span>
+          <span><i style="background:var(--stop)"></i>Stopped</span>
+          <span><i style="background:var(--miss)"></i>No GPS</span>
+          <span><i style="background:var(--crowd)"></i>Crowding / bunching</span>
+          <span><i style="background:var(--panel);border:2px dashed var(--ok)"></i>Spare sent (projected)</span>
+          <span class="tip">Click a route line or letter for its buses and stops</span>
+        </div>
+      </div>
+      <div class="scrub">
+        <div class="scrub-row">
+          <button class="play" id="play" aria-label="Play replay"><svg viewBox="0 0 16 16" id="playIcon"><path d="M3 1.5v13l11-6.5z"/></svg></button>
+          <div class="track">
+            <div class="marks" id="marks"></div>
+            <input type="range" id="time" min="390" max="510" step="0.5" value="450" aria-label="Replay time">
+            <div class="ticks"><span>06:30</span><span>07:00</span><span>07:30</span><span>08:00</span><span>08:30</span></div>
+          </div>
+          <div class="speed" role="group" aria-label="Replay speed" id="speed">
+            <button data-s="1" aria-pressed="true">1×</button><button data-s="2" aria-pressed="false">2×</button><button data-s="4" aria-pressed="false">4×</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="side">
+      <section class="panel" aria-label="Selected route" id="routePanel" hidden>
+        <div class="panel-h"><span class="eyebrow">Route</span><button class="x" id="routeClose" aria-label="Clear selected route">Clear</button></div>
+        <div class="rt-body" id="routeBody"></div>
+      </section>
+      <section class="panel" aria-label="Incident feed">
+        <div class="panel-h"><span class="eyebrow">Incidents</span><span class="by" id="feedCount"></span></div>
+        <ul class="feed" id="feed"></ul>
+      </section>
+      <section class="panel" aria-label="Decision card">
+        <div class="panel-h"><span class="eyebrow">Decision card</span><span class="by" id="cardStatus"></span></div>
+        <div class="card-body" id="card"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="desk">
+    <section class="panel" aria-label="Passenger alerts">
+      <div class="panel-h"><span class="eyebrow">What passengers see</span><span class="by">GTFS-Realtime service alerts, written by Nemotron</span></div>
+      <div class="phone" id="phone"></div>
+    </section>
+    <section class="panel" aria-label="Memory">
+      <div class="panel-h"><span class="eyebrow">Memory (H-MEM)</span><span id="memSeg"></span></div>
+      <div class="mem" id="mem"></div>
+    </section>
+  </div>
+
+  <footer>Replay of the recorded Nemotron run in <span class="mono">output_examples/</span> (rebuild with <span class="mono">python scripts/build_control_room.py</span>). Bus positions are simulated along real Sydney roads; rain is real Open-Meteo history; spare-bus positions after dispatch are projected, because replayed buses don't react to decisions. Route letters A–H are ours, not Transport for NSW numbers.</footer>
+</div>
+
+<script id="bb-data" type="application/json">__DATA__</script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById("bb-data").textContent);
+  const NET = D.network, M = D.mornings;
+  const ORDER = Object.keys(M).filter(k => k !== "mon2off");   // mornings in the order the builder wrote them
+  const START = 390, END = 510;
+  const toMin = s => { const [h, m] = s.split(":").map(Number); return h * 60 + m; };
+  const hm = x => { const t = Math.floor(x + 1e-6); return String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"); };
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const stopById = Object.fromEntries(NET.stops.map(s => [s.id, s]));
+  const TYPE = {
+    late: { label: "Late", color: "var(--late)" }, stopped: { label: "Stopped", color: "var(--stop)" },
+    missing: { label: "No GPS", color: "var(--miss)" }, bunching: { label: "Bunching", color: "var(--crowd)" },
+    crowding: { label: "Crowding", color: "var(--crowd)" }, connection_risk: { label: "Missed connection", color: "var(--late)" },
+    proactive: { label: "Act early", color: "var(--pro)" }, ok: { label: "On time", color: "var(--ok)" }, not_started: { label: "", color: "var(--muted)" }
+  };
+  const CAUSE = { breakdown: "Breakdown", weather_congestion: "Rain slowing traffic", late_train: "Late train", event_crowding: "Event crowds",
+    crowding_dwell: "Slow boarding", gps_glitch: "GPS dropout", road_closure: "Road closure", driver_absent: "Driver absent", unknown: "Cause unclear" };
+  const METHOD = m => m === "nemotron-via-nightshift" ? "NVIDIA Nemotron via Nightshift" : (m || "").startsWith("memory") ? "H-MEM memory + today's weather" : "Offline rules";
+
+  // ---------- projection
+  const pts = NET.stops.map(s => [s.lat, s.lon]).concat(...NET.routes.map(r => r.shape), [[NET.depot.lat, NET.depot.lon]]);
+  const lats = pts.map(p => p[0]), lons = pts.map(p => p[1]);
+  const la0 = Math.min(...lats), la1 = Math.max(...lats), lo0 = Math.min(...lons), lo1 = Math.max(...lons);
+  const k = Math.cos(((la0 + la1) / 2) * Math.PI / 180);
+  const W = 1000, PAD = 44, H = Math.round((la1 - la0) / ((lo1 - lo0) * k) * (W - 2 * PAD) + 2 * PAD + 40);
+  const X = lon => PAD + (lon - lo0) * k / ((lo1 - lo0) * k) * (W - 2 * PAD);
+  const Y = lat => PAD + 26 + (la1 - lat) / (la1 - la0) * (H - 2 * PAD - 40);
+  const svg = document.getElementById("map");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const a in attrs) e.setAttribute(a, attrs[a]); parent && parent.appendChild(e); return e; };
+
+  const gRoutes = el("g", {}, svg), gHit = el("g", {}, svg), gStops = el("g", {}, svg), gTags = el("g", {}, svg), gFx = el("g", {}, svg), gSpare = el("g", {}, svg), gBus = el("g", {}, svg), gLbl = el("g", {}, svg);
+  const routeEls = {}, tagEls = {}, stopEls = {};
+  NET.routes.forEach(r => {
+    const d = r.shape.map((p, i) => (i ? "L" : "M") + X(p[1]).toFixed(1) + " " + Y(p[0]).toFixed(1)).join("");
+    routeEls[r.id] = el("path", { d, class: "route-line" }, gRoutes);
+    const end = r.shape[0];
+    const tg = el("g", { class: "route-tag", transform: `translate(${X(end[1]).toFixed(1)} ${Y(end[0]).toFixed(1)})` }, gTags);
+    el("rect", { x: -11, y: -11, width: 22, height: 22, rx: 5 }, tg);
+    const t = el("text", { x: 0, y: 5.5, "text-anchor": "middle" }, tg); t.textContent = r.id;
+    el("title", {}, tg).textContent = "Route " + r.id + ": " + r.name;
+    tagEls[r.id] = tg;
+    const hit = el("path", { d, class: "route-hit" }, gHit);
+    el("title", {}, hit).textContent = "Route " + r.id + ": " + r.name.replace(" - ", " – ") + ". Click for details";
+    tg.setAttribute("tabindex", "0"); tg.setAttribute("role", "button");
+    tg.setAttribute("aria-label", "Show route " + r.id + ", " + r.name.replace(" - ", " to "));
+    [hit, tg].forEach(n => {
+      n.addEventListener("click", () => pickRoute(r.id));
+      n.addEventListener("mouseenter", () => routeEls[r.id].classList.add("hov"));
+      n.addEventListener("mouseleave", () => routeEls[r.id].classList.remove("hov"));
+    });
+    tg.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pickRoute(r.id); } });
+  });
+  NET.stops.forEach(s => {
+    const c = el("circle", { cx: X(s.lon), cy: Y(s.lat), r: 4.2, class: "stop-dot" }, gStops);
+    el("title", {}, c).textContent = s.name;
+    stopEls[s.id] = c;
+  });
+  const dep = el("g", { class: "depot", transform: `translate(${X(NET.depot.lon)} ${Y(NET.depot.lat)})` }, gStops);
+  el("rect", { x: -6, y: -6, width: 12, height: 12, rx: 2 }, dep);
+  const dt = el("text", { x: 10, y: 4 }, dep); dt.textContent = "Depot (spares S1, S2)";
+  ["CEN", "TWH", "UNS", "WYN", "BJN"].forEach(id => { const s = stopById[id]; if (!s) return;
+    const t = el("text", { x: X(s.lon) + 8, y: Y(s.lat) - 7, class: "stop-lbl" }, gLbl); t.textContent = s.name.split(",")[0]; });
+
+  // ---------- state
+  let key = "tue", now = 450, playing = false, speed = 1, selected = null, last = 0, lastSecond = -1, routeSel = null;
+  function pickRoute(id) { routeSel = routeSel === id ? null : id; renderRoute(); highlight(); }
+  const busEls = {};
+  function busEl(id) {
+    if (busEls[id]) return busEls[id];
+    const g = el("g", { class: "bus" }, gBus);
+    const c = el("circle", { r: 8.5 }, g); const t = el("text", { x: 0, y: -13, "text-anchor": "middle" }, g); t.textContent = id;
+    const ti = el("title", {}, g);
+    return busEls[id] = { g, c, ti };
+  }
+
+  // ---------- header + strip
+  const nav = document.getElementById("mornings");
+  ORDER.forEach(k2 => {
+    const m = M[k2]; const b = document.createElement("button");
+    b.className = "chip-btn"; b.dataset.k = k2;
+    b.innerHTML = `<b>${esc(m.day)}</b><small>${esc(m.label)}</small>`;
+    b.onclick = () => setMorning(k2); nav.appendChild(b);
+  });
+
+  function visibleIncidents() { return M[key].incidents.filter(i => toMin(i.detected_at) <= now); }
+
+  function renderStrip() {
+    const m = M[key], vis = visibleIncidents();
+    const rej = vis.reduce((a, i) => a + i.plans_considered.filter(p => p.critic !== "approved").length, 0);
+    const alerts = m.alerts.filter(a => toMin(a.active_from) <= now).length;
+    const pax = vis.reduce((a, i) => a + (i.decision.action && i.decision.action !== "monitor" ? (i.decision.passengers_affected || 0) : 0), 0);
+    const tl = frame(now); const ok = tl ? tl.b.filter(b => b[4] === "ok").length : 0; const run = tl ? tl.b.filter(b => b[4] !== "not_started").length : 0;
+    const rain = m.conditions.rain_mm_morning;
+    document.getElementById("strip").innerHTML = [
+      [`${ok}<small>/${run}</small>`, "Buses running normally"],
+      [vis.length, "Incidents so far"],
+      [rej, "Plans blocked by Safety Critic", rej ? "warn" : ""],
+      [alerts, "Passenger alerts sent"],
+      [pax, "Passengers informed or helped"],
+      [`${rain}<small> mm</small>`, rain ? "Rain 05:00–09:00 (real data)" : "No rain 05:00–09:00"]
+    ].map(([v, k3, c]) => `<div><div class="v ${c || ""}">${v}</div><div class="k">${k3}</div></div>`).join("");
+  }
+
+  // ---------- timeline frames
+  function frame(t) {
+    const tl = M[key].timeline; const i = Math.max(0, Math.min(tl.length - 1, Math.floor((t - START) / 2)));
+    return tl[i];
+  }
+  function renderMap() {
+    const tl = M[key].timeline; const f = (now - START) / 2; const i = Math.max(0, Math.min(tl.length - 1, Math.floor(f)));
+    const a = tl[i], b = tl[Math.min(tl.length - 1, i + 1)], u = Math.min(1, Math.max(0, f - i));
+    const nextById = Object.fromEntries(b.b.map(x => [x[0], x]));
+    const seen = new Set();
+    a.b.forEach(x => {
+      const [id, lat, lon, spd, st] = x; const e = busEl(id); seen.add(id);
+      if (st === "not_started" || lat == null) { e.g.style.display = "none"; return; }
+      const n = nextById[id]; let la = lat, lo = lon;
+      if (n && n[1] != null && st !== "missing") { la = lat + (n[1] - lat) * u; lo = lon + (n[2] - lon) * u; }
+      e.g.style.display = ""; e.g.setAttribute("transform", `translate(${X(lo).toFixed(1)} ${Y(la).toFixed(1)})`);
+      e.c.style.fill = (TYPE[st] || TYPE.ok).color; e.g.style.opacity = st === "missing" ? .55 : 1;
+      e.ti.textContent = `${id} · Route ${x[0][0]} · ${spd ?? "–"} km/h · ${(TYPE[st] || TYPE.ok).label}`;
+    });
+    Object.keys(busEls).forEach(id => { if (!seen.has(id)) busEls[id].g.style.display = "none"; });
+
+    // spares (projected) and incident rings
+    gSpare.innerHTML = ""; gFx.innerHTML = "";
+    visibleIncidents().forEach(inc => {
+      const p = inc.position || (inc.stop && stopById[inc.stop]) || null;
+      const open = !inc.resolved_at || toMin(inc.resolved_at) > now;
+      if (p && open && inc.type !== "proactive") el("circle", { cx: X(p.lon), cy: Y(p.lat), r: 14, class: "pulse", stroke: (TYPE[inc.type] || TYPE.ok).color }, gFx);
+      const d = inc.decision;
+      if (d.bus && d.dispatch_at && d.eta && /bus$/.test(d.action || "")) {
+        const target = stopById[(d.stops_affected || [])[0] || inc.stop]; if (!target) return;
+        const t0 = toMin(d.dispatch_at), t1 = toMin(d.eta); if (now < t0) return;
+        const u2 = Math.min(1, (now - t0) / Math.max(1, t1 - t0));
+        const x0 = X(NET.depot.lon), y0 = Y(NET.depot.lat), x1 = X(target.lon), y1 = Y(target.lat);
+        const g = el("g", { class: "spare" }, gSpare);
+        el("path", { d: `M${x0} ${y0}L${x1} ${y1}` }, g);
+        const gx = x0 + (x1 - x0) * u2, gy = y0 + (y1 - y0) * u2;
+        el("circle", { cx: gx, cy: gy, r: 8.5 }, g);
+        const t = el("text", { x: gx, y: gy - 13, "text-anchor": "middle" }, g); t.textContent = d.bus + (u2 >= 1 ? " ✓" : "");
+      }
+    });
+  }
+
+  // ---------- feed + card
+  function renderFeed() {
+    const vis = visibleIncidents(), ul = document.getElementById("feed");
+    document.getElementById("feedCount").textContent = `${vis.length} of ${M[key].incidents.length} this morning`;
+    if (!vis.length) { ul.innerHTML = `<li class="empty">All quiet so far. The first problem this morning appears at ${esc(M[key].incidents[0]?.detected_at || "–")}. Press play or drag the time bar.</li>`; return; }
+    ul.innerHTML = vis.slice().reverse().map(i => {
+      const ty = TYPE[i.type] || TYPE.ok; const res = i.resolved_at && toMin(i.resolved_at) <= now;
+      const who = i.bus || ("Route " + i.route);
+      return `<li><button data-id="${i.id}" aria-current="${selected === i.id}"><span class="t">${esc(i.detected_at)}</span>
+        <span class="ttl"><span class="tag" style="background:${ty.color}">${ty.label}</span> ${esc(who)}${res ? ' <span class="tag done">Resolved</span>' : ""}</span>
+        <span class="sub">${esc(CAUSE[i.cause] || i.cause)} · ${esc(i.detail)}</span></button></li>`;
+    }).join("");
+    ul.querySelectorAll("button").forEach(b => b.onclick = () => { selected = b.dataset.id; renderFeed(); renderCard(); highlight(); });
+  }
+
+  function renderCard() {
+    const card = document.getElementById("card"), vis = visibleIncidents();
+    let inc = vis.find(i => i.id === selected);
+    if (!inc) { inc = vis[vis.length - 1]; selected = inc ? inc.id : null; }
+    const st = document.getElementById("cardStatus");
+    if (!inc) { st.textContent = ""; card.innerHTML = `<p class="empty" style="padding:0">When the Monitor raises a problem, this card shows what happened, why, every plan the agents considered and what the Safety Critic said about it.</p>`; return; }
+    const ty = TYPE[inc.type] || TYPE.ok, d = inc.decision;
+    const res = inc.resolved_at && toMin(inc.resolved_at) <= now;
+    st.textContent = res ? `Resolved ${inc.resolved_at}` : "Open";
+    const facts = [];
+    if (d.dispatch_at) facts.push(["Leaves depot", d.dispatch_at]);
+    if (d.eta) facts.push(["Arrives", d.eta]);
+    if (d.bus && d.driver) facts.push(["Bus / driver", `${d.bus} / ${d.driver}`]);
+    if (d.hold_min) facts.push(["Hold", d.hold_min + " min"]);
+    if (d.passengers_affected) facts.push(["Passengers", d.passengers_affected]);
+    if (d.wheelchair_waiting && d.wheelchair_waiting.length) facts.push(["Wheelchair waiting", d.wheelchair_waiting.map(s => stopById[s]?.name.split(",")[0] || s).join(", ")]);
+    const plans = inc.plans_considered.map((p, n) => {
+      const ok = p.critic === "approved";
+      return `<li class="${ok ? "app" : "rej"}"><span class="n">${n + 1}</span><span>${esc(p.plan)}</span>
+        <span class="verdict"><b>${ok ? "Approved" : "Rejected"}</b>${ok ? " by the Safety Critic" : " · " + esc(p.critic.replace(/^rejected - /, ""))}</span></li>`;
+    }).join("");
+    const mem = (inc.memory_used || []).filter(x => x && (x.lesson || x.summary));
+    card.innerHTML = `
+      <div><div class="meta"><span class="tag" style="background:${ty.color}">${ty.label}</span><span class="mono">${esc(inc.detected_at)}</span><span>${esc(inc.bus ? "Bus " + inc.bus + " · " : "")}Route ${esc(inc.route)}</span></div>
+      <h2 class="card-title">${esc(inc.detail)}</h2></div>
+      <div class="why"><span class="eyebrow">Why: ${esc(CAUSE[inc.cause] || inc.cause)}</span><p>${esc(inc.explanation)}</p>
+        <div class="conf">Confidence <span class="bar"><i style="width:${Math.round((inc.confidence || 0) * 100)}%"></i></span> <span class="mono">${Math.round((inc.confidence || 0) * 100)}%</span></div>
+        ${inc.evidence && inc.evidence.length ? `<div class="ev" title="Every evidence id is checked against the Zetaris queries the agent really ran">${inc.evidence.map(e => `<span>${esc(e)}</span>`).join("")}</div>` : ""}
+        ${mem.length ? `<div class="by">Memory used: ${mem.map(x => esc(x.lesson || x.summary)).join("; ")}</div>` : ""}
+        <span class="by">Explained by <b>${esc(METHOD(inc.reasoning_method))}</b></span></div>
+      <div><div class="eyebrow" style="margin-bottom:6px">Plans considered</div><ol class="plans">${plans || '<li class="rej"><span class="n">–</span><span>No plan passed. Escalated to the human controller.</span></li>'}</ol></div>
+      ${d.reason ? `<blockquote>${esc(d.reason)}</blockquote>` : ""}
+      ${facts.length ? `<dl class="facts">${facts.map(([k4, v]) => `<div><dt>${esc(k4)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
+      <span class="by">Plan chosen by <b>${esc(METHOD(d.method))}</b>; hard safety rules checked in code.</span>`;
+  }
+
+  function highlight() {
+    const inc = M[key].incidents.find(i => i.id === selected);
+    const hiRoute = routeSel || (inc && inc.route);
+    Object.entries(routeEls).forEach(([r, e]) => { const on = hiRoute === r; e.classList.toggle("hi", on); tagEls[r].classList.toggle("hi", on); });
+    const aff = new Set(routeSel ? (NET.routes.find(r => r.id === routeSel) || {}).stops || []
+      : inc ? [...(inc.decision.stops_affected || []), inc.stop].filter(Boolean) : []);
+    Object.entries(stopEls).forEach(([s, e]) => e.classList.toggle("hi", aff.has(s)));
+    if (routeEls[hiRoute]) gRoutes.appendChild(routeEls[hiRoute]);
+  }
+
+  // ---------- selected route
+  function renderRoute() {
+    const panel = document.getElementById("routePanel"), r = NET.routes.find(x => x.id === routeSel);
+    panel.hidden = !r;
+    if (!r) return;
+    const buses = frame(now).b.filter(b => b[0].startsWith(r.id));
+    const all = M[key].incidents.filter(i => i.route === r.id), incs = all.filter(i => toMin(i.detected_at) <= now);
+    const alerts = M[key].alerts.filter(a => toMin(a.active_from) <= now && a.routes.includes(r.id)).length;
+    const affected = new Set(incs.filter(i => !i.resolved_at || toMin(i.resolved_at) > now)
+      .flatMap(i => [...(i.decision.stops_affected || []), i.stop]).filter(Boolean));
+    const label = st => st === "not_started" ? "Not started" : (TYPE[st] || TYPE.ok).label;
+    document.getElementById("routeBody").innerHTML = `
+      <div class="rt-head"><span class="rt-badge">${esc(r.id)}</span><div><div class="rt-name">${esc(r.name.replace(" - ", " – "))}</div>
+        <div class="by">${r.stops.length} stops · ${buses.length} bus${buses.length === 1 ? "" : "es"} · ${alerts} passenger alert${alerts === 1 ? "" : "s"} so far</div></div></div>
+      <div><div class="eyebrow">Buses now (${hm(now)})</div><ul class="rt-buses">${buses.map(b => `<li><span class="mono">${esc(b[0])}</span>
+        <span class="tag" style="background:${(TYPE[b[4]] || TYPE.ok).color}">${label(b[4])}</span>
+        <span class="mono spd">${b[4] === "not_started" || b[3] == null ? "–" : b[3].toFixed(1) + " km/h"}</span></li>`).join("")}</ul></div>
+      <div><div class="eyebrow">Stops in order</div><ol class="rt-stops">${r.stops.map(s => `<li class="${affected.has(s) ? "aff" : ""}"><span>${esc((stopById[s] || { name: s }).name.split(",")[0])}</span></li>`).join("")}</ol></div>
+      <div><div class="eyebrow">Problems on this route</div>${incs.length ? `<ul class="feed">${incs.slice().reverse().map(i => {
+        const ty = TYPE[i.type] || TYPE.ok;
+        return `<li><button data-id="${i.id}" aria-current="${selected === i.id}"><span class="t">${esc(i.detected_at)}</span>
+          <span class="ttl"><span class="tag" style="background:${ty.color}">${ty.label}</span> ${esc(i.bus || "Route " + i.route)}</span>
+          <span class="sub">${esc(CAUSE[i.cause] || i.cause)} · ${esc(i.detail)}</span></button></li>`; }).join("")}</ul>`
+        : `<p class="empty">No problems on Route ${esc(r.id)} so far${all.length ? `. ${all.length} later this morning` : " this morning"}.</p>`}</div>`;
+    document.querySelectorAll("#routeBody .feed button").forEach(b => b.onclick = () => { selected = b.dataset.id; renderFeed(); renderCard(); renderRoute(); highlight(); });
+  }
+  document.getElementById("routeClose").onclick = () => pickRoute(routeSel);
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && routeSel) pickRoute(routeSel); });
+
+  // ---------- alerts
+  function renderPhone() {
+    const vis = M[key].alerts.filter(a => toMin(a.active_from) <= now).slice().reverse();
+    const phone = document.getElementById("phone");
+    phone.innerHTML = `<div class="bar"><span class="mono">${hm(now)}</span><span>Transport app</span></div>` +
+      (vis.length ? vis.map(a => `<div class="notif"><span class="badge">${esc(a.routes[0] || "!")}</span>
+        <div class="h">${esc(a.header_text)}<span>${esc(a.active_from)}</span></div>
+        <p>${esc(a.description_text)}</p><div class="src">${esc(a.effect.replace(/_/g, " ").toLowerCase())} · ${a.method === "nemotron-via-nightshift" ? "written by Nemotron" : "template"}</div></div>`).join("")
+        : `<div class="none">No service alerts yet this morning.</div>`);
+  }
+
+  // ---------- memory
+  function renderMemory() {
+    const m = M[key], el2 = document.getElementById("mem"), seg = document.getElementById("memSeg");
+    const isMon2 = key === "mon2" || key === "mon2off";
+    seg.innerHTML = isMon2 ? `<span class="seg" role="group" aria-label="Memory"><button data-k="mon2" aria-pressed="${key === "mon2"}">Memory on</button><button data-k="mon2off" aria-pressed="${key === "mon2off"}">Memory off</button></span>` : "";
+    seg.querySelectorAll("button").forEach(b => b.onclick = () => setMorning(b.dataset.k, true));
+    let html = "";
+    if (isMon2) {
+      const first = k5 => { const i = M[k5].incidents.find(x => x.route === "A"); return i ? i.detected_at : "–"; };
+      html += `<p style="margin:0">Same rainy morning, run twice. With memory, the agent recalls what happened on 28 April and acts at the start of the shift. Without it, the agent only reacts once Route A is already late.</p>
+        <dl class="compare"><div class="${key === "mon2" ? "on" : ""}"><dt>Memory on: first action on Route A</dt><dd>${first("mon2")}<small>before any bus is late</small></dd></div>
+        <div class="${key === "mon2off" ? "on" : ""}"><dt>Memory off: first action on Route A</dt><dd>${first("mon2off")}<small>after A1 is already late</small></dd></div></dl>`;
+    }
+    const lessons = m.memory === "off" ? [] : m.lessons;
+    if (key === "mon1") html += `<p style="margin:0">This is the first rainy morning. At the end of the shift the Learner turns Route A's delay into a lesson for next time.</p>`;
+    html += lessons.length ? lessons.map(l => `<div class="lesson"><span class="eyebrow">Lesson · ${esc(l.status)}</span><p>${esc(l.summary)}</p>
+        <div class="strength">Strength <span class="bar"><i style="width:${Math.round(l.strength * 100)}%"></i></span><span class="mono">${l.strength.toFixed(2)}</span> · learned from ${esc((l.mornings || []).join(", "))}</div></div>`).join("")
+      : `<div class="lesson"><p style="color:var(--muted)">${m.memory === "off" ? "Memory is switched off for this run, so no lessons are available." : "No lessons stored yet."}</p></div>`;
+    el2.innerHTML = html;
+  }
+
+  // ---------- marks on scrubber
+  function renderMarks() {
+    const box = document.getElementById("marks");
+    box.innerHTML = M[key].incidents.map(i => {
+      const p = (toMin(i.detected_at) - START) / (END - START) * 100;
+      return `<button class="mark" style="left:${p}%;background:${(TYPE[i.type] || TYPE.ok).color}" data-id="${i.id}" data-t="${toMin(i.detected_at)}" aria-label="Jump to ${esc(i.detected_at)}: ${esc(i.detail)}" title="${esc(i.detected_at)} · ${esc(i.detail)}"></button>`;
+    }).join("");
+    box.querySelectorAll("button").forEach(b => b.onclick = () => { setTime(+b.dataset.t + 1); selected = b.dataset.id; renderAll(); });
+  }
+
+  // ---------- controls
+  const range = document.getElementById("time");
+  function setTime(t) { now = Math.max(START, Math.min(END, t)); range.value = now; }
+  range.oninput = () => { setTime(+range.value); renderAll(); };
+  const playBtn = document.getElementById("play"), icon = document.getElementById("playIcon");
+  function setPlaying(p) { playing = p; playBtn.setAttribute("aria-label", p ? "Pause replay" : "Play replay");
+    icon.innerHTML = p ? '<path d="M3 1.5h3.5v13H3zM9.5 1.5H13v13H9.5z"/>' : '<path d="M3 1.5v13l11-6.5z"/>'; if (p) { last = performance.now(); requestAnimationFrame(tick); } }
+  playBtn.onclick = () => { if (!playing && now >= END) setTime(START); setPlaying(!playing); };
+  document.querySelectorAll("#speed button").forEach(b => b.onclick = () => { speed = +b.dataset.s; document.querySelectorAll("#speed button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  function tick(ts) {
+    if (!playing) return;
+    const dtm = (ts - last) / 1000; last = ts;
+    setTime(now + dtm * 2 * speed);            // 1x = 2 simulated minutes per second
+    const sec = Math.floor(now * 2);
+    renderMap(); document.getElementById("clock").textContent = hm(now);
+    if (sec !== lastSecond) { lastSecond = sec; renderStrip(); renderFeed(); renderCard(); renderRoute(); renderPhone(); highlight(); }
+    if (now >= END) { setPlaying(false); return; }
+    requestAnimationFrame(tick);
+  }
+
+  function setMorning(k6, keepTime) {
+    key = k6; selected = null;
+    nav.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === (k6 === "mon2off" ? "mon2" : k6)));
+    if (!keepTime) { const incs = M[key].incidents; setTime(incs.length ? Math.min(END, toMin(incs[incs.length - 1].detected_at) + 8) : 450); }
+    const c = M[key].conditions;
+    document.getElementById("cond").textContent = (c.raining ? `Raining · ${c.rain_mm_morning} mm this morning` : "Dry morning") + " · " + M[key].day;
+    renderMarks(); renderAll();
+  }
+  function renderAll() { document.getElementById("clock").textContent = hm(now); renderMap(); renderStrip(); renderFeed(); renderCard(); renderRoute(); renderPhone(); renderMemory(); highlight(); }
+
+  setMorning("tue");
+})();
+</script>
+</body>
+</html>

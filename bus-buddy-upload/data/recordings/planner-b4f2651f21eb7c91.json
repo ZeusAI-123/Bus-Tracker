@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S2:D11",
+    "reason": "It reduces the 5.8-minute service gap for 61 passengers without conflicting with driver shifts or existing resource commitments."
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "It deploys an accessible spare bus within driver hours, directly filling the 5.6-minute service gap for all 65 affected passengers, whereas alert_only leaves the gap unaddressed and the non-accessible S2 option disadvantages wheelchair users."
+  }
+}

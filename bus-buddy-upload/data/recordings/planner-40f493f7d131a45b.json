@@ -1,0 +1,7 @@
+{
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "reply": {
+    "choice": "extra_bus:S1:D11",
+    "reason": "Driver D11 is within legal shift limits (shift ends 14:15, work finishes 08:30), and bus S1 is wheelchair-accessible, ensuring fair service for all passengers while directly addressing the 5.3-minute gap."
+  }
+}
