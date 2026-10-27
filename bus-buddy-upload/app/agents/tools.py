@@ -1,6 +1,4 @@
-"""Investigation tools. Each one is a Zetaris query; results are written to the
-World Model with provenance, and their evidence ids are what agents must cite.
-"""
+
 from __future__ import annotations
 
 from typing import Any, Callable
@@ -11,7 +9,7 @@ class Tools:
         self.z = zetaris
         self.world = world
         self.date = date
-        self.evidence: dict[str, dict] = {}   # evidence_id -> {tool, args, rows}
+        self.evidence: dict[str, dict] = {}   
 
     def _q(self, tool: str, sql: str, params: dict, purpose: str, sim_time: str) -> dict:
         rows, ev = self.z.query(sql, {"d": self.date, **params}, agent="Investigator", purpose=purpose, sim_time=sim_time)
