@@ -1,11 +1,4 @@
-"""HTTP API.
 
-POST /run     {"date": "2025-04-29", "memory": "on"|"off", "sample_mode": true|false}  -> run JSON
-GET  /health  -> status, mode, which backends are configured
-GET  /scenarios -> the five demo mornings and their dates
-GET  /, /control-room -> replay of the demo mornings (ui/control-room.html, built by scripts/build_control_room.py)
-GET  /classic  -> the first screen (ui/index.html): runs one morning live via POST /run
-"""
 from __future__ import annotations
 
 import json
@@ -32,7 +25,7 @@ class RunRequest(BaseModel):
 def run(req: RunRequest):
     try:
         return run_morning(req.date, memory=req.memory, sample_mode=req.sample_mode, run_id=req.run_id)
-    except Exception as e:  # structured error instead of a stack trace
+    except Exception as e:  
         return JSONResponse(status_code=500, content={
             "run_id": req.run_id, "status": "error",
             "error": {"type": e.__class__.__name__, "message": str(e)[:500],
