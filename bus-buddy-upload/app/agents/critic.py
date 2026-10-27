@@ -1,8 +1,4 @@
-"""Safety Critic: hard rules in code, then a model review. Can block any plan.
 
-A rejection returns feedback; the orchestrator removes options that share the
-rejected property and asks the Planner again (max 3 attempts), then escalates.
-"""
 from __future__ import annotations
 
 import json
