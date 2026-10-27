@@ -1,11 +1,4 @@
-"""Builds ui/control-room.html: a self-contained replay of the demo mornings.
 
-  python scripts/build_control_room.py      after `python run.py --week` has written output_examples/
-
-Reads output_examples/*.json, keeps what the screen needs (network, bus positions per tick,
-incidents, plans, alerts, memory) and embeds it in ui/control-room.template.html.
-The page opens straight from disk or at http://localhost:8000/control-room.
-"""
 from __future__ import annotations
 
 import json
