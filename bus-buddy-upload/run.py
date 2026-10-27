@@ -48,7 +48,7 @@ def main() -> None:
         from app.engines.hmem import HMem
         HMem(SETTINGS.memory_db).reset()
         dates = json.loads((SETTINGS.sample_dir / "scenarios.json").read_text())["dates"]
-        order = ["mon1", "tue", "wed", "thu", "closure", "busy", "mon2"]   # date order, so memory builds up
+        order = ["mon1", "tue", "wed", "thu", "closure", "busy", "mon2"]   
         SETTINGS.runs_dir.mkdir(exist_ok=True)
         out_dir = SETTINGS.data_dir.parent / "output_examples"
         out_dir.mkdir(exist_ok=True)
