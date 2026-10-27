@@ -326,6 +326,3 @@ output_examples/  results of the 7 mornings + memory-off run; traces/ holds the 
 tests/            rules, World Model, H-MEM, end-to-end sample runs
 ```
 
-## Team
-Team Zeus AI: Jeevan (senior developer), Arun (developer), Ujwal and Siddarth (developers, Zetaris),
-Varshith (business analyst).
