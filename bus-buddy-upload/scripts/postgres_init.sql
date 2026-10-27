@@ -1,5 +1,4 @@
--- Loads data/sample/*.csv into Postgres when the container first starts
--- (docker compose --profile db up). Register this database in Zetaris as "busbuddy_pg".
+
 CREATE TABLE gtfs_routes (route_id text PRIMARY KEY, route_short_name text, route_long_name text, route_type int);
 CREATE TABLE gtfs_stops (stop_id text PRIMARY KEY, stop_name text, stop_lat double precision, stop_lon double precision, wheelchair_boarding int);
 CREATE TABLE gtfs_trips (route_id text, service_id text, trip_id text PRIMARY KEY, direction_id int, shape_id text, block_id text, wheelchair_accessible int);
