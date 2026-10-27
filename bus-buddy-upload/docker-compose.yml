@@ -1,12 +1,11 @@
-# docker compose up            -> app on http://localhost:8000 (sample mode by default)
-# docker compose --profile db up  -> also starts Postgres with our tables (for registering in Zetaris)
+
 services:
   app:
     build: .
     ports: ["8000:8000"]
     env_file: [.env]
     environment:
-      # Zetaris and Nightshift run on your machine, outside this container
+      
       - ZETARIS_REST_URL=${ZETARIS_REST_URL_DOCKER:-http://host.docker.internal:8888/api/v1.0}
       - METERLESS_BASE_URL=${METERLESS_BASE_URL_DOCKER:-http://host.docker.internal:8088/v1}
     extra_hosts: ["host.docker.internal:host-gateway"]
