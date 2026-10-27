@@ -1,4 +1,4 @@
-"""Settings, read once from the environment (.env supported)."""
+
 from __future__ import annotations
 
 import os
@@ -52,13 +52,12 @@ class Settings:
 
 SETTINGS = Settings()
 
-# Operating limits used by the Safety Critic. Values are placeholders for the demo;
-# check the operator's published rules before quoting them as real NSW figures.
+
 LIMITS = {
-    "bus_capacity_default": 60,          # seated + standing
-    "max_service_gap_min": 30,           # no stop left without a bus longer than this
-    "max_hold_min": 5,                   # longest we hold a bus for a late train
-    "min_dispatch_confidence": 0.6,      # below this, need corroborating evidence to send a bus
+    "bus_capacity_default": 60,        
+    "max_service_gap_min": 30,          
+    "max_hold_min": 5,                   
+    "min_dispatch_confidence": 0.6,      
     "late_threshold_min": 5,
     "stopped_threshold_min": 4,
     "missing_threshold_min": 4,
