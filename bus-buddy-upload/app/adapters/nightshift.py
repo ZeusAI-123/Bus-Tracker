@@ -1,13 +1,4 @@
-"""Meterless Nightshift adapter: the ONLY place the app calls a model.
 
-- Nightshift speaks the OpenAI chat format, so we use the OpenAI client pointed at it.
-- Every call logs which model answered (needed for the NVIDIA Nemotron award).
-- AI_RECORDING=record saves each new reply to data/recordings/ (and reuses replies already saved there,
-  so a re-run only asks for what is missing); replay serves them back,
-  which lets judges see the real agent behaviour without running Nightshift.
-- If no model is reachable (and nothing is recorded), callers get None and use
-  their documented offline fallback, which is labelled in the trace as such.
-"""
 from __future__ import annotations
 
 import hashlib
